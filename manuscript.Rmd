@@ -45,16 +45,29 @@ opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
 
 # Introduction
 
-Users of the popular statistical and mathematical computing platform
-R [@R] enjoy a wealth of readily installable comparative phylogenetic
-methods and tools.
+Biodiversity loss is one of the greatest challenges of our
+time [@Pimm_2014]. Some have called this the sixth great mass
+extinction [@Ceballos_2015]. Given this challenge there is a
+great need for, and much research is done on, biodiversity
+science. The pool of questions about biodiversity we can answer
+effectively becomes much larger with more and better data.
 
-To make the capabilities of NeXML available to R users in an easy-to-use
-form, and to lower the hurdles to adoption of the standard, we present
-RNeXML, an R package that aims to provide easy programmatic access to
-reading and writing NeXML documents, tailored for the kinds of use-cases
-that will be common for users and developers of the wealth of evolutionary
-analysis methods within the R ecosystem.
+The Global Biodiversity Information Facility (hereafter, GBIF,
+http://www.gbif.org/) is the largest collection of biodiversity
+records globally, currently with 580 million records, 1.6 million
+taxa, 15,000 datasets from 770 publishers. In addition, large
+biodiversity warehouses such as iNaturalist, VertNet, and USGS's
+BISON all feed into GBIF.
+
+Herein, we describe a library for working with GBIF data in
+the R programming environment [@R]. R is an extremely widely used
+language in academia, non-profits, and the private sector.
+Importantly, R make it easy to do all of the steps of the
+research process, including data management, data manipulation
+and cleaning, statistics, and vizualization. An R client
+for getting GBIF is a powerful tool for reproducible research.
+
+# Install rgbif
 
 ```{r echo=FALSE, results='hide', eval=FALSE}
 install.packages("rgbif", dependencies=TRUE)
@@ -67,6 +80,20 @@ library("rgbif")
 # The rgbif package
 
 The `rgbif` package ...
+
+## Registry
+
+```{r}
+"xxx"
+```
+
+## Species
+
+## Occurrences
+
+### Download API
+
+### Search API
 
 # Conclusions and future directions
 
