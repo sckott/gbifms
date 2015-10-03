@@ -1,7 +1,7 @@
 Instructions for compiling manuscripts
 ======================================
 
-[![Circle CI](https://circleci.com/gh/ropensci/rgbif.svg?style=svg)](https://circleci.com/gh/ropensci/rgbif)
+[![Circle CI](https://circleci.com/gh/sckott/msrgbif.svg?style=svg)](https://circleci.com/gh/sckott/msrgbif)
 
 
 Install dependencies
@@ -95,4 +95,4 @@ but that can change).
 4) You should get the RStudio welcome screen.  you should be able to
 login with user/password `rstudio/rstudio`.
 
-5) Clone the `rgbif` repository from https://github.com/ropensci/rgbif, and you should be good to go as above.  
+5) Clone the `msrgbif` repository from https://github.com/sckott/msrgbif, and you should be good to go as above.  
