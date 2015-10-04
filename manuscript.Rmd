@@ -59,9 +59,9 @@ taxa, 15,000 datasets from 770 publishers. In addition, large
 biodiversity warehouses such as iNaturalist, VertNet, and USGS's
 BISON all feed into GBIF.
 
-Herein, we describe a library for working with GBIF data in
-the R programming environment [@R]. R is an extremely widely used
-language in academia, non-profits, and the private sector.
+Herein, we describe a library (rgbif [@rgbif]) for working with
+GBIF data in the R programming environment [@R]. R is an extremely
+widely used language in academia, non-profits, and the private sector.
 Importantly, R make it easy to do all of the steps of the
 research process, including data management, data manipulation
 and cleaning, statistics, and vizualization. An R client
