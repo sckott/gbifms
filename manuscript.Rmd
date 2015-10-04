@@ -122,14 +122,17 @@ of functions:
 Search for datasets
 
 ```{r}
-dataset_search(keyword="france", return = "data")
+res <- dataset_search(query = "oregon")
+res$data$datasetTitle[1:10]
 ```
 
 Get dataset metrics
 
 ```{r}
 res <- dataset_metrics(uuid='66dd0960-2d7d-46ee-a491-87b9adcfe7b1')
-data.frame(names(res$countByRank), unname(unlist(res$countByRank)))
+df <- data.frame(rank = names(res$countByRank),
+                 count = unname(unlist(res$countByRank)))
+knitr::kable(df)
 ```
 
 ### Networks, nodes, and installations
@@ -138,7 +141,7 @@ Here, we search for the first give GBIF networks, returning just the
 key and title fields.
 
 ```{r}
-networks(limit=5)$data[ , c('key', 'title')]
+networks(limit=10)$data$title
 ```
 
 ## Species
@@ -160,7 +163,7 @@ For example, in the download API you can do greater than searches,
 whereas you can not do that in the occurrence search API.
 
 ```{r}
-occ_download_get("0000066-140928181241064", overwrite = TRUE)
+occ_download_get("0000066-140928181241064")
 ```
 
 ### Search API
