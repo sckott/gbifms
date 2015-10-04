@@ -45,29 +45,39 @@ opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
 
 # Introduction
 
-Biodiversity loss is one of the greatest challenges of our
-time [@Pimm_2014]. Some have called this the sixth great mass
-extinction [@Ceballos_2015]. Given this challenge there is a
-great need for, and much research is done on, biodiversity
-science. The pool of questions about biodiversity we can answer
-effectively becomes much larger with more and better data.
+Perhaps the most fundamental element in many fields of ecology is
+the inividual. How many individuals of each species in a given
+location forms the basis for many sub-fields of ecology and evolution.
+Some research questions necessitate collecting new data, while
+others can easily take advantage of existing data. In fact, some
+ecology fields are built largely on existing data, e.g., macro-ecology
+[@Brown_1995; @Beck_2012].
 
-The Global Biodiversity Information Facility (hereafter, GBIF,
+Data on individuals, including which species, and where they're found,
+can be used for a large number of research questions. In addition,
+the pool of questions we can answer becomes much larger with more
+and better data. In addition to wide utility, this data is important
+for conservation. Biodiversity loss is one of the greatest challenges
+of our time [@Pimm_2014]. Some have called this the sixth great mass
+extinction [@Ceballos_2015]. Given this challenge there is a great
+need for data on specimen records, whether collected from live sightings
+in the field or specimens in museums.
+
+There are many online services that collect and maintain specimen records.
+However, Global Biodiversity Information Facility (hereafter, GBIF,
 http://www.gbif.org/) is the largest collection of biodiversity
 records globally, currently with 580 million records, 1.6 million
-taxa, 15,000 datasets from 770 publishers. In addition, large
-biodiversity warehouses such as iNaturalist, VertNet, and USGS's
+taxa, 15,000 datasets from 770 publishers (figures collected on 2015-10-04).
+Many large biodiversity warehouses such as iNaturalist, VertNet, and USGS's
 BISON all feed into GBIF.
 
 Herein, we describe a library (rgbif [@rgbif]) for working with
 GBIF data in the R programming environment [@R]. R is an extremely
-widely used language in academia, non-profits, and the private sector.
-Importantly, R make it easy to do all of the steps of the
+widely used language in academia, and in non-profit and private sectors.
+Importantly, R makes it easy to do all of the steps of the
 research process, including data management, data manipulation
-and cleaning, statistics, and vizualization. An R client
-for getting GBIF is a powerful tool for reproducible research.
-
-# Install rgbif
+and cleaning, statistics, and vizualization. Thus, an R client
+for getting GBIF data is a powerful tool for reproducible research.
 
 ```{r echo=FALSE, results='hide', eval=FALSE}
 install.packages("rgbif", dependencies=TRUE)
@@ -79,7 +89,22 @@ library("rgbif")
 
 # The rgbif package
 
-The `rgbif` package ...
+The `rgbif` package is completely written in R, uses an [MIT license][mit]
+to maximize use everywhere. `rgbif` is developed publicly on GitHub
+at [https://github.com/ropensci/rgbif][ghrgbif], where development versions
+of the package can be installed, and bugs and feature requests reported.
+Stable versions of `rgbif` can be installed from [CRAN][cranrgbif], the
+distribution network for R packages. `rgbif` is part of the rOpenSci project,
+a developer network making R software to facilitate reproducible research.
+
+## Package interface
+
+`rgbif` is designed following the [GBIF Application Programming Interface][gbifdocs],
+or API. The GBIF API has four major components: registry, species names,
+occurrence data, and maps. We ignore maps in `rgbif` as it is concerned with
+generating maps for web applications. `rgbif` has a suite of functions dealing
+with each of registry, species names, and occurrence data - we'll go through
+each in turn describing design and example usage.
 
 ## Registry
 
@@ -140,6 +165,9 @@ occ_download_get("0000066-140928181241064", overwrite = TRUE)
 
 ### Search API
 
+The search API is very similar to the download API, but is meant for smaller
+data acquisition jobs.
+
 # Conclusions and future directions
 
 ## Acknowledgements
@@ -153,3 +181,8 @@ All software, scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI corresponds to a snapshot of the GitHub repository at [github.com/sckott/msrgbif](https://github.com/sckott/msrgbif).
 
 # References
+
+[mit]: http://choosealicense.com/licenses/mit/
+[ghrgbif]: https://github.com/ropensci/rgbif
+[cranrgbif]: https://cran.rstudio.com/web/packages/rgbif/
+[gbifdocs]: http://www.gbif.org/developer/summary
