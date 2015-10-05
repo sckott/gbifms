@@ -183,8 +183,12 @@ Request data download given a query. Here, we search for the taxon key
 `3119195`, which is the key for _Helianthus annuus_
 (http://www.gbif.org/species/3119195).
 
-```{r}
+```{r eval = FALSE}
 occ_download('taxonKey = 3119195')
+#> <<gbif download>>
+#>   Username: xxxx
+#>   E-mail: xxxx
+#>   Download key: 0000840-150615163101818
 ```
 
 You can check on when the download is ready using the functions
