@@ -108,7 +108,7 @@ each in turn describing design and example usage.
 
 ## Registry
 
-The GBIF reqistry API services are spread across four major sets
+The GBIF reqistry API services are spread across four sets
 of functions:
 
 * Datasets
@@ -149,21 +149,60 @@ networks(limit=10)$data$title
 ## Occurrences
 
 GBIF provides two ways to get occurrence data: through the
-/occurrence/search route (see `occ_search`), or via the
-/occurrence/download route (many functions, see below).
-`occ_search` is more appropriate for smaller data, while
-occ_download*() functions are more appropriate for larger
+`/occurrence/search` route (see `occ_search`), or via the
+`/occurrence/download` route (many functions, see below).
+`occ_search()` is the main funtion for the search route,
+and is more appropriate for smaller data, while
+`occ_download*()` functions are more appropriate for larger
 data requests.
+
+Large is of course a subjective term. When you hit a "large dataset"
+will depend primarily on the size of the your data request. GBIF imposes
+for any given search a limit of 200,000 records in the search service,
+after which point you can't download any more records for that search.
+However, you can download more records for different searches.
+
+We think the search service is still quite useful for many people
+even given the 200,000 limit. For those that need more data, we have
+created a similar interface in the `download_*()` functions, that should
+be easy to use. Users should take note that using the download service
+has a few extra steps to get data into R, but is straight-forward.
 
 ### Download API
 
 The download API syntax is similar to the occurrence search API
-in that the same parameters are used, but the syntas is quite different.
-For example, in the download API you can do greater than searches,
-whereas you can not do that in the occurrence search API.
+in that the same parameters are used, but the way in which the query
+is defined is different. For example, in the download API you can
+do greater than searches, whereas you can not do that in the
+occurrence search API. Thus, we can't make the query interace exactly
+the same for both search and download functions.
+
+Using the download service can be as few as three steps.
+
+Request data download given a query. Here, we xxxx
 
 ```{r}
-occ_download_get("0000066-140928181241064")
+"xxx"
+```
+
+You can check on when the download is ready using the functions
+`occ_download_list()` and `occ_download_meta()`. When it's ready
+use `occ_download_get()` to download the dataset to your computer.
+
+```{r}
+(res <- occ_download_get("0000066-140928181241064", overwrite = TRUE))
+```
+
+What's printed out above is a very brief summary of what was downloaded,
+the path to the file, and its size (in human readable form).
+
+Next, read the data in to R using the function `occ_download_import()`.
+
+```{r}
+library("dplyr")
+dat <- occ_download_import(res)
+dat %>%
+  select(gbifID, decimalLatitude, decimalLongitude)
 ```
 
 ### Search API

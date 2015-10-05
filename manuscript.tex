@@ -183,8 +183,7 @@ in turn describing design and example usage.
 
 \subsection{Registry}\label{registry}
 
-The GBIF reqistry API services are spread across four major sets of
-functions:
+The GBIF reqistry API services are spread across four sets of functions:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -287,22 +286,55 @@ and title fields.
 \subsection{Occurrences}\label{occurrences}
 
 GBIF provides two ways to get occurrence data: through the
-/occurrence/search route (see \texttt{occ\_search}), or via the
-/occurrence/download route (many functions, see below).
-\texttt{occ\_search} is more appropriate for smaller data, while
-occ\_download*() functions are more appropriate for larger data
-requests.
+\texttt{/occurrence/search} route (see \texttt{occ\_search}), or via the
+\texttt{/occurrence/download} route (many functions, see below).
+\texttt{occ\_search()} is the main funtion for the search route, and is
+more appropriate for smaller data, while \texttt{occ\_download*()}
+functions are more appropriate for larger data requests.
+
+Large is of course a subjective term. When you hit a ``large dataset''
+will depend primarily on the size of the your data request. GBIF imposes
+for any given search a limit of 200,000 records in the search service,
+after which point you can't download any more records for that search.
+However, you can download more records for different searches.
+
+We think the search service is still quite useful for many people even
+given the 200,000 limit. For those that need more data, we have created
+a similar interface in the \texttt{download\_*()} functions, that should
+be easy to use. Users should take note that using the download service
+has a few extra steps to get data into R, but is straight-forward.
 
 \subsubsection{Download API}\label{download-api}
 
 The download API syntax is similar to the occurrence search API in that
-the same parameters are used, but the syntas is quite different. For
-example, in the download API you can do greater than searches, whereas
-you can not do that in the occurrence search API.
+the same parameters are used, but the way in which the query is defined
+is different. For example, in the download API you can do greater than
+searches, whereas you can not do that in the occurrence search API.
+Thus, we can't make the query interace exactly the same for both search
+and download functions.
+
+Using the download service can be as few as three steps.
+
+Request data download given a query. Here, we xxxx
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000066-140928181241064"}\NormalTok{)}
+\StringTok{"xxx"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "xxx"
+\end{verbatim}
+
+You can check on when the download is ready using the functions
+\texttt{occ\_download\_list()} and \texttt{occ\_download\_meta()}. When
+it's ready use \texttt{occ\_download\_get()} to download the dataset to
+your computer.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(res <-}\StringTok{ }\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000066-140928181241064"}\NormalTok{, }\DataTypeTok{overwrite =} \OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -310,6 +342,36 @@ you can not do that in the occurrence search API.
 <<gbif downloaded get>>
   Path: ./0000066-140928181241064.zip
   File size: 0.14 MB
+\end{verbatim}
+
+What's printed out above is a very brief summary of what was downloaded,
+the path to the file, and its size (in human readable form).
+
+Next, read the data in to R using the function
+\texttt{occ\_download\_import()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{occ_download_import}\NormalTok{(res)}
+\NormalTok{dat %>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(gbifID, decimalLatitude, decimalLongitude)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+      gbifID decimalLatitude decimalLongitude
+1  657590544              NA               NA
+2  657679551              NA               NA
+3  657791316        37.70805        -118.4162
+4  658180562              NA               NA
+5  441881672              NA               NA
+6  911596181              NA               NA
+7   56454601              NA               NA
+8  657848913              NA               NA
+9  658187373              NA               NA
+10 658279212        38.95917        -106.9892
+..       ...             ...              ...
 \end{verbatim}
 
 \subsubsection{Search API}\label{search-api}
