@@ -77,7 +77,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={rgbif: a package for working with species occurrence data in R},
+            pdftitle={rgbif: R client for working with GBIF species occurrence data},
             colorlinks=true,
             urlcolor=blue,
             linkcolor=magenta,
@@ -96,7 +96,7 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{rgbif: a package for working with species occurrence data in R}
+  \title{rgbif: R client for working with GBIF species occurrence data}
     \author[cstar]{Scott Chamberlain\corref{c1}}
    \ead{scott(at)ropensci.org} 
    \cortext[c1]{Corresponding author}
@@ -126,18 +126,18 @@ inividual. How many individuals of each species in a given location
 forms the basis for many sub-fields of ecology and evolution. Some
 research questions necessitate collecting new data, while others can
 easily take advantage of existing data. In fact, some ecology fields are
-built largely on existing data, e.g., macro-ecology (Brown 1995; Beck
-\emph{et al.} 2012).
+built largely on existing data, e.g., macro-ecology (Brown, 1995; Beck
+et al., 2012).
 
 Data on individuals, including which species, and where they're found,
 can be used for a large number of research questions. In addition, the
 pool of questions we can answer becomes much larger with more and better
 data. In addition to wide utility, this data is important for
 conservation. Biodiversity loss is one of the greatest challenges of our
-time (Pimm \emph{et al.} 2014). Some have called this the sixth great
-mass extinction (Ceballos \emph{et al.} 2015). Given this challenge
-there is a great need for data on specimen records, whether collected
-from live sightings in the field or specimens in museums.
+time (Pimm et al., 2014). Some have called this the sixth great mass
+extinction (Ceballos et al., 2015). Given this challenge there is a
+great need for data on specimen records, whether collected from live
+sightings in the field or specimens in museums.
 
 There are many online services that collect and maintain specimen
 records. However, Global Biodiversity Information Facility (hereafter,
@@ -147,14 +147,13 @@ million taxa, 15,000 datasets from 770 publishers (figures collected on
 2015-10-04). Many large biodiversity warehouses such as iNaturalist,
 VertNet, and USGS's BISON all feed into GBIF.
 
-Herein, we describe a library (rgbif (Chamberlain \emph{et al.})) for
-working with GBIF data in the R programming environment (R Core Team
-2014). R is an extremely widely used language in academia, and in
-non-profit and private sectors. Importantly, R makes it easy to do all
-of the steps of the research process, including data management, data
-manipulation and cleaning, statistics, and vizualization. Thus, an R
-client for getting GBIF data is a powerful tool for reproducible
-research.
+Herein, we describe a library (rgbif (Chamberlain et al.)) for working
+with GBIF data in the R programming environment (R Core Team, 2014). R
+is an extremely widely used language in academia, and in non-profit and
+private sectors. Importantly, R makes it easy to do all of the steps of
+the research process, including data management, data manipulation and
+cleaning, statistics, and vizualization. Thus, an R client for getting
+GBIF data is a powerful tool for reproducible research.
 
 \section{The rgbif package}\label{the-rgbif-package}
 
@@ -309,22 +308,28 @@ has a few extra steps to get data into R, but is straight-forward.
 The download API syntax is similar to the occurrence search API in that
 the same parameters are used, but the way in which the query is defined
 is different. For example, in the download API you can do greater than
-searches, whereas you can not do that in the occurrence search API.
-Thus, we can't make the query interace exactly the same for both search
-and download functions.
+searches (i.e., \texttt{latitude \textgreater{} 50}), whereas you can
+not do that in the occurrence search API. Thus, we can't make the query
+interace exactly the same for both search and download functions.
 
-Using the download service can be as few as three steps.
+Using the download service can be as few as three steps: 1) Request data
+via a search; 2) Download data; 3) Import data into R.
 
-Request data download given a query. Here, we xxxx
+Request data download given a query. Here, we search for the taxon key
+\texttt{3119195}, which is the key for \emph{Helianthus annuus}
+(\url{http://www.gbif.org/species/3119195}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\StringTok{"xxx"}
+\KeywordTok{occ_download}\NormalTok{(}\StringTok{'taxonKey = 3119195'}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-[1] "xxx"
+<<gbif download>>
+  Username: sckott
+  E-mail: myrmecocystus@gmail.com
+  Download key: 0004098-150922153815467
 \end{verbatim}
 
 You can check on when the download is ready using the functions
@@ -334,14 +339,14 @@ your computer.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{(res <-}\StringTok{ }\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000066-140928181241064"}\NormalTok{, }\DataTypeTok{overwrite =} \OtherTok{TRUE}\NormalTok{))}
+\NormalTok{(res <-}\StringTok{ }\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000840-150615163101818"}\NormalTok{, }\DataTypeTok{overwrite =} \OtherTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 <<gbif downloaded get>>
-  Path: ./0000066-140928181241064.zip
-  File size: 0.14 MB
+  Path: ./0000840-150615163101818.zip
+  File size: 3.19 MB
 \end{verbatim}
 
 What's printed out above is a very brief summary of what was downloaded,
@@ -374,10 +379,80 @@ Next, read the data in to R using the function
 ..       ...             ...              ...
 \end{verbatim}
 
+\paragraph{Downloaded data format}\label{downloaded-data-format}
+
+The downloaded dataset from GBIF is actually a Darwin Core Archive
+(DwC-A), an internationally recognized biodiversity informatics standard
+(\url{http://rs.tdwg.org/dwc/}). The DwC-A downloaded is a compressed
+folder with a number of files, including metadata, citations for each of
+the datasets included in the download, and the data itself, in separate
+files for each dataset as well as one single \texttt{.txt} file. In
+\texttt{occ\_download\_import()}, we simply fetch data from the
+\texttt{.txt} file. If you want to dig into the metadata, citations,
+etc., it is easily accessible from the folder on your computer.
+
 \subsubsection{Search API}\label{search-api}
 
-The search API is very similar to the download API, but is meant for
-smaller data acquisition jobs.
+The search API follows the GBIF API and is broken down into the
+following functions:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \texttt{occ\_count()}
+\item
+  \texttt{occ\_search()}
+\item
+  \texttt{occ\_get()}
+\item
+  \texttt{occ\_metadata()}
+\end{itemize}
+
+The main search work-horse is \texttt{occ\_search()}. This function
+allows very flexible search definitions. In addition, this function does
+paging internally, making it such that the user does not have worry
+about the 300 records per request limit - but of course we can't go over
+the 200,000 maximum limit.
+
+\ldots{}
+
+\paragraph{Cleaning data}\label{cleaning-data}
+
+GBIF provides optional data issues with each occurrence record. These
+issues fall into many different pre-defined classes, covering issues
+with taxonomic names, geographic data, and more (see
+\texttt{occ\_issues\_lookup()} to find out more information on GBIF
+issues; and the same data on
+\href{http://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html}{GBIF's
+development site}).
+
+\texttt{occ\_issues()} provides a way to easily filter data downloaded
+via \texttt{occ\_search()} based on GBIF issues.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{issue=}\StringTok{'DEPTH_UNLIKELY'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
+\KeywordTok{NROW}\NormalTok{(out)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out %>%}\StringTok{ }\KeywordTok{occ_issues}\NormalTok{(-cudc) %>%}\StringTok{ }\NormalTok{.$data %>%}\StringTok{ }\NormalTok{NROW}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 2
+\end{verbatim}
+
+\subsection{Use cases}\label{use-cases}
+
+\ldots{}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
@@ -389,41 +464,38 @@ This project was supported in part by the Alfred P Sloan Foundation
 
 \subsection{Data Accessibility}\label{data-accessibility}
 
-All software, scripts and data used in this paper can be found in the
-permanent data archive Zenodo under the digital object identifier (DOI).
-This DOI corresponds to a snapshot of the GitHub repository at
+All scripts and data used in this paper can be found in the permanent
+data archive Zenodo under the digital object identifier (DOI). This DOI
+corresponds to a snapshot of the GitHub repository at
 \href{https://github.com/sckott/msrgbif}{github.com/sckott/msrgbif}.
+Software can be found at
+\href{https://github.com/ropensci/rgbif}{github.com/ropensci/rgbif},
+under the open and permissive MIT license.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
-Beck, J., Ballesteros-Mejia, L., Buchmann, C.M., Dengler, J., Fritz,
-S.A., Gruber, B., Hof, C., Jansen, F., Knapp, S., Kreft, H., Schneider,
-A.-K., Winter, M. \& Dormann, C.F. (2012). Whats on the horizon for
-macroecology? \emph{Ecography}, \textbf{35}, 673--683. Retrieved from
-\url{http://dx.doi.org/10.1111/j.1600-0587.2012.07364.x}
+Beck J., Ballesteros-Mejia L., Buchmann CM., Dengler J., Fritz SA.,
+Gruber B., Hof C., Jansen F., Knapp S., Kreft H., Schneider A-K., Winter
+M., Dormann CF. 2012. Whats on the horizon for macroecology?
+\emph{Ecography} 35:673--683.
 
-Brown, J.H. (1995). \emph{Macroecology}. University of Chicago Press.
+Brown JH. 1995. \emph{Macroecology}. University of Chicago Press.
 
-Ceballos, G., Ehrlich, P.R., Barnosky, A.D., Garcia, A., Pringle, R.M.
-\& Palmer, T.M. (2015). Accelerated modern human-induced species losses:
-Entering the sixth mass extinction. \emph{Science Advances}, \textbf{1},
-e1400253--e1400253. Retrieved from
-\url{http://dx.doi.org/10.1126/sciadv.1400253}
+Ceballos G., Ehrlich PR., Barnosky AD., Garcia A., Pringle RM., Palmer
+TM. 2015. Accelerated modern human-induced species losses: Entering the
+sixth mass extinction. \emph{Science Advances} 1:e1400253--e1400253.
 
-Chamberlain, S., Ram, K., Barve, V. \& Mcglinn, D. \emph{Rgbif:
-Interface to the global 'biodiversity' information facility 'aPI'}.
-Retrieved from \url{https://github.com/ropensci/rgbif}
+Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{Rgbif: Interface to
+the global 'biodiversity' information facility 'aPI'}.
 
-Pimm, S.L., Jenkins, C.N., Abell, R., Brooks, T.M., Gittleman, J.L.,
-Joppa, L.N., Raven, P.H., Roberts, C.M. \& Sexton, J.O. (2014). The
-biodiversity of species and their rates of extinction, distribution, and
-protection. \emph{Science}, \textbf{344}, 1246752--1246752. Retrieved
-from \url{http://dx.doi.org/10.1126/science.1246752}
+Pimm SL., Jenkins CN., Abell R., Brooks TM., Gittleman JL., Joppa LN.,
+Raven PH., Roberts CM., Sexton JO. 2014. The biodiversity of species and
+their rates of extinction, distribution, and protection. \emph{Science}
+344:1246752--1246752.
 
-R Core Team. (2014). \emph{R: A language and environment for statistical
-computing}. R Foundation for Statistical Computing, Vienna, Austria.
-Retrieved from \url{http://www.R-project.org/}
+R Core Team. 2014. \emph{R: A language and environment for statistical
+computing}. Vienna, Austria: R Foundation for Statistical Computing.
 
 \end{document}
 

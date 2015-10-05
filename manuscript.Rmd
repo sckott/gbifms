@@ -1,8 +1,7 @@
 ---
-#layout: preprint
 layout: review, 11pt
 linenumbers: true
-title: "rgbif: a package for working with species occurrence data in R"
+title: "rgbif: R client for working with GBIF species occurrence data"
 author:
   - name: Scott Chamberlain
     affiliation: cstar
@@ -22,7 +21,7 @@ abstract: |
       4. xxxx
 
 bibliography: components/references.bib
-csl: components/methods-in-ecology-and-evolution.csl
+csl: components/peerj.csl
 documentclass: components/elsarticle
 
 output:
@@ -173,16 +172,19 @@ has a few extra steps to get data into R, but is straight-forward.
 The download API syntax is similar to the occurrence search API
 in that the same parameters are used, but the way in which the query
 is defined is different. For example, in the download API you can
-do greater than searches, whereas you can not do that in the
-occurrence search API. Thus, we can't make the query interace exactly
-the same for both search and download functions.
+do greater than searches (i.e., `latitude > 50`), whereas you can not
+do that in the occurrence search API. Thus, we can't make the query
+interace exactly the same for both search and download functions.
 
-Using the download service can be as few as three steps.
+Using the download service can be as few as three steps: 1) Request data
+via a search; 2) Download data; 3) Import data into R.
 
-Request data download given a query. Here, we xxxx
+Request data download given a query. Here, we search for the taxon key
+`3119195`, which is the key for _Helianthus annuus_
+(http://www.gbif.org/species/3119195).
 
 ```{r}
-"xxx"
+occ_download('taxonKey = 3119195')
 ```
 
 You can check on when the download is ready using the functions
@@ -190,7 +192,7 @@ You can check on when the download is ready using the functions
 use `occ_download_get()` to download the dataset to your computer.
 
 ```{r}
-(res <- occ_download_get("0000066-140928181241064", overwrite = TRUE))
+(res <- occ_download_get("0000840-150615163101818", overwrite = TRUE))
 ```
 
 What's printed out above is a very brief summary of what was downloaded,
@@ -205,10 +207,52 @@ dat %>%
   select(gbifID, decimalLatitude, decimalLongitude)
 ```
 
+#### Downloaded data format
+
+The downloaded dataset from GBIF is actually a Darwin Core Archive (DwC-A), an
+internationally recognized biodiversity informatics standard
+(http://rs.tdwg.org/dwc/). The DwC-A downloaded is a compressed folder with
+a number of files, including metadata, citations for each of the datasets included
+in the download, and the data itself, in separate files for each dataset as well
+as one single `.txt` file. In `occ_download_import()`, we simply fetch data from the
+`.txt` file. If you want to dig into the metadata, citations, etc., it is easily
+accessible from the folder on your computer.
+
 ### Search API
 
-The search API is very similar to the download API, but is meant for smaller
-data acquisition jobs.
+The search API follows the GBIF API and is broken down into the following functions:
+
+* `occ_count()`
+* `occ_search()`
+* `occ_get()`
+* `occ_metadata()`
+
+The main search work-horse is `occ_search()`. This function allows very flexible
+search definitions. In addition, this function does paging internally, making it
+such that the user does not have worry about the 300 records per request limit -
+but of course we can't go over the 200,000 maximum limit.
+
+...
+
+#### Cleaning data
+
+GBIF provides optional data issues with each occurrence record. These issues fall
+into many different pre-defined classes, covering issues with taxonomic names,
+geographic data, and more (see `occ_issues_lookup()` to find out more information
+on GBIF issues; and the same data on [GBIF's development site][gbifissues]).
+
+`occ_issues()` provides a way to easily filter data downloaded via `occ_search()`
+based on GBIF issues.
+
+```{r}
+out <- occ_search(issue='DEPTH_UNLIKELY', limit = 500)
+NROW(out)
+out %>% occ_issues(-cudc) %>% .$data %>% NROW
+```
+
+## Use cases
+
+...
 
 # Conclusions and future directions
 
@@ -219,8 +263,10 @@ Foundation (Grant 2013-6-22).
 
 ## Data Accessibility
 
-All software, scripts and data used in this paper can be found in the permanent
-data archive Zenodo under the digital object identifier (DOI). This DOI corresponds to a snapshot of the GitHub repository at [github.com/sckott/msrgbif](https://github.com/sckott/msrgbif).
+All scripts and data used in this paper can be found in the permanent
+data archive Zenodo under the digital object identifier (DOI). This DOI corresponds to a snapshot of the GitHub repository at [github.com/sckott/msrgbif](https://github.com/sckott/msrgbif). Software
+can be found at [github.com/ropensci/rgbif](https://github.com/ropensci/rgbif), under the
+open and permissive MIT license.
 
 # References
 
@@ -228,3 +274,4 @@ data archive Zenodo under the digital object identifier (DOI). This DOI correspo
 [ghrgbif]: https://github.com/ropensci/rgbif
 [cranrgbif]: https://cran.rstudio.com/web/packages/rgbif/
 [gbifdocs]: http://www.gbif.org/developer/summary
+[gbifissues]: http://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html
