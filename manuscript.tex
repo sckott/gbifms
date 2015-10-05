@@ -43,6 +43,30 @@
 \fi
 % use microtype if available
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textbf{{#1}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{longtable}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -97,25 +121,204 @@
 
 \section{Introduction}\label{introduction}
 
-Users of the popular statistical and mathematical computing platform R
-(R Core Team 2014) enjoy a wealth of readily installable comparative
-phylogenetic methods and tools.
+Perhaps the most fundamental element in many fields of ecology is the
+inividual. How many individuals of each species in a given location
+forms the basis for many sub-fields of ecology and evolution. Some
+research questions necessitate collecting new data, while others can
+easily take advantage of existing data. In fact, some ecology fields are
+built largely on existing data, e.g., macro-ecology (Brown 1995; Beck
+\emph{et al.} 2012).
 
-To make the capabilities of NeXML available to R users in an easy-to-use
-form, and to lower the hurdles to adoption of the standard, we present
-RNeXML, an R package that aims to provide easy programmatic access to
-reading and writing NeXML documents, tailored for the kinds of use-cases
-that will be common for users and developers of the wealth of
-evolutionary analysis methods within the R ecosystem.
+Data on individuals, including which species, and where they're found,
+can be used for a large number of research questions. In addition, the
+pool of questions we can answer becomes much larger with more and better
+data. In addition to wide utility, this data is important for
+conservation. Biodiversity loss is one of the greatest challenges of our
+time (Pimm \emph{et al.} 2014). Some have called this the sixth great
+mass extinction (Ceballos \emph{et al.} 2015). Given this challenge
+there is a great need for data on specimen records, whether collected
+from live sightings in the field or specimens in museums.
+
+There are many online services that collect and maintain specimen
+records. However, Global Biodiversity Information Facility (hereafter,
+GBIF, \url{http://www.gbif.org/}) is the largest collection of
+biodiversity records globally, currently with 580 million records, 1.6
+million taxa, 15,000 datasets from 770 publishers (figures collected on
+2015-10-04). Many large biodiversity warehouses such as iNaturalist,
+VertNet, and USGS's BISON all feed into GBIF.
+
+Herein, we describe a library (rgbif (Chamberlain \emph{et al.})) for
+working with GBIF data in the R programming environment (R Core Team
+2014). R is an extremely widely used language in academia, and in
+non-profit and private sectors. Importantly, R makes it easy to do all
+of the steps of the research process, including data management, data
+manipulation and cleaning, statistics, and vizualization. Thus, an R
+client for getting GBIF data is a powerful tool for reproducible
+research.
 
 \section{The rgbif package}\label{the-rgbif-package}
 
-The \texttt{rgbif} package \ldots{}
+The \texttt{rgbif} package is completely written in R, uses an
+\href{http://choosealicense.com/licenses/mit/}{MIT license} to maximize
+use everywhere. \texttt{rgbif} is developed publicly on GitHub at
+\href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
+where development versions of the package can be installed, and bugs and
+feature requests reported. Stable versions of \texttt{rgbif} can be
+installed from
+\href{https://cran.rstudio.com/web/packages/rgbif/}{CRAN}, the
+distribution network for R packages. \texttt{rgbif} is part of the
+rOpenSci project, a developer network making R software to facilitate
+reproducible research.
+
+\subsection{Package interface}\label{package-interface}
+
+\texttt{rgbif} is designed following the
+\href{http://www.gbif.org/developer/summary}{GBIF Application
+Programming Interface}, or API. The GBIF API has four major components:
+registry, species names, occurrence data, and maps. We ignore maps in
+\texttt{rgbif} as it is concerned with generating maps for web
+applications. \texttt{rgbif} has a suite of functions dealing with each
+of registry, species names, and occurrence data - we'll go through each
+in turn describing design and example usage.
+
+\subsection{Registry}\label{registry}
+
+The GBIF reqistry API services are spread across four major sets of
+functions:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Datasets
+\item
+  Installations
+\item
+  Networks
+\item
+  Nodes
+\item
+  Organizations
+\end{itemize}
+
+\subsubsection{Datasets}\label{datasets}
+
+Search for datasets
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_search}\NormalTok{(}\DataTypeTok{query =} \StringTok{"oregon"}\NormalTok{)}
+\NormalTok{res$data$datasetTitle[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1] "SDNHM Birds Collection"                                                
+ [2] "CM Birds Collection"                                                   
+ [3] "condoncollection"                                                      
+ [4] "Taxonomy in Flux Checklist"                                            
+ [5] "Wool carder bees of the genus Anthidium in the Western Hemisphere"     
+ [6] "Bryophyte Collection - University of Washington Herbarium (WTU)"       
+ [7] "University of British Columbia Herbarium (UBC) - Bryophytes Collection"
+ [8] "UWFC Ichthyology Collection"                                           
+ [9] "Lichen Collection - University of Washington Herbarium (WTU)"          
+[10] "UWBM Mammalogy Collection"                                             
+\end{verbatim}
+
+Get dataset metrics
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_metrics}\NormalTok{(}\DataTypeTok{uuid=}\StringTok{'66dd0960-2d7d-46ee-a491-87b9adcfe7b1'}\NormalTok{)}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{names}\NormalTok{(res$countByRank),}
+                 \DataTypeTok{count =} \KeywordTok{unname}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(res$countByRank)))}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[c]{@{}lr@{}}
+\toprule
+rank & count\tabularnewline
+\midrule
+\endhead
+SPECIES & 52452\tabularnewline
+GENUS & 12930\tabularnewline
+VARIETY & 4806\tabularnewline
+SUBSPECIES & 4440\tabularnewline
+SERIES & 1079\tabularnewline
+TRIBE & 844\tabularnewline
+FAMILY & 509\tabularnewline
+SUBTRIBE & 327\tabularnewline
+SUBFAMILY & 303\tabularnewline
+SUBGENUS & 241\tabularnewline
+FORM & 239\tabularnewline
+SECTION & 82\tabularnewline
+SUBVARIETY & 4\tabularnewline
+KINGDOM & 1\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsubsection{Networks, nodes, and
+installations}\label{networks-nodes-and-installations}
+
+Here, we search for the first give GBIF networks, returning just the key
+and title fields.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{networks}\NormalTok{(}\DataTypeTok{limit=}\DecValTok{10}\NormalTok{)$data$title}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1] "GBIF Backbone Sources"                                      
+ [2] "Canadensys"                                                 
+ [3] "Southwest Collections of Arthropods Network (SCAN)"         
+ [4] "VertNet"                                                    
+ [5] "Dryad"                                                      
+ [6] "GBIF Network"                                               
+ [7] "The Knowledge Network for Biocomplexity (KNB) "             
+ [8] "Online Zoological Collections of Australian Museums (OZCAM)"
+ [9] "Catalogue of Life"                                          
+[10] "Ocean Biogeographic Information System (OBIS)"              
+\end{verbatim}
+
+\subsection{Species}\label{species}
+
+\subsection{Occurrences}\label{occurrences}
+
+GBIF provides two ways to get occurrence data: through the
+/occurrence/search route (see \texttt{occ\_search}), or via the
+/occurrence/download route (many functions, see below).
+\texttt{occ\_search} is more appropriate for smaller data, while
+occ\_download*() functions are more appropriate for larger data
+requests.
+
+\subsubsection{Download API}\label{download-api}
+
+The download API syntax is similar to the occurrence search API in that
+the same parameters are used, but the syntas is quite different. For
+example, in the download API you can do greater than searches, whereas
+you can not do that in the occurrence search API.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000066-140928181241064"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+<<gbif downloaded get>>
+  Path: ./0000066-140928181241064.zip
+  File size: 0.14 MB
+\end{verbatim}
+
+\subsubsection{Search API}\label{search-api}
+
+The search API is very similar to the download API, but is meant for
+smaller data acquisition jobs.
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
-
-\texttt{rgbif} \ldots{}
 
 \subsection{Acknowledgements}\label{acknowledgements}
 
@@ -131,6 +334,30 @@ This DOI corresponds to a snapshot of the GitHub repository at
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
+
+Beck, J., Ballesteros-Mejia, L., Buchmann, C.M., Dengler, J., Fritz,
+S.A., Gruber, B., Hof, C., Jansen, F., Knapp, S., Kreft, H., Schneider,
+A.-K., Winter, M. \& Dormann, C.F. (2012). Whats on the horizon for
+macroecology? \emph{Ecography}, \textbf{35}, 673--683. Retrieved from
+\url{http://dx.doi.org/10.1111/j.1600-0587.2012.07364.x}
+
+Brown, J.H. (1995). \emph{Macroecology}. University of Chicago Press.
+
+Ceballos, G., Ehrlich, P.R., Barnosky, A.D., Garcia, A., Pringle, R.M.
+\& Palmer, T.M. (2015). Accelerated modern human-induced species losses:
+Entering the sixth mass extinction. \emph{Science Advances}, \textbf{1},
+e1400253--e1400253. Retrieved from
+\url{http://dx.doi.org/10.1126/sciadv.1400253}
+
+Chamberlain, S., Ram, K., Barve, V. \& Mcglinn, D. \emph{Rgbif:
+Interface to the global 'biodiversity' information facility 'aPI'}.
+Retrieved from \url{https://github.com/ropensci/rgbif}
+
+Pimm, S.L., Jenkins, C.N., Abell, R., Brooks, T.M., Gittleman, J.L.,
+Joppa, L.N., Raven, P.H., Roberts, C.M. \& Sexton, J.O. (2014). The
+biodiversity of species and their rates of extinction, distribution, and
+protection. \emph{Science}, \textbf{344}, 1246752--1246752. Retrieved
+from \url{http://dx.doi.org/10.1126/science.1246752}
 
 R Core Team. (2014). \emph{R: A language and environment for statistical
 computing}. R Foundation for Statistical Computing, Vienna, Austria.
