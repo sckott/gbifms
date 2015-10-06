@@ -130,30 +130,40 @@ built largely on existing data, e.g., macro-ecology (Brown, 1995; Beck
 et al., 2012).
 
 Data on individuals, including which species, and where they're found,
-can be used for a large number of research questions. In addition, the
-pool of questions we can answer becomes much larger with more and better
-data. In addition to wide utility, this data is important for
-conservation. Biodiversity loss is one of the greatest challenges of our
-time (Pimm et al., 2014). Some have called this the sixth great mass
-extinction (Ceballos et al., 2015). Given this challenge there is a
-great need for data on specimen records, whether collected from live
-sightings in the field or specimens in museums.
+can be used for a large number of research questions. Biodiversity
+records have been used for a suite of other use cases: validating
+habitat suitability models with real occurrence data (Ficetola et al.,
+2014); ancestral range reconstruction (Ferretti et al., 2015; Mar{í}a
+Mendoza et al., 2015); development of invasive species watch lists
+(Faulkner et al., 2014); evaluate risk of invasive species spread
+(Febbraro et al., 2013); and effects of climate change on future
+biodiversity (Brown et al., 2015).
+
+In addition to wide utility, this data is important for conservation.
+Biodiversity loss is one of the greatest challenges of our time (Pimm et
+al., 2014). Some have called this the sixth great mass extinction
+(Ceballos et al., 2015). Given this challenge there is a great need for
+data on specimen records, whether collected from live sightings in the
+field or specimens in museums.
 
 There are many online services that collect and maintain specimen
 records. However, Global Biodiversity Information Facility (hereafter,
 GBIF, \url{http://www.gbif.org/}) is the largest collection of
 biodiversity records globally, currently with 580 million records, 1.6
 million taxa, 15,000 datasets from 770 publishers (figures collected on
-2015-10-04). Many large biodiversity warehouses such as iNaturalist,
-VertNet, and USGS's BISON all feed into GBIF.
+2015-10-04). Many large biodiversity warehouses such as iNaturalist
+(\url{http://www.inaturalist.org/}), VertNet
+(\url{http://vertnet.org/}), and USGS's Biodiversity Information Serving
+Our Nation (BISON; \url{http://bison.usgs.ornl.gov/}) all feed into
+GBIF.
 
-Herein, we describe a library (rgbif (Chamberlain et al.)) for working
-with GBIF data in the R programming environment (R Core Team, 2014). R
-is an extremely widely used language in academia, and in non-profit and
+Herein, we describe the \texttt{rgbif} library (Chamberlain et al.) for
+working with GBIF data in the R programming environment (R Core Team,
+2014). R is a widely used language in academia, and in non-profit and
 private sectors. Importantly, R makes it easy to do all of the steps of
 the research process, including data management, data manipulation and
 cleaning, statistics, and vizualization. Thus, an R client for getting
-GBIF data is a powerful tool for reproducible research.
+GBIF data is a powerful tool to facilitate reproducible research.
 
 \section{The rgbif package}\label{the-rgbif-package}
 
@@ -472,12 +482,40 @@ M., Dormann CF. 2012. Whats on the horizon for macroecology?
 
 Brown JH. 1995. \emph{Macroecology}. University of Chicago Press.
 
+Brown KA., Parks KE., Bethell CA., Johnson SE., Mulligan M. 2015.
+Predicting plant diversity patterns in madagascar: Understanding the
+effects of climate and land cover change in a biodiversity hotspot.
+\emph{PLOS ONE} 10:e0122721.
+
 Ceballos G., Ehrlich PR., Barnosky AD., Garcia A., Pringle RM., Palmer
 TM. 2015. Accelerated modern human-induced species losses: Entering the
 sixth mass extinction. \emph{Science Advances} 1:e1400253--e1400253.
 
 Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{Rgbif: Interface to
 the global 'biodiversity' information facility 'aPI'}.
+
+Faulkner KT., Robertson MP., Rouget M., Wilson JR. 2014. A simple, rapid
+methodology for developing invasive species watch lists.
+\emph{Biological Conservation} 179:25--32.
+
+Febbraro MD., Lurz PWW., Genovesi P., Maiorano L., Girardello M.,
+Bertolino S. 2013. The use of climatic niches in screening procedures
+for introduced species to evaluate risk of spread: A case with the
+american eastern grey squirrel. \emph{PLoS ONE} 8:e66559.
+
+Ferretti F., Verd GM., Seret B., {Š}prem JS., Micheli F. 2015. Falling
+through the cracks: The fading history of a large iconic predator.
+\emph{Fish and Fisheries}:n/a--n/a.
+
+Ficetola GF., Rondinini C., Bonardi A., Baisero D., Padoa-Schioppa E.
+2014. Habitat availability for amphibians and extinction threat: A
+global analysis. \emph{Diversity and Distributions} 21:302--311.
+
+Mar{í}a Mendoza., Ospina OE., C{á}rdenas-Henao H., Garc{í}a-R JC. 2015.
+A likelihood inference of historical biogeography in the world's most
+diverse terrestrial vertebrate genus: Diversification of
+direct-developing frogs (craugastoridae: Pristimantis) across the
+neotropics. \emph{Molecular Phylogenetics and Evolution} 85:50--58.
 
 Pimm SL., Jenkins CN., Abell R., Brooks TM., Gittleman JL., Joppa LN.,
 Raven PH., Roberts CM., Sexton JO. 2014. The biodiversity of species and

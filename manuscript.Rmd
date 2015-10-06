@@ -60,11 +60,18 @@ ecology fields are built largely on existing data, e.g., macro-ecology
 [@Brown_1995; @Beck_2012].
 
 Data on individuals, including which species, and where they're found,
-can be used for a large number of research questions. In addition,
-the pool of questions we can answer becomes much larger with more
-and better data. In addition to wide utility, this data is important
-for conservation. Biodiversity loss is one of the greatest challenges
-of our time [@Pimm_2014]. Some have called this the sixth great mass
+can be used for a large number of research questions. Biodiversity
+records have been used for a suite of other use cases:
+validating habitat suitability models with real occurrence data
+[@Ficetola_2014]; ancestral range reconstruction [@Ferretti_2015;
+@Mendoza_2015]; development of invasive species watch lists
+[@Faulkner_2014]; evaluate risk of invasive species spread
+[@Di_Febbraro_2013]; and effects of climate change on future
+biodiversity [@Brown_2015].
+
+In addition to wide utility, this data is important for conservation.
+Biodiversity loss is one of the greatest challenges of our time
+[@Pimm_2014]. Some have called this the sixth great mass
 extinction [@Ceballos_2015]. Given this challenge there is a great
 need for data on specimen records, whether collected from live sightings
 in the field or specimens in museums.
@@ -74,16 +81,19 @@ However, Global Biodiversity Information Facility (hereafter, GBIF,
 http://www.gbif.org/) is the largest collection of biodiversity
 records globally, currently with 580 million records, 1.6 million
 taxa, 15,000 datasets from 770 publishers (figures collected on 2015-10-04).
-Many large biodiversity warehouses such as iNaturalist, VertNet, and USGS's
-BISON all feed into GBIF.
+Many large biodiversity warehouses such as iNaturalist
+(http://www.inaturalist.org/), VertNet (http://vertnet.org/), and USGS's
+Biodiversity Information Serving Our Nation (BISON; http://bison.usgs.ornl.gov/)
+all feed into GBIF.
 
-Herein, we describe a library (rgbif [@rgbif]) for working with
-GBIF data in the R programming environment [@R]. R is an extremely
-widely used language in academia, and in non-profit and private sectors.
+Herein, we describe the `rgbif` library [@rgbif] for working with
+GBIF data in the R programming environment [@R]. R is a widely used
+language in academia, and in non-profit and private sectors.
 Importantly, R makes it easy to do all of the steps of the
 research process, including data management, data manipulation
 and cleaning, statistics, and vizualization. Thus, an R client
-for getting GBIF data is a powerful tool for reproducible research.
+for getting GBIF data is a powerful tool to facilitate
+reproducible research.
 
 ```{r echo=FALSE, results='hide', eval=FALSE}
 install.packages("rgbif", dependencies=TRUE)
