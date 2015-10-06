@@ -35,8 +35,15 @@ output:
 ```{r compile-settings, include=FALSE}
 library("methods")
 library("knitr")
-opts_chunk$set(tidy = FALSE, warning = FALSE, message = FALSE,
-               cache = 1, comment = NA, verbose = TRUE)
+opts_chunk$set(
+  tidy = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  cache = 1,
+  comment = '#>',
+  collapse = TRUE,
+  verbose = TRUE
+)
 basename <- gsub(".Rmd", "", knitr:::knit_concord$get('infile'))
 opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
                cache.path = paste("components/cache/", basename, "/", sep=""))
@@ -256,9 +263,18 @@ out %>% occ_issues(-cudc) %>% .$data %>% NROW
 
 ## Use cases
 
-...
+### A
+
+### B
+
+### C
 
 # Conclusions and future directions
+
+* pt 1
+* pt 2
+* pt 3
+* pt 4
 
 ## Acknowledgements
 

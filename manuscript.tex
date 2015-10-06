@@ -206,21 +206,18 @@ Search for datasets
 \begin{Highlighting}[]
 \NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_search}\NormalTok{(}\DataTypeTok{query =} \StringTok{"oregon"}\NormalTok{)}
 \NormalTok{res$data$datasetTitle[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
+\CommentTok{#>  [1] "SDNHM Birds Collection"                                                }
+\CommentTok{#>  [2] "CM Birds Collection"                                                   }
+\CommentTok{#>  [3] "condoncollection"                                                      }
+\CommentTok{#>  [4] "Taxonomy in Flux Checklist"                                            }
+\CommentTok{#>  [5] "Wool carder bees of the genus Anthidium in the Western Hemisphere"     }
+\CommentTok{#>  [6] "Bryophyte Collection - University of Washington Herbarium (WTU)"       }
+\CommentTok{#>  [7] "University of British Columbia Herbarium (UBC) - Bryophytes Collection"}
+\CommentTok{#>  [8] "UWFC Ichthyology Collection"                                           }
+\CommentTok{#>  [9] "Lichen Collection - University of Washington Herbarium (WTU)"          }
+\CommentTok{#> [10] "UWBM Mammalogy Collection"}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
- [1] "SDNHM Birds Collection"                                                
- [2] "CM Birds Collection"                                                   
- [3] "condoncollection"                                                      
- [4] "Taxonomy in Flux Checklist"                                            
- [5] "Wool carder bees of the genus Anthidium in the Western Hemisphere"     
- [6] "Bryophyte Collection - University of Washington Herbarium (WTU)"       
- [7] "University of British Columbia Herbarium (UBC) - Bryophytes Collection"
- [8] "UWFC Ichthyology Collection"                                           
- [9] "Lichen Collection - University of Washington Herbarium (WTU)"          
-[10] "UWBM Mammalogy Collection"                                             
-\end{verbatim}
 
 Get dataset metrics
 
@@ -264,21 +261,18 @@ and title fields.
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{networks}\NormalTok{(}\DataTypeTok{limit=}\DecValTok{10}\NormalTok{)$data$title}
+\CommentTok{#>  [1] "GBIF Backbone Sources"                                      }
+\CommentTok{#>  [2] "Canadensys"                                                 }
+\CommentTok{#>  [3] "Southwest Collections of Arthropods Network (SCAN)"         }
+\CommentTok{#>  [4] "VertNet"                                                    }
+\CommentTok{#>  [5] "Dryad"                                                      }
+\CommentTok{#>  [6] "GBIF Network"                                               }
+\CommentTok{#>  [7] "The Knowledge Network for Biocomplexity (KNB) "             }
+\CommentTok{#>  [8] "Online Zoological Collections of Australian Museums (OZCAM)"}
+\CommentTok{#>  [9] "Catalogue of Life"                                          }
+\CommentTok{#> [10] "Ocean Biogeographic Information System (OBIS)"}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
- [1] "GBIF Backbone Sources"                                      
- [2] "Canadensys"                                                 
- [3] "Southwest Collections of Arthropods Network (SCAN)"         
- [4] "VertNet"                                                    
- [5] "Dryad"                                                      
- [6] "GBIF Network"                                               
- [7] "The Knowledge Network for Biocomplexity (KNB) "             
- [8] "Online Zoological Collections of Australian Museums (OZCAM)"
- [9] "Catalogue of Life"                                          
-[10] "Ocean Biogeographic Information System (OBIS)"              
-\end{verbatim}
 
 \subsection{Species}\label{species}
 
@@ -322,15 +316,12 @@ Request data download given a query. Here, we search for the taxon key
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{occ_download}\NormalTok{(}\StringTok{'taxonKey = 3119195'}\NormalTok{)}
+\CommentTok{#> <<gbif download>>}
+\CommentTok{#>   Username: xxxx}
+\CommentTok{#>   E-mail: xxxx}
+\CommentTok{#>   Download key: 0000840-150615163101818}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-<<gbif download>>
-  Username: sckott
-  E-mail: myrmecocystus@gmail.com
-  Download key: 0004098-150922153815467
-\end{verbatim}
 
 You can check on when the download is ready using the functions
 \texttt{occ\_download\_list()} and \texttt{occ\_download\_meta()}. When
@@ -340,14 +331,11 @@ your computer.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{(res <-}\StringTok{ }\KeywordTok{occ_download_get}\NormalTok{(}\StringTok{"0000840-150615163101818"}\NormalTok{, }\DataTypeTok{overwrite =} \OtherTok{TRUE}\NormalTok{))}
+\CommentTok{#> <<gbif downloaded get>>}
+\CommentTok{#>   Path: ./0000840-150615163101818.zip}
+\CommentTok{#>   File size: 3.19 MB}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-<<gbif downloaded get>>
-  Path: ./0000840-150615163101818.zip
-  File size: 3.19 MB
-\end{verbatim}
 
 What's printed out above is a very brief summary of what was downloaded,
 the path to the file, and its size (in human readable form).
@@ -361,23 +349,20 @@ Next, read the data in to R using the function
 \NormalTok{dat <-}\StringTok{ }\KeywordTok{occ_download_import}\NormalTok{(res)}
 \NormalTok{dat %>%}
 \StringTok{  }\KeywordTok{select}\NormalTok{(gbifID, decimalLatitude, decimalLongitude)}
+\CommentTok{#>       gbifID decimalLatitude decimalLongitude}
+\CommentTok{#> 1  657590544              NA               NA}
+\CommentTok{#> 2  657679551              NA               NA}
+\CommentTok{#> 3  657791316        37.70805        -118.4162}
+\CommentTok{#> 4  658180562              NA               NA}
+\CommentTok{#> 5  441881672              NA               NA}
+\CommentTok{#> 6  911596181              NA               NA}
+\CommentTok{#> 7   56454601              NA               NA}
+\CommentTok{#> 8  657848913              NA               NA}
+\CommentTok{#> 9  658187373              NA               NA}
+\CommentTok{#> 10 658279212        38.95917        -106.9892}
+\CommentTok{#> ..       ...             ...              ...}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-      gbifID decimalLatitude decimalLongitude
-1  657590544              NA               NA
-2  657679551              NA               NA
-3  657791316        37.70805        -118.4162
-4  658180562              NA               NA
-5  441881672              NA               NA
-6  911596181              NA               NA
-7   56454601              NA               NA
-8  657848913              NA               NA
-9  658187373              NA               NA
-10 658279212        38.95917        -106.9892
-..       ...             ...              ...
-\end{verbatim}
 
 \paragraph{Downloaded data format}\label{downloaded-data-format}
 
@@ -433,29 +418,34 @@ via \texttt{occ\_search()} based on GBIF issues.
 \begin{Highlighting}[]
 \NormalTok{out <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{issue=}\StringTok{'DEPTH_UNLIKELY'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
 \KeywordTok{NROW}\NormalTok{(out)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 4
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{#> [1] 4}
 \NormalTok{out %>%}\StringTok{ }\KeywordTok{occ_issues}\NormalTok{(-cudc) %>%}\StringTok{ }\NormalTok{.$data %>%}\StringTok{ }\NormalTok{NROW}
+\CommentTok{#> [1] 2}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 2
-\end{verbatim}
 
 \subsection{Use cases}\label{use-cases}
 
-\ldots{}
+\subsubsection{A}\label{a}
+
+\subsubsection{B}\label{b}
+
+\subsubsection{C}\label{c}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  pt 1
+\item
+  pt 2
+\item
+  pt 3
+\item
+  pt 4
+\end{itemize}
 
 \subsection{Acknowledgements}\label{acknowledgements}
 
