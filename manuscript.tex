@@ -184,11 +184,11 @@ reproducible research.
 \texttt{rgbif} is designed following the
 \href{http://www.gbif.org/developer/summary}{GBIF Application
 Programming Interface}, or API. The GBIF API has four major components:
-registry, species names, occurrence data, and maps. We ignore maps in
-\texttt{rgbif} as it is concerned with generating maps for web
+registry, species names, occurrences, and maps. We ignore maps in
+\texttt{rgbif} as it is concerned with generating maps primarily for web
 applications. \texttt{rgbif} has a suite of functions dealing with each
-of registry, species names, and occurrence data - we'll go through each
-in turn describing design and example usage.
+of registry, species names, and occurrences - we'll go through each in
+turn describing design and example usage.
 
 \subsection{Registry}\label{registry}
 
@@ -208,9 +208,21 @@ The GBIF reqistry API services are spread across four sets of functions:
   Organizations
 \end{itemize}
 
+The relationship between these five things is XXXXXX.
+
 \subsubsection{Datasets}\label{datasets}
 
-Search for datasets
+Dataset functions include search, dataset metadata retrieval, and
+dataset metrics. Searching for datasets is an important part of the
+discovery process. One can search for datasets on the GBIF web portal.
+However, programmatic searching using this package is much more
+powerful. Identifying datasets appropriate for a research question is
+helpful as you can get metadata for each dataset, and track down dataset
+specific problems, if any.
+
+The \texttt{dataset\_search()} function is one way to search for
+datasets. Here, we search for the query term ``oregon'', which finds any
+datasets that have terms matching that term.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -229,11 +241,23 @@ Search for datasets
 \end{Highlighting}
 \end{Shaded}
 
-Get dataset metrics
+Also, check out \texttt{datasets()} and \texttt{dataset\_suggest()} for
+searching for datasets.
+
+\paragraph{Dataset metrics}\label{dataset-metrics}
+
+Dataset metrics are another useful way of digging in to figure out what
+datasets you may want to use. One drawback is that these data are only
+available for datasets of type \emph{checklist}, but there are quite a
+lot of them (2472).
+
+Here, we seaerch for dataset metrics for a single dataset, with uuid
+\texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
+(Hymenoptera: Formicidae) of the World.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_metrics}\NormalTok{(}\DataTypeTok{uuid=}\StringTok{'66dd0960-2d7d-46ee-a491-87b9adcfe7b1'}\NormalTok{)}
+\NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_metrics}\NormalTok{(}\DataTypeTok{uuid=}\StringTok{'ec93a739-1681-4b04-b62f-3a687127a17f'}\NormalTok{)}
 \NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{names}\NormalTok{(res$countByRank),}
                  \DataTypeTok{count =} \KeywordTok{unname}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(res$countByRank)))}
 \NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(df)}
@@ -245,28 +269,26 @@ Get dataset metrics
 rank & count\tabularnewline
 \midrule
 \endhead
-SPECIES & 52452\tabularnewline
-GENUS & 12930\tabularnewline
-VARIETY & 4806\tabularnewline
-SUBSPECIES & 4440\tabularnewline
-SERIES & 1079\tabularnewline
-TRIBE & 844\tabularnewline
-FAMILY & 509\tabularnewline
-SUBTRIBE & 327\tabularnewline
-SUBFAMILY & 303\tabularnewline
-SUBGENUS & 241\tabularnewline
-FORM & 239\tabularnewline
-SECTION & 82\tabularnewline
-SUBVARIETY & 4\tabularnewline
+SPECIES & 13710\tabularnewline
+SUBSPECIES & 3234\tabularnewline
+GENUS & 726\tabularnewline
+TRIBE & 53\tabularnewline
+SUBFAMILY & 20\tabularnewline
+FAMILY & 2\tabularnewline
 KINGDOM & 1\tabularnewline
+PHYLUM & 1\tabularnewline
+CLASS & 1\tabularnewline
+ORDER & 1\tabularnewline
 \bottomrule
 \end{longtable}
 
 \subsubsection{Networks, nodes, and
 installations}\label{networks-nodes-and-installations}
 
-Here, we search for the first give GBIF networks, returning just the key
-and title fields.
+Networks, nodes and installations are at a higher level of organization
+above datasets, but can be useful if you want to explore data from given
+organizations. Here, we search for the first 10 GBIF networks, returning
+just the title field.
 
 \begin{Shaded}
 \begin{Highlighting}[]

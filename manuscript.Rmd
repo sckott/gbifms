@@ -117,9 +117,9 @@ a developer network making R software to facilitate reproducible research.
 
 `rgbif` is designed following the [GBIF Application Programming Interface][gbifdocs],
 or API. The GBIF API has four major components: registry, species names,
-occurrence data, and maps. We ignore maps in `rgbif` as it is concerned with
-generating maps for web applications. `rgbif` has a suite of functions dealing
-with each of registry, species names, and occurrence data - we'll go through
+occurrences, and maps. We ignore maps in `rgbif` as it is concerned with
+generating maps primarily for web applications. `rgbif` has a suite of functions dealing
+with each of registry, species names, and occurrences - we'll go through
 each in turn describing design and example usage.
 
 ## Registry
@@ -133,19 +133,41 @@ of functions:
 * Nodes
 * Organizations
 
+The relationship between these five things is XXXXXX.
+
 ### Datasets
 
-Search for datasets
+Dataset functions include search, dataset metadata retrieval, and dataset metrics.
+Searching for datasets is an important part of the discovery process. One can
+search for datasets on the GBIF web portal. However, programmatic searching using
+this package is much more powerful. Identifying datasets appropriate for a
+research question is helpful as you can get metadata for each dataset, and track
+down dataset specific problems, if any.
+
+The `dataset_search()` function is one way to search for datasets. Here, we search
+for the query term "oregon", which finds any datasets that have terms matching
+that term.
 
 ```{r}
 res <- dataset_search(query = "oregon")
 res$data$datasetTitle[1:10]
 ```
 
-Get dataset metrics
+Also, check out `datasets()` and `dataset_suggest()` for searching for datasets.
+
+#### Dataset metrics
+
+Dataset metrics are another useful way of digging in to figure out what
+datasets you may want to use. One drawback is that these data are only
+available for datasets of type _checklist_, but there are quite a lot of
+them (`r dataset_search(type = "checklist")$meta$count`).
+
+Here, we seaerch for dataset metrics for a single dataset, with uuid
+`ec93a739-1681-4b04-b62f-3a687127a17f`, a checklist of the ants (Hymenoptera:
+Formicidae) of the World.
 
 ```{r}
-res <- dataset_metrics(uuid='66dd0960-2d7d-46ee-a491-87b9adcfe7b1')
+res <- dataset_metrics(uuid='ec93a739-1681-4b04-b62f-3a687127a17f')
 df <- data.frame(rank = names(res$countByRank),
                  count = unname(unlist(res$countByRank)))
 knitr::kable(df)
@@ -153,8 +175,10 @@ knitr::kable(df)
 
 ### Networks, nodes, and installations
 
-Here, we search for the first give GBIF networks, returning just the
-key and title fields.
+Networks, nodes and installations are at a higher level of organization
+above datasets, but can be useful if you want to explore data from given
+organizations. Here, we search for the first 10 GBIF networks, returning
+just the title field.
 
 ```{r}
 networks(limit=10)$data$title
