@@ -184,10 +184,10 @@ reproducible research.
 \texttt{rgbif} is designed following the
 \href{http://www.gbif.org/developer/summary}{GBIF Application
 Programming Interface}, or API. The GBIF API has four major components:
-registry, species names, occurrences, and maps. We ignore maps in
+registry, taxonomic names, occurrences, and maps. We ignore maps in
 \texttt{rgbif} as it is concerned with generating maps primarily for web
 applications. \texttt{rgbif} has a suite of functions dealing with each
-of registry, species names, and occurrences - we'll go through each in
+of registry, taxonomic names, and occurrences - we'll go through each in
 turn describing design and example usage.
 
 \subsection{Registry}\label{registry}
@@ -258,9 +258,8 @@ Here, we seaerch for dataset metrics for a single dataset, with uuid
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_metrics}\NormalTok{(}\DataTypeTok{uuid=}\StringTok{'ec93a739-1681-4b04-b62f-3a687127a17f'}\NormalTok{)}
-\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{names}\NormalTok{(res$countByRank),}
-                 \DataTypeTok{count =} \KeywordTok{unname}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(res$countByRank)))}
-\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(df)}
+\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{rank =} \KeywordTok{names}\NormalTok{(res$countByRank),}
+           \DataTypeTok{count =} \KeywordTok{unname}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(res$countByRank)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -306,7 +305,91 @@ just the title field.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Species}\label{species}
+\subsection{Taxonomic names}\label{taxonomic-names}
+
+The GBIF taxonomic names API services are spread across five functions:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Search GBIF name backbone - \texttt{name\_backbone()}
+\item
+  Search across all checklists - \texttt{name\_lookup()}
+\item
+  Quick name lookup - \texttt{name\_suggest()}
+\item
+  Name usage of a name according to a checklist - \texttt{name\_usage()}
+\item
+  GBIF name parser - \texttt{parsenames()}
+\end{itemize}
+
+The goal of these name functions is often to settle on a taxonomic name
+known to GBIF's database. This serves two purposes: 1) when referring to
+a taxonomic name, you can point to a URI on the internet, and 2) you can
+search for metadata on that species, and occurrences of that species in
+GBIF.
+
+Taxonomic names are particularly tricky. Many different organizations
+have their own unique codes for the same taxonomic names, and some
+taxonomic groups have preferred sources for the definitive names for
+that group.
+
+When searching for occurrences (see below) you can search by taxonomic
+name (and other filters, e.g., taxonomic rank), but you're probably
+better off figuring out the taxonomic key in the GBIF backbone taxonomy,
+and using that to search for occurrences. The \texttt{taxonkey}
+parameter in the GBIF occurrences API expects a GBIF backbone taxon key.
+
+\subsubsection{GBIF Backbone}\label{gbif-backbone}
+
+The GBIF backbone taxonomy is used in GBIF to have a consistent way to
+refer to taxonomic names throughout their services. The backbone has
+4410899 unique names and 2497114 species names. The backbone taxonomy is
+also a dataset with key \texttt{d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}
+(\url{http://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}).
+
+We can search the backbone taxonomy with the function
+\texttt{name\_backbone()}. Here, we're searching for the name
+\emph{Poa}, restricting to genera, and the family \emph{Poaceae}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res <-}\StringTok{ }\KeywordTok{name_backbone}\NormalTok{(}\DataTypeTok{name=}\StringTok{'Poa'}\NormalTok{, }\DataTypeTok{rank=}\StringTok{'genus'}\NormalTok{, }\DataTypeTok{family=}\StringTok{'Poaceae'}\NormalTok{)}
+\NormalTok{res[}\KeywordTok{c}\NormalTok{(}\StringTok{'usageKey'}\NormalTok{, }\StringTok{'kingdom'}\NormalTok{)]}
+\CommentTok{#> $usageKey}
+\CommentTok{#> [1] 2704173}
+\CommentTok{#> }
+\CommentTok{#> $kingdom}
+\CommentTok{#> [1] "Plantae"}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Name searching}\label{name-searching}
+
+One of the quickest ways to search for names is using
+\texttt{name\_suggest()}, which does a very quick search and returns
+minimal data. Here, we're searching for the query tem \emph{Pum}, and we
+get back a bunch of names:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{name_suggest}\NormalTok{(}\DataTypeTok{q=}\StringTok{'Pum'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[c]{@{}rll@{}}
+\toprule
+key & canonicalName & rank\tabularnewline
+\midrule
+\endhead
+3269133 & Pumilus & GENUS\tabularnewline
+4407849 & Pumilinura & GENUS\tabularnewline
+4323990 & Pumiliopsis & GENUS\tabularnewline
+4324083 & Pumiliopes & GENUS\tabularnewline
+4161281 & Pumilea & GENUS\tabularnewline
+4312370 & Pumilopagurus & GENUS\tabularnewline
+\bottomrule
+\end{longtable}
 
 \subsection{Occurrences}\label{occurrences}
 
@@ -382,16 +465,16 @@ Next, read the data in to R using the function
 \NormalTok{dat %>%}
 \StringTok{  }\KeywordTok{select}\NormalTok{(gbifID, decimalLatitude, decimalLongitude)}
 \CommentTok{#>       gbifID decimalLatitude decimalLongitude}
-\CommentTok{#> 1  657590544              NA               NA}
-\CommentTok{#> 2  657679551              NA               NA}
-\CommentTok{#> 3  657791316        37.70805        -118.4162}
-\CommentTok{#> 4  658180562              NA               NA}
-\CommentTok{#> 5  441881672              NA               NA}
-\CommentTok{#> 6  911596181              NA               NA}
-\CommentTok{#> 7   56454601              NA               NA}
-\CommentTok{#> 8  657848913              NA               NA}
-\CommentTok{#> 9  658187373              NA               NA}
-\CommentTok{#> 10 658279212        38.95917        -106.9892}
+\CommentTok{#> 1  725767384        61.01005         24.41740}
+\CommentTok{#> 2  725767447        59.82923         23.13550}
+\CommentTok{#> 3  725767450        60.38505         25.17449}
+\CommentTok{#> 4  725767513        68.37648         23.51963}
+\CommentTok{#> 5  725767546        67.19203         24.85820}
+\CommentTok{#> 6  725767579        60.21607         24.67412}
+\CommentTok{#> 7  725767609        66.49260         25.70471}
+\CommentTok{#> 8  725767645        61.36634         24.76218}
+\CommentTok{#> 9  725767678        62.29174         27.96500}
+\CommentTok{#> 10 725767681        60.28615         22.38489}
 \CommentTok{#> ..       ...             ...              ...}
 \end{Highlighting}
 \end{Shaded}
@@ -416,13 +499,13 @@ following functions:
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  \texttt{occ\_count()}
+  Get a single numeric count of occurrenes - \texttt{occ\_count()}
 \item
-  \texttt{occ\_search()}
+  Search for occurrences - \texttt{occ\_search()}
 \item
-  \texttt{occ\_get()}
+  Get occurrences by occurrence identifier - \texttt{occ\_get()}
 \item
-  \texttt{occ\_metadata()}
+  Get occurrence metadata - \texttt{occ\_metadata()}
 \end{itemize}
 
 The main search work-horse is \texttt{occ\_search()}. This function

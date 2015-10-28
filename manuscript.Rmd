@@ -116,10 +116,10 @@ a developer network making R software to facilitate reproducible research.
 ## Package interface
 
 `rgbif` is designed following the [GBIF Application Programming Interface][gbifdocs],
-or API. The GBIF API has four major components: registry, species names,
+or API. The GBIF API has four major components: registry, taxonomic names,
 occurrences, and maps. We ignore maps in `rgbif` as it is concerned with
 generating maps primarily for web applications. `rgbif` has a suite of functions dealing
-with each of registry, species names, and occurrences - we'll go through
+with each of registry, taxonomic names, and occurrences - we'll go through
 each in turn describing design and example usage.
 
 ## Registry
@@ -166,7 +166,13 @@ Here, we seaerch for dataset metrics for a single dataset, with uuid
 `ec93a739-1681-4b04-b62f-3a687127a17f`, a checklist of the ants (Hymenoptera:
 Formicidae) of the World.
 
-```{r}
+```{r eval=FALSE}
+res <- dataset_metrics(uuid='ec93a739-1681-4b04-b62f-3a687127a17f')
+data.frame(rank = names(res$countByRank),
+           count = unname(unlist(res$countByRank)))
+```
+
+```{r echo=FALSE}
 res <- dataset_metrics(uuid='ec93a739-1681-4b04-b62f-3a687127a17f')
 df <- data.frame(rank = names(res$countByRank),
                  count = unname(unlist(res$countByRank)))
@@ -184,7 +190,64 @@ just the title field.
 networks(limit=10)$data$title
 ```
 
-## Species
+## Taxonomic names
+
+The GBIF taxonomic names API services are spread across five functions:
+
+* Search GBIF name backbone - `name_backbone()`
+* Search across all checklists - `name_lookup()`
+* Quick name lookup - `name_suggest()`
+* Name usage of a name according to a checklist - `name_usage()`
+* GBIF name parser - `parsenames()`
+
+The goal of these name functions is often to settle on a taxonomic name
+known to GBIF's database. This serves two purposes: 1) when referring to
+a taxonomic name, you can point to a URI on the internet, and 2) you can
+search for metadata on that species, and occurrences of that species in
+GBIF.
+
+Taxonomic names are particularly tricky. Many different organizations have
+their own unique codes for the same taxonomic names, and some taxonomic
+groups have preferred sources for the definitive names for that group.
+
+When searching for occurrences (see below) you can search by taxonomic
+name (and other filters, e.g., taxonomic rank), but you're probably better off
+figuring out the taxonomic key in the GBIF backbone taxonomy, and using
+that to search for occurrences. The `taxonkey` parameter in the GBIF occurrences
+API expects a GBIF backbone taxon key.
+
+### GBIF Backbone
+
+The GBIF backbone taxonomy is used in GBIF to have a consistent way to refer
+to taxonomic names throughout their services. The backbone has `r dataset_metrics("d7dddbf4-2cf0-4f39-9b2a-bb099caae36c")$distinctNamesCount` unique
+names and `r dataset_metrics("d7dddbf4-2cf0-4f39-9b2a-bb099caae36c")$countByRank$SPECIES` species names. The backbone taxonomy is also a dataset with key
+`d7dddbf4-2cf0-4f39-9b2a-bb099caae36c`
+(http://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c).
+
+We can search the backbone taxonomy with the function `name_backbone()`. Here,
+we're searching for the name _Poa_, restricting to genera, and the family
+_Poaceae_.
+
+
+```{r}
+res <- name_backbone(name='Poa', rank='genus', family='Poaceae')
+res[c('usageKey', 'kingdom')]
+```
+
+### Name searching
+
+One of the quickest ways to search for names is using `name_suggest()`, which
+does a very quick search and returns minimal data. Here, we're searching for
+the query tem _Pum_, and we get back a bunch of names:
+
+```{r eval=FALSE}
+name_suggest(q='Pum', limit = 6)
+```
+
+```{r echo=FALSE}
+df <- name_suggest(q='Pum', limit = 6)
+knitr::kable(df)
+```
 
 ## Occurrences
 
@@ -267,10 +330,10 @@ accessible from the folder on your computer.
 
 The search API follows the GBIF API and is broken down into the following functions:
 
-* `occ_count()`
-* `occ_search()`
-* `occ_get()`
-* `occ_metadata()`
+* Get a single numeric count of occurrenes - `occ_count()`
+* Search for occurrences - `occ_search()`
+* Get occurrences by occurrence identifier - `occ_get()`
+* Get occurrence metadata - `occ_metadata()`
 
 The main search work-horse is `occ_search()`. This function allows very flexible
 search definitions. In addition, this function does paging internally, making it
