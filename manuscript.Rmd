@@ -133,7 +133,9 @@ of functions:
 * Nodes
 * Organizations
 
-The relationship between these five things is XXXXXX.
+Datasets are owned by organizations. Organizations are endorsed by nodes to share datasets with GBIF.
+Datasets are published through institutions, which may be hosted at another organization. A network
+is a group of datasets (managed by GBIF).
 
 ### Datasets
 
