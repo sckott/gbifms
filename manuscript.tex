@@ -67,6 +67,16 @@
 \newcommand{\ErrorTok}[1]{\textbf{{#1}}}
 \newcommand{\NormalTok}[1]{{#1}}
 \usepackage{longtable}
+\usepackage{graphicx}
+% We will generate all images so they have a width \maxwidth. This means
+% that they will get their normal width if they fit onto the page, but
+% are scaled down if they would overflow the margins.
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+\else\Gin@nat@width\fi}
+\makeatother
+\let\Oldincludegraphics\includegraphics
+\renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=\maxwidth]{#1}}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -190,6 +200,14 @@ applications. \texttt{rgbif} has a suite of functions dealing with each
 of registry, taxonomic names, and occurrences - we'll go through each in
 turn describing design and example usage.
 
+\subsection{GBIF feedback loop}\label{gbif-feedback-loop}
+
+With each request \texttt{rgbif} makes to GBIF's API, we send request
+headers that tell GBIF that the request is coming from \texttt{rgbif},
+including what version of the package. This will help GBIF know what
+proportion of requests are coming from this package, and therefore R, as
+most requests likely will come from \texttt{rgbif}.
+
 \subsection{Registry}\label{registry}
 
 The GBIF reqistry API services are spread across four sets of functions:
@@ -252,7 +270,7 @@ searching for datasets.
 Dataset metrics are another useful way of digging in to figure out what
 datasets you may want to use. One drawback is that these data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2474).
+lot of them (2483).
 
 Here, we seaerch for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -542,13 +560,260 @@ via \texttt{occ\_search()} based on GBIF issues.
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Use cases}\label{use-cases}
+\section{Use cases}\label{use-cases}
 
-\subsubsection{A}\label{a}
+\subsubsection{Ecological niche
+modelling}\label{ecological-niche-modelling}
 
-\subsubsection{B}\label{b}
+In this example, we plot actual occurrence data for \emph{Bradypus}
+species against a single predictor variable, BIO1 (annual mean
+temperature). This is only ont step in a species distribution modelling
+nworkflow.
 
-\subsubsection{C}\label{c}
+This example can be done using BISON data as well with our rbison
+package.
+
+\emph{Load libraries}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"dismo"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"maptools"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Raster files}
+
+Make a list of files that are installed with the dismo package, then
+create a rasterStack from these
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\KeywordTok{system.file}\NormalTok{(}\DataTypeTok{package =} \StringTok{"dismo"}\NormalTok{), }\StringTok{"/ex"}\NormalTok{, }\DataTypeTok{sep =} \StringTok{""}\NormalTok{),}
+                    \StringTok{"grd"}\NormalTok{, }\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{predictors <-}\StringTok{ }\KeywordTok{stack}\NormalTok{(files)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get world boundaries}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(wrld_simpl)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get GBIF data using the rOpenSci package rgbif}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nn <-}\StringTok{ }\KeywordTok{name_lookup}\NormalTok{(}\StringTok{"bradypus*"}\NormalTok{, }\DataTypeTok{rank =} \StringTok{"species"}\NormalTok{)}
+\NormalTok{nn <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{unique}\NormalTok{(nn$data$nubKey))}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{nn, }\DataTypeTok{hasCoordinate =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
+\NormalTok{df <-}\StringTok{ }\NormalTok{df[ }\KeywordTok{sapply}\NormalTok{(df, function(x) }\KeywordTok{class}\NormalTok{(x$data)) %in%}\StringTok{ "data.frame"} \NormalTok{]}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{ldply}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(df, }\StringTok{"[["}\NormalTok{, }\StringTok{"data"}\NormalTok{))}
+\NormalTok{df2 <-}\StringTok{ }\NormalTok{df[,}\KeywordTok{c}\NormalTok{(}\StringTok{'decimalLongitude'}\NormalTok{,}\StringTok{'decimalLatitude'}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Plot}
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Add raster data, (2) Add political boundaries, (3) Add the points
+  (occurrences)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(predictors, }\DecValTok{1}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(wrld_simpl, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{points}\NormalTok{(df2, }\DataTypeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{components/figure/manuscript-unnamed-chunk-19-1.pdf}
+\caption{}
+\end{figure}
+
+\subsubsection{Biodiversity in big
+cities}\label{biodiversity-in-big-cities}
+
+In this example, we collect specimen records across different cities
+using GBIF data from the \texttt{rgbif} package.
+
+\emph{Load libraries}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"RCurl"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"RColorBrewer"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get bounding boxes for some cites}
+
+Bounding lat/long data is from
+\href{https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt}{here}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rawdat <-}\StringTok{ }\KeywordTok{getURL}\NormalTok{(}\StringTok{'https://raw.githubusercontent.com/amyxzhang/boundingbox-cities/master/boundbox.txt'}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\DataTypeTok{text =} \NormalTok{rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names=}\KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{))}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{dat$city, }\DataTypeTok{minlon=}\NormalTok{dat$minlon, }\DataTypeTok{minlat=}\NormalTok{dat$minlat, }\DataTypeTok{maxlon=}\NormalTok{dat$maxlon, }\DataTypeTok{maxlat=}\NormalTok{dat$maxlat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{getdata <-}\StringTok{ }\NormalTok{function(x)\{}
+  \NormalTok{coords <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(x[}\KeywordTok{c}\NormalTok{(}\StringTok{'minlon'}\NormalTok{,}\StringTok{'minlat'}\NormalTok{,}\StringTok{'maxlon'}\NormalTok{,}\StringTok{'maxlat'}\NormalTok{)])}
+  \NormalTok{num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{coords)$meta$count}
+  \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{x[}\StringTok{'city'}\NormalTok{], }\DataTypeTok{richness=}\NormalTok{num, }\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(dat, }\DecValTok{1}\NormalTok{, getdata)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Merge to original table}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(dat, }\KeywordTok{ldply}\NormalTok{(out), }\DataTypeTok{by=}\StringTok{"city"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Add centroids from bounding boxes}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{out <-}\StringTok{ }\KeywordTok{transform}\NormalTok{(out, }\DataTypeTok{lat =} \NormalTok{(minlat+maxlat)/}\DecValTok{2}\NormalTok{, }\DataTypeTok{lon =} \NormalTok{(minlon+maxlon)/}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Plot data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mapp <-}\StringTok{ }\KeywordTok{map_data}\NormalTok{(}\StringTok{'world'}\NormalTok{)}
+\KeywordTok{ggplot}\NormalTok{(mapp, }\KeywordTok{aes}\NormalTok{(long, lat)) +}
+\StringTok{  }\KeywordTok{geom_polygon}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{group=}\NormalTok{group), }\DataTypeTok{fill=}\StringTok{"white"}\NormalTok{, }\DataTypeTok{alpha=}\DecValTok{0}\NormalTok{, }\DataTypeTok{color=}\StringTok{"black"}\NormalTok{, }\DataTypeTok{size=}\FloatTok{0.4}\NormalTok{) +}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{data=}\NormalTok{out, }\KeywordTok{aes}\NormalTok{(lon, lat, }\DataTypeTok{color=}\NormalTok{richness), }\DataTypeTok{size=}\DecValTok{5}\NormalTok{, }\DataTypeTok{alpha=}\FloatTok{0.8}\NormalTok{) +}
+\StringTok{  }\KeywordTok{scale_color_continuous}\NormalTok{(}\DataTypeTok{low =} \StringTok{"#60E1EE"}\NormalTok{, }\DataTypeTok{high =} \StringTok{"#0404C8"}\NormalTok{) +}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{""}\NormalTok{, }\DataTypeTok{y=}\StringTok{""}\NormalTok{) +}
+\StringTok{  }\KeywordTok{theme_grey}\NormalTok{(}\DataTypeTok{base_size=}\DecValTok{14}\NormalTok{) +}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\DataTypeTok{legend.key =} \KeywordTok{element_blank}\NormalTok{()) +}
+\StringTok{  }\KeywordTok{guides}\NormalTok{(}\DataTypeTok{color =} \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{keywidth =} \DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{components/figure/manuscript-unnamed-chunk-24-1.pdf}
+\caption{}
+\end{figure}
+
+\subsubsection{Valley oak occurrence data
+comparison}\label{valley-oak-occurrence-data-comparison}
+
+This example comes from \href{https://twitter.com/ajpelu}{Antonio J.
+Perez-Luque} who
+\href{https://twitter.com/ajpelu/status/473951167567757312}{shared his
+plot on Twitter}. Antonio compared the occurrences of Valley Oak
+(\emph{Quercus lobata}) from \href{http://www.gbif.org/}{GBIF} to the
+distribution of the same species from the
+\href{http://esp.cr.usgs.gov/data/little/}{Atlas of US Trees}.
+
+\emph{Load libraries}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{'rgbif'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'raster'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'sp'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'maptools'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'rgeos'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'scales'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get GBIF Data for Quercus lobata}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{keyQl <-}\StringTok{ }\KeywordTok{name_backbone}\NormalTok{(}\DataTypeTok{name=}\StringTok{'Quercus lobata'}\NormalTok{, }\DataTypeTok{kingdom=}\StringTok{'plants'}\NormalTok{)$speciesKey}
+\NormalTok{dat.Ql <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey=}\NormalTok{keyQl, }\DataTypeTok{return=}\StringTok{'data'}\NormalTok{, }\DataTypeTok{limit=}\DecValTok{50000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)}
+
+From
+\href{http://esp.cr.usgs.gov/data/little/}{\url{http://esp.cr.usgs.gov/data/little/}}.
+And save shapefile in same directory
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{url <-}\StringTok{ 'http://esp.cr.usgs.gov/data/little/querloba.zip'}
+\NormalTok{tmp <-}\StringTok{ }\KeywordTok{tempdir}\NormalTok{()}
+\KeywordTok{download.file}\NormalTok{(url, }\DataTypeTok{destfile =} \StringTok{"~/querloba.zip"}\NormalTok{)}
+\KeywordTok{unzip}\NormalTok{(}\StringTok{"~/querloba.zip"}\NormalTok{, }\DataTypeTok{exdir =} \NormalTok{tmp)}
+\NormalTok{ql <-}\StringTok{ }\KeywordTok{readShapePoly}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(tmp, }\StringTok{"querloba.shp"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Get Elevation data of US}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alt.USA <-}\StringTok{ }\KeywordTok{getData}\NormalTok{(}\StringTok{'alt'}\NormalTok{, }\DataTypeTok{country =} \StringTok{'USA'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Create Hillshade of US}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alt.USA <-}\StringTok{ }\NormalTok{alt.USA[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{slope.USA <-}\StringTok{ }\KeywordTok{terrain}\NormalTok{(alt.USA, }\DataTypeTok{opt =} \StringTok{'slope'}\NormalTok{)}
+\NormalTok{aspect.USA <-}\StringTok{ }\KeywordTok{terrain}\NormalTok{(alt.USA, }\DataTypeTok{opt =} \StringTok{'aspect'}\NormalTok{)}
+\NormalTok{hill.USA <-}\StringTok{ }\KeywordTok{hillShade}\NormalTok{(slope.USA, aspect.USA, }\DataTypeTok{angle =} \DecValTok{45}\NormalTok{, }\DataTypeTok{direction =} \DecValTok{315}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{Plot map}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{100}\NormalTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\DecValTok{125}\NormalTok{, -}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{), }\DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
+\CommentTok{# add shape from Atlas of US Trees}
+\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{), }\DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
+\CommentTok{# add Gbif presence points}
+\KeywordTok{points}\NormalTok{(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{, }\StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{, }\DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{components/figure/manuscript-unnamed-chunk-31-1.pdf}
+\caption{}
+\end{figure}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
@@ -565,12 +830,12 @@ directions}\label{conclusions-and-future-directions}
   pt 4
 \end{itemize}
 
-\subsection{Acknowledgements}\label{acknowledgements}
+\section{Acknowledgements}\label{acknowledgements}
 
 This project was supported in part by the Alfred P Sloan Foundation
 (Grant 2013-6-22).
 
-\subsection{Data Accessibility}\label{data-accessibility}
+\section{Data Accessibility}\label{data-accessibility}
 
 All scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI

@@ -122,6 +122,13 @@ generating maps primarily for web applications. `rgbif` has a suite of functions
 with each of registry, taxonomic names, and occurrences - we'll go through
 each in turn describing design and example usage.
 
+## GBIF feedback loop
+
+With each request `rgbif` makes to GBIF's API, we send request headers that
+tell GBIF that the request is coming from `rgbif`, including what version of
+the package. This will help GBIF know what proportion of requests are coming from
+this package, and therefore R, as most requests likely will come from `rgbif`.
+
 ## Registry
 
 The GBIF reqistry API services are spread across four sets
@@ -360,13 +367,22 @@ NROW(out)
 out %>% occ_issues(-cudc) %>% .$data %>% NROW
 ```
 
-## Use cases
+# Use cases
 
-### A
+### Ecological niche modelling
 
-### B
+```{r niche-modelling, child="use-cases/niche-modelling.Rmd"}
+```
 
-### C
+### Biodiversity in big cities
+
+```{r city-diversity, child="use-cases/city-diversity.Rmd"}
+```
+
+### Valley oak occurrence data comparison
+
+```{r oak-occurrences, child="use-cases/oak-occurrences.Rmd"}
+```
 
 # Conclusions and future directions
 
@@ -375,17 +391,19 @@ out %>% occ_issues(-cudc) %>% .$data %>% NROW
 * pt 3
 * pt 4
 
-## Acknowledgements
+# Acknowledgements
 
 This project was supported in part by the Alfred P Sloan
 Foundation (Grant 2013-6-22).
 
-## Data Accessibility
+# Data Accessibility
 
 All scripts and data used in this paper can be found in the permanent
-data archive Zenodo under the digital object identifier (DOI). This DOI corresponds to a snapshot of the GitHub repository at [github.com/sckott/msrgbif](https://github.com/sckott/msrgbif). Software
-can be found at [github.com/ropensci/rgbif](https://github.com/ropensci/rgbif), under the
-open and permissive MIT license.
+data archive Zenodo under the digital object identifier (DOI). This DOI
+corresponds to a snapshot of the GitHub repository at
+[github.com/sckott/msrgbif](https://github.com/sckott/msrgbif). Software
+can be found at [github.com/ropensci/rgbif](https://github.com/ropensci/rgbif),
+under the open and permissive MIT license.
 
 # References
 
