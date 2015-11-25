@@ -939,18 +939,23 @@ And save shapefile in same directory
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
 
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  pt 1
-\item
-  pt 2
-\item
-  The \texttt{rgbif} package has already been used in 22 scholarly
-  publications (as of 2015-11-14).
-\item
-  pt 4
-\end{itemize}
+The \texttt{rgbif} R package provides a programmatic interface to GBIF's
+application programming interface (API) - a powerful tool for making
+research using species occurrence data reproducible. In fact, the
+\texttt{rgbif} package has already been used in 22 scholarly
+publications (as of 2015-11-14).
+
+The \texttt{rgbif} package is relatively stable now, and should not have
+many breaking changes unless necessitated due to changes in the GBIF
+API.
+
+One area of focus in the future is to attempt to solve many use cases
+that have been brought up with respect to GBIF data. For example, some
+specimens are included in GBIF that are located in botanical gardens.
+For many research questions, researchers are interested in ``wild'' type
+occurrences, not those in human curated scenarios. Making removal of
+these occurrences easy would be very useful, but is actually quite a
+hard problem.
 
 \section{Acknowledgements}\label{acknowledgements}
 
