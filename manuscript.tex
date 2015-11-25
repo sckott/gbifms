@@ -132,12 +132,12 @@
 \section{Introduction}\label{introduction}
 
 Perhaps the most fundamental element in many fields of ecology is the
-inividual. How many individuals of each species in a given location
-forms the basis for many sub-fields of ecology and evolution. Some
-research questions necessitate collecting new data, while others can
-easily take advantage of existing data. In fact, some ecology fields are
-built largely on existing data, e.g., macro-ecology (Brown, 1995; Beck
-et al., 2012).
+individual. The number of individuals of each species in a given
+location forms the basis for many sub-fields of ecology and evolution.
+Some research questions necessitate collecting new data, while others
+can easily take advantage of existing data. In fact, some ecology fields
+are built largely on existing data, e.g., macro-ecology (Brown, 1995;
+Beck et al., 2012).
 
 Data on individuals, including which species, and where they're found,
 can be used for a large number of research questions. Biodiversity
@@ -145,39 +145,40 @@ records have been used for a suite of other use cases: validating
 habitat suitability models with real occurrence data (Ficetola et al.,
 2014); ancestral range reconstruction (Ferretti et al., 2015; Mar{í}a
 Mendoza et al., 2015); development of invasive species watch lists
-(Faulkner et al., 2014); evaluate risk of invasive species spread
+(Faulkner et al., 2014); evaluating risk of invasive species spread
 (Febbraro et al., 2013); and effects of climate change on future
 biodiversity (Brown et al., 2015).
 
 In addition to wide utility, this data is important for conservation.
 Biodiversity loss is one of the greatest challenges of our time (Pimm et
-al., 2014). Some have called this the sixth great mass extinction
+al., 2014), and some have called this the sixth great mass extinction
 (Ceballos et al., 2015). Given this challenge there is a great need for
 data on specimen records, whether collected from live sightings in the
 field or specimens in museums.
 
 There are many online services that collect and maintain specimen
 records. However, Global Biodiversity Information Facility (hereafter,
-GBIF, \url{http://www.gbif.org/}) is the largest collection of
-biodiversity records globally, currently with 580 million records, 1.6
-million taxa, 15,000 datasets from 770 publishers (figures collected on
-2015-10-04). Many large biodiversity warehouses such as iNaturalist
-(\url{http://www.inaturalist.org/}), VertNet
-(\url{http://vertnet.org/}), and USGS's Biodiversity Information Serving
-Our Nation (BISON; \url{http://bison.usgs.ornl.gov/}) all feed into
-GBIF.
+GBIF, \url{http://www.gbif.org}) is the largest collection of
+biodiversity records globally, currently with 640 million records, 1.6
+million taxa, 15,000 datasets from 780 publishers (current as of
+2015-11-25). Many large biodiversity warehouses such as iNaturalist
+(\url{http://www.inaturalist.org}), VertNet (\url{http://vertnet.org}),
+and USGS's Biodiversity Information Serving Our Nation (BISON;
+\url{http://bison.usgs.ornl.gov}) all feed into GBIF.
 
-Herein, we describe the \texttt{rgbif} library (Chamberlain et al.) for
-working with GBIF data in the R programming environment (R Core Team,
-2014). R is a widely used language in academia, and in non-profit and
-private sectors. Importantly, R makes it easy to do all of the steps of
-the research process, including data management, data manipulation and
-cleaning, statistics, and vizualization. Thus, an R client for getting
-GBIF data is a powerful tool to facilitate reproducible research.
+Herein, we describe the \texttt{rgbif} software library (Chamberlain et
+al.) for working with GBIF data in the R programming environment (R Core
+Team, 2014). R is a widely used language in academia, and in non-profit
+and private sectors. Importantly, R makes it easy to do all of the steps
+of the research process, including data management, data manipulation
+and cleaning, statistics, and vizualization. Thus, an R client for
+getting GBIF data is a powerful tool to facilitate reproducible
+research.
 
 \section{The rgbif package}\label{the-rgbif-package}
 
-The \texttt{rgbif} package is completely written in R, uses an
+The \texttt{rgbif} package is nearly completely written in R (a small
+Javascript library is included for reading well known text), uses an
 \href{http://choosealicense.com/licenses/mit/}{MIT license} to maximize
 use everywhere. \texttt{rgbif} is developed publicly on GitHub at
 \href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
@@ -186,15 +187,17 @@ feature requests reported. Stable versions of \texttt{rgbif} can be
 installed from
 \href{https://cran.rstudio.com/web/packages/rgbif/}{CRAN}, the
 distribution network for R packages. \texttt{rgbif} is part of the
-rOpenSci project, a developer network making R software to facilitate
-reproducible research.
+rOpenSci project (\url{http://ropensci.org}), a developer network making
+R software to facilitate reproducible research.
 
 \subsection{Package interface}\label{package-interface}
 
 \texttt{rgbif} is designed following the
 \href{http://www.gbif.org/developer/summary}{GBIF Application
 Programming Interface}, or API. The GBIF API has four major components:
-registry, taxonomic names, occurrences, and maps. We ignore maps in
+registry, taxonomic names, occurrences, and maps. We also include
+functions to interface with the OAI-PMH GBIF service; only dataset
+information is available vis this service, however. We ignore maps in
 \texttt{rgbif} as it is concerned with generating maps primarily for web
 applications. \texttt{rgbif} has a suite of functions dealing with each
 of registry, taxonomic names, and occurrences - we'll go through each in
@@ -204,13 +207,15 @@ turn describing design and example usage.
 
 With each request \texttt{rgbif} makes to GBIF's API, we send request
 headers that tell GBIF that the request is coming from \texttt{rgbif},
-including what version of the package. This will help GBIF know what
+including what version of the package. This helps GBIF know what
 proportion of requests are coming from this package, and therefore R, as
-most requests likely will come from \texttt{rgbif}.
+most requests likely will come from \texttt{rgbif}; this information is
+helpful for them in thinking about how people are using GBIF data.
 
 \subsection{Registry}\label{registry}
 
-The GBIF reqistry API services are spread across four sets of functions:
+The GBIF reqistry API services are spread across five sets of functions
+via the main API:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -226,10 +231,16 @@ The GBIF reqistry API services are spread across four sets of functions:
   Organizations
 \end{itemize}
 
+And dataset information in general is available via the OAI-PMH service,
+functions in \texttt{rgbif} prefixed with \texttt{gbif\_oai\_}.
+
 Datasets are owned by organizations. Organizations are endorsed by nodes
 to share datasets with GBIF. Datasets are published through
 institutions, which may be hosted at another organization. A network is
-a group of datasets (managed by GBIF).
+a group of datasets (managed by GBIF). Datasets are the units that
+matter the most with respect to registry information, while
+installations, networks, nodes, and organizations are simply higher
+level organizational structure.
 
 \subsubsection{Datasets}\label{datasets}
 
@@ -262,15 +273,15 @@ datasets that have terms matching that term.
 \end{Highlighting}
 \end{Shaded}
 
-Also, check out \texttt{datasets()} and \texttt{dataset\_suggest()} for
+See also \texttt{datasets()} and \texttt{dataset\_suggest()} for
 searching for datasets.
 
 \paragraph{Dataset metrics}\label{dataset-metrics}
 
-Dataset metrics are another useful way of digging in to figure out what
-datasets you may want to use. One drawback is that these data are only
+Dataset metrics are another useful way of figuring out what datasets you
+may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2483).
+lot of them (2490).
 
 Here, we seaerch for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -347,13 +358,14 @@ The GBIF taxonomic names API services are spread across five functions:
 The goal of these name functions is often to settle on a taxonomic name
 known to GBIF's database. This serves two purposes: 1) when referring to
 a taxonomic name, you can point to a URI on the internet, and 2) you can
-search for metadata on that species, and occurrences of that species in
-GBIF.
+search for metadata on a taxon, and occurrences of that taxon in GBIF.
 
 Taxonomic names are particularly tricky. Many different organizations
 have their own unique codes for the same taxonomic names, and some
 taxonomic groups have preferred sources for the definitive names for
-that group.
+that group. That's why it's best to determine what name GBIF uses, and
+its associated identifier, for the taxon of interest instead of simply
+searching for occurrences with a taxonomic name.
 
 When searching for occurrences (see below) you can search by taxonomic
 name (and other filters, e.g., taxonomic rank), but you're probably
@@ -390,7 +402,7 @@ We can search the backbone taxonomy with the function
 One of the quickest ways to search for names is using
 \texttt{name\_suggest()}, which does a very quick search and returns
 minimal data. Here, we're searching for the query tem \emph{Pum}, and we
-get back a bunch of names:
+get back many names:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -411,6 +423,10 @@ key & canonicalName & rank\tabularnewline
 4312370 & Pumilopagurus & GENUS\tabularnewline
 \bottomrule
 \end{longtable}
+
+With these results, you can then proceed to search for occurrences with
+the taxon key(s), or drill down further with other name searching
+functions to get the exact taxon of interest.
 
 \subsection{Occurrences}\label{occurrences}
 
@@ -433,17 +449,24 @@ a similar interface in the \texttt{download\_*()} functions, that should
 be easy to use. Users should take note that using the download service
 has a few extra steps to get data into R, but is straight-forward.
 
+The download service, like the occurrence search service, is
+rate-limited. That is, you can only have one to three downloads running
+simultaneously for your user credentials. However, simply check when a
+download job is complete, then you should be able to start a new
+download request.
+
 \subsubsection{Download API}\label{download-api}
 
 The download API syntax is similar to the occurrence search API in that
 the same parameters are used, but the way in which the query is defined
 is different. For example, in the download API you can do greater than
 searches (i.e., \texttt{latitude \textgreater{} 50}), whereas you can
-not do that in the occurrence search API. Thus, we can't make the query
-interace exactly the same for both search and download functions.
+not do that in the occurrence search API. Thus, unfortnately, we
+couldn't make the query interace exactly the same for both search and
+download functions.
 
-Using the download service can be as few as three steps: 1) Request data
-via a search; 2) Download data; 3) Import data into R.
+Using the download service can consist of as few as three steps: 1)
+Request data via a search; 2) Download data; 3) Import data into R.
 
 Request data download given a query. Here, we search for the taxon key
 \texttt{3119195}, which is the key for \emph{Helianthus annuus}
@@ -529,13 +552,111 @@ following functions:
   Get occurrence metadata - \texttt{occ\_metadata()}
 \end{itemize}
 
+\paragraph{Search for occurrences}\label{search-for-occurrences}
+
 The main search work-horse is \texttt{occ\_search()}. This function
 allows very flexible search definitions. In addition, this function does
 paging internally, making it such that the user does not have worry
 about the 300 records per request limit - but of course we can't go over
 the 200,000 maximum limit.
 
-\ldots{}
+The output of \texttt{occ\_search()} borrows the tidy
+\texttt{data.frame} idea from the \texttt{dplyr} R package, so that no
+matter how large the \texttt{data.frame}, the output is easily assessed
+because only a few of the records (rows) are shown, only a few columns
+are shown (with others shown in name only), and metadata is shown on top
+of the \texttt{data.frame} to indicate data found and returned, media
+records found, unique taxonomic hierarchies returned, and the query
+executed.
+
+The output of these examples, except one, aren't shown, but all run
+correctly.
+
+Search by species name, using \texttt{name\_backbone()} first to get key
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(key <-}\StringTok{ }\KeywordTok{name_suggest}\NormalTok{(}\DataTypeTok{q =} \StringTok{'Helianthus annuus'}\NormalTok{, }\DataTypeTok{rank =} \StringTok{'species'}\NormalTok{)$key[}\DecValTok{1}\NormalTok{])}
+\CommentTok{#> [1] 3119195}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{key, }\DataTypeTok{limit =} \DecValTok{2}\NormalTok{)}
+\CommentTok{#> Records found [21577] }
+\CommentTok{#> Records returned [2] }
+\CommentTok{#> No. unique hierarchies [1] }
+\CommentTok{#> No. media records [2] }
+\CommentTok{#> Args [taxonKey=3119195, limit=2, offset=0, fields=all] }
+\CommentTok{#> First 10 rows of data}
+\CommentTok{#> }
+\CommentTok{#>                name        key decimalLatitude decimalLongitude}
+\CommentTok{#> 1 Helianthus annuus 1143516596        35.42767        -105.0688}
+\CommentTok{#> 2 Helianthus annuus 1095851641         0.00000           0.0000}
+\CommentTok{#> Variables not shown: issues (chr), datasetKey (chr), publishingOrgKey}
+\CommentTok{#>      (chr), publishingCountry (chr), protocol (chr), lastCrawled (chr),}
+\CommentTok{#>      lastParsed (chr), extensions (chr), basisOfRecord (chr), taxonKey}
+\CommentTok{#>      (int), kingdomKey (int), phylumKey (int), classKey (int), orderKey}
+\CommentTok{#>      (int), familyKey (int), genusKey (int), speciesKey (int),}
+\CommentTok{#>      scientificName (chr), kingdom (chr), phylum (chr), order (chr),}
+\CommentTok{#>      family (chr), genus (chr), species (chr), genericName (chr),}
+\CommentTok{#>      specificEpithet (chr), taxonRank (chr), dateIdentified (chr), year}
+\CommentTok{#>      (int), month (int), day (int), eventDate (chr), modified (chr),}
+\CommentTok{#>      lastInterpreted (chr), references (chr), identifiers (chr), facts}
+\CommentTok{#>      (chr), relations (chr), geodeticDatum (chr), class (chr), countryCode}
+\CommentTok{#>      (chr), country (chr), rightsHolder (chr), identifier (chr),}
+\CommentTok{#>      verbatimEventDate (chr), datasetName (chr), gbifID (chr),}
+\CommentTok{#>      verbatimLocality (chr), collectionCode (chr), occurrenceID (chr),}
+\CommentTok{#>      taxonID (chr), recordedBy (chr), catalogNumber (chr),}
+\CommentTok{#>      http...unknown.org.occurrenceDetails (chr), institutionCode (chr),}
+\CommentTok{#>      rights (chr), occurrenceRemarks (chr), identificationID (chr),}
+\CommentTok{#>      elevation (dbl), elevationAccuracy (dbl), stateProvince (chr),}
+\CommentTok{#>      recordNumber (chr), locality (chr), municipality (chr), language}
+\CommentTok{#>      (chr), type (chr), ownerInstitutionCode (chr), identifiedBy (chr)}
+\end{Highlighting}
+\end{Shaded}
+
+Instead of getting a taxon key first, you can search for a name directly
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{scientificName =} \StringTok{'Ursus americanus'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Search for many species
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{splist <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'Cyanocitta stelleri'}\NormalTok{, }\StringTok{'Junco hyemalis'}\NormalTok{, }\StringTok{'Aix sponsa'}\NormalTok{)}
+\NormalTok{keys <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(splist, function(x) }\KeywordTok{name_suggest}\NormalTok{(x)$key[}\DecValTok{1}\NormalTok{], }\DataTypeTok{USE.NAMES =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{keys, }\DataTypeTok{limit =} \DecValTok{5}\NormalTok{, }\DataTypeTok{return =} \StringTok{'data'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Spatial search, based on well known text format, or a bounding box set
+of four coordinates
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# well known text}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \StringTok{'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\CommentTok{# bounding box}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \KeywordTok{c}\NormalTok{(-}\FloatTok{125.0}\NormalTok{,}\FloatTok{38.4}\NormalTok{,-}\FloatTok{121.8}\NormalTok{,}\FloatTok{40.9}\NormalTok{), }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Get only occurrences with lat/long data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{hasCoordinate =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Get only those occurrences with spatial issues
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{hasGeospatialIssue =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \paragraph{Cleaning data}\label{cleaning-data}
 
@@ -552,7 +673,7 @@ via \texttt{occ\_search()} based on GBIF issues.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{out <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{issue=}\StringTok{'DEPTH_UNLIKELY'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
+\NormalTok{out <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{issue =} \StringTok{'DEPTH_UNLIKELY'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
 \KeywordTok{NROW}\NormalTok{(out)}
 \CommentTok{#> [1] 4}
 \NormalTok{out %>%}\StringTok{ }\KeywordTok{occ_issues}\NormalTok{(-cudc) %>%}\StringTok{ }\NormalTok{.$data %>%}\StringTok{ }\NormalTok{NROW}
@@ -638,7 +759,7 @@ create a rasterStack from these
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-19-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-25-1.pdf}
 \caption{}
 \end{figure}
 
@@ -723,7 +844,7 @@ Bounding lat/long data is from
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-24-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-30-1.pdf}
 \caption{}
 \end{figure}
 
@@ -811,7 +932,7 @@ And save shapefile in same directory
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-31-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-37-1.pdf}
 \caption{}
 \end{figure}
 
@@ -825,7 +946,8 @@ directions}\label{conclusions-and-future-directions}
 \item
   pt 2
 \item
-  pt 3
+  The \texttt{rgbif} package has already been used in 22 scholarly
+  publications (as of 2015-11-14).
 \item
   pt 4
 \end{itemize}

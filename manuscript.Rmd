@@ -52,7 +52,7 @@ opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
 # Introduction
 
 Perhaps the most fundamental element in many fields of ecology is
-the inividual. How many individuals of each species in a given
+the individual. The number of individuals of each species in a given
 location forms the basis for many sub-fields of ecology and evolution.
 Some research questions necessitate collecting new data, while
 others can easily take advantage of existing data. In fact, some
@@ -65,28 +65,28 @@ records have been used for a suite of other use cases:
 validating habitat suitability models with real occurrence data
 [@Ficetola_2014]; ancestral range reconstruction [@Ferretti_2015;
 @Mendoza_2015]; development of invasive species watch lists
-[@Faulkner_2014]; evaluate risk of invasive species spread
+[@Faulkner_2014]; evaluating risk of invasive species spread
 [@Di_Febbraro_2013]; and effects of climate change on future
 biodiversity [@Brown_2015].
 
 In addition to wide utility, this data is important for conservation.
 Biodiversity loss is one of the greatest challenges of our time
-[@Pimm_2014]. Some have called this the sixth great mass
+[@Pimm_2014], and some have called this the sixth great mass
 extinction [@Ceballos_2015]. Given this challenge there is a great
 need for data on specimen records, whether collected from live sightings
 in the field or specimens in museums.
 
 There are many online services that collect and maintain specimen records.
 However, Global Biodiversity Information Facility (hereafter, GBIF,
-http://www.gbif.org/) is the largest collection of biodiversity
-records globally, currently with 580 million records, 1.6 million
-taxa, 15,000 datasets from 770 publishers (figures collected on 2015-10-04).
+http://www.gbif.org) is the largest collection of biodiversity
+records globally, currently with 640 million records, 1.6 million
+taxa, 15,000 datasets from 780 publishers (current as of 2015-11-25).
 Many large biodiversity warehouses such as iNaturalist
-(http://www.inaturalist.org/), VertNet (http://vertnet.org/), and USGS's
-Biodiversity Information Serving Our Nation (BISON; http://bison.usgs.ornl.gov/)
+(http://www.inaturalist.org), VertNet (http://vertnet.org), and USGS's
+Biodiversity Information Serving Our Nation (BISON; http://bison.usgs.ornl.gov)
 all feed into GBIF.
 
-Herein, we describe the `rgbif` library [@rgbif] for working with
+Herein, we describe the `rgbif` software library [@rgbif] for working with
 GBIF data in the R programming environment [@R]. R is a widely used
 language in academia, and in non-profit and private sectors.
 Importantly, R makes it easy to do all of the steps of the
@@ -105,34 +105,39 @@ library("rgbif")
 
 # The rgbif package
 
-The `rgbif` package is completely written in R, uses an [MIT license][mit]
+The `rgbif` package is nearly completely written in R (a small Javascript
+library is included for reading well known text), uses an [MIT license][mit]
 to maximize use everywhere. `rgbif` is developed publicly on GitHub
 at [https://github.com/ropensci/rgbif][ghrgbif], where development versions
 of the package can be installed, and bugs and feature requests reported.
 Stable versions of `rgbif` can be installed from [CRAN][cranrgbif], the
-distribution network for R packages. `rgbif` is part of the rOpenSci project,
-a developer network making R software to facilitate reproducible research.
+distribution network for R packages. `rgbif` is part of the rOpenSci project
+(http://ropensci.org), a developer network making R software to facilitate
+reproducible research.
 
 ## Package interface
 
 `rgbif` is designed following the [GBIF Application Programming Interface][gbifdocs],
 or API. The GBIF API has four major components: registry, taxonomic names,
-occurrences, and maps. We ignore maps in `rgbif` as it is concerned with
-generating maps primarily for web applications. `rgbif` has a suite of functions dealing
-with each of registry, taxonomic names, and occurrences - we'll go through
-each in turn describing design and example usage.
+occurrences, and maps. We also include functions to interface with the OAI-PMH
+GBIF service; only dataset information is available vis this service, however. We
+ignore maps in `rgbif` as it is concerned with generating maps primarily for web
+applications. `rgbif` has a suite of functions dealing with each of registry, taxonomic
+names, and occurrences - we'll go through each in turn describing design and example usage.
 
 ## GBIF feedback loop
 
 With each request `rgbif` makes to GBIF's API, we send request headers that
 tell GBIF that the request is coming from `rgbif`, including what version of
-the package. This will help GBIF know what proportion of requests are coming from
-this package, and therefore R, as most requests likely will come from `rgbif`.
+the package. This helps GBIF know what proportion of requests are coming from
+this package, and therefore R, as most requests likely will come from `rgbif`;
+this information is helpful for them in thinking about how people are using
+GBIF data.
 
 ## Registry
 
-The GBIF reqistry API services are spread across four sets
-of functions:
+The GBIF reqistry API services are spread across five sets of functions
+via the main API:
 
 * Datasets
 * Installations
@@ -140,9 +145,15 @@ of functions:
 * Nodes
 * Organizations
 
-Datasets are owned by organizations. Organizations are endorsed by nodes to share datasets with GBIF.
-Datasets are published through institutions, which may be hosted at another organization. A network
-is a group of datasets (managed by GBIF).
+And dataset information in general is available via the OAI-PMH service,
+functions in `rgbif` prefixed with `gbif_oai_`.
+
+Datasets are owned by organizations. Organizations are endorsed by nodes to share
+datasets with GBIF. Datasets are published through institutions, which may be
+hosted at another organization. A network is a group of datasets (managed by GBIF).
+Datasets are the units that matter the most with respect to registry information,
+while installations, networks, nodes, and organizations are simply higher level
+organizational structure.
 
 ### Datasets
 
@@ -162,12 +173,12 @@ res <- dataset_search(query = "oregon")
 res$data$datasetTitle[1:10]
 ```
 
-Also, check out `datasets()` and `dataset_suggest()` for searching for datasets.
+See also `datasets()` and `dataset_suggest()` for searching for datasets.
 
 #### Dataset metrics
 
-Dataset metrics are another useful way of digging in to figure out what
-datasets you may want to use. One drawback is that these data are only
+Dataset metrics are another useful way of figuring out what
+datasets you may want to use. One drawback is that these metrics data are only
 available for datasets of type _checklist_, but there are quite a lot of
 them (`r dataset_search(type = "checklist")$meta$count`).
 
@@ -212,12 +223,15 @@ The GBIF taxonomic names API services are spread across five functions:
 The goal of these name functions is often to settle on a taxonomic name
 known to GBIF's database. This serves two purposes: 1) when referring to
 a taxonomic name, you can point to a URI on the internet, and 2) you can
-search for metadata on that species, and occurrences of that species in
+search for metadata on a taxon, and occurrences of that taxon in
 GBIF.
 
 Taxonomic names are particularly tricky. Many different organizations have
 their own unique codes for the same taxonomic names, and some taxonomic
-groups have preferred sources for the definitive names for that group.
+groups have preferred sources for the definitive names for that group. That's
+why it's best to determine what name GBIF uses, and its associated identifier,
+for the taxon of interest instead of simply searching for occurrences with a
+taxonomic name.
 
 When searching for occurrences (see below) you can search by taxonomic
 name (and other filters, e.g., taxonomic rank), but you're probably better off
@@ -247,7 +261,7 @@ res[c('usageKey', 'kingdom')]
 
 One of the quickest ways to search for names is using `name_suggest()`, which
 does a very quick search and returns minimal data. Here, we're searching for
-the query tem _Pum_, and we get back a bunch of names:
+the query tem _Pum_, and we get back many names:
 
 ```{r eval=FALSE}
 name_suggest(q='Pum', limit = 6)
@@ -257,6 +271,10 @@ name_suggest(q='Pum', limit = 6)
 df <- name_suggest(q='Pum', limit = 6)
 knitr::kable(df)
 ```
+
+With these results, you can then proceed to search for occurrences with the
+taxon key(s), or drill down further with other name searching functions to
+get the exact taxon of interest.
 
 ## Occurrences
 
@@ -280,17 +298,23 @@ created a similar interface in the `download_*()` functions, that should
 be easy to use. Users should take note that using the download service
 has a few extra steps to get data into R, but is straight-forward.
 
+The download service, like the occurrence search service, is rate-limited.
+That is, you can only have one to three downloads running simultaneously for
+your user credentials. However, simply check when a download job is complete,
+then you should be able to start a new download request.
+
 ### Download API
 
 The download API syntax is similar to the occurrence search API
 in that the same parameters are used, but the way in which the query
 is defined is different. For example, in the download API you can
 do greater than searches (i.e., `latitude > 50`), whereas you can not
-do that in the occurrence search API. Thus, we can't make the query
-interace exactly the same for both search and download functions.
+do that in the occurrence search API. Thus, unfortnately, we couldn't
+make the query interace exactly the same for both search and
+download functions.
 
-Using the download service can be as few as three steps: 1) Request data
-via a search; 2) Download data; 3) Import data into R.
+Using the download service can consist of as few as three steps: 1) Request
+data via a search; 2) Download data; 3) Import data into R.
 
 Request data download given a query. Here, we search for the taxon key
 `3119195`, which is the key for _Helianthus annuus_
@@ -344,12 +368,65 @@ The search API follows the GBIF API and is broken down into the following functi
 * Get occurrences by occurrence identifier - `occ_get()`
 * Get occurrence metadata - `occ_metadata()`
 
+
+#### Search for occurrences
+
 The main search work-horse is `occ_search()`. This function allows very flexible
 search definitions. In addition, this function does paging internally, making it
 such that the user does not have worry about the 300 records per request limit -
 but of course we can't go over the 200,000 maximum limit.
 
-...
+The output of `occ_search()` borrows the tidy `data.frame` idea from the `dplyr`
+R package, so that no matter how large the `data.frame`, the output is easily
+assessed because only a few of the records (rows) are shown, only a few columns
+are shown (with others shown in name only), and metadata is shown on top of
+the `data.frame` to indicate data found and returned, media
+records found, unique taxonomic hierarchies returned, and the query executed.
+
+The output of these examples, except one, aren't shown, but all run correctly.
+
+Search by species name, using `name_backbone()` first to get key
+
+```{r}
+(key <- name_suggest(q = 'Helianthus annuus', rank = 'species')$key[1])
+occ_search(taxonKey = key, limit = 2)
+```
+
+Instead of getting a taxon key first, you can search for a name directly
+
+```{r eval=FALSE}
+occ_search(scientificName = 'Ursus americanus')
+```
+
+Search for many species
+
+```{r eval=FALSE}
+splist <- c('Cyanocitta stelleri', 'Junco hyemalis', 'Aix sponsa')
+keys <- sapply(splist, function(x) name_suggest(x)$key[1], USE.NAMES = FALSE)
+occ_search(taxonKey = keys, limit = 5, return = 'data')
+```
+
+Spatial search, based on well known text format, or a bounding box set of
+four coordinates
+
+```{r eval=FALSE}
+# well known text
+occ_search(geometry = 'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))', limit = 20)
+# bounding box
+occ_search(geometry = c(-125.0,38.4,-121.8,40.9), limit = 20)
+```
+
+Get only occurrences with lat/long data
+
+```{r eval=FALSE}
+occ_search(hasCoordinate = TRUE, limit = 5)
+```
+
+Get only those occurrences with spatial issues
+
+```{r eval=FALSE}
+occ_search(hasGeospatialIssue = TRUE, limit = 5)
+```
 
 #### Cleaning data
 
@@ -362,7 +439,7 @@ on GBIF issues; and the same data on [GBIF's development site][gbifissues]).
 based on GBIF issues.
 
 ```{r}
-out <- occ_search(issue='DEPTH_UNLIKELY', limit = 500)
+out <- occ_search(issue = 'DEPTH_UNLIKELY', limit = 500)
 NROW(out)
 out %>% occ_issues(-cudc) %>% .$data %>% NROW
 ```
@@ -386,10 +463,23 @@ out %>% occ_issues(-cudc) %>% .$data %>% NROW
 
 # Conclusions and future directions
 
-* pt 1
-* pt 2
-* pt 3
-* pt 4
+The `rgbif` R package provides a programmatic interface to GBIF's
+application programming interface (API) - a powerful tool for making
+research using species occurrence data reproducible. In fact,
+the `rgbif` package has already been used in 22 scholarly publications
+(as of 2015-11-14).
+
+The `rgbif` package is relatively stable now, and should not have
+many breaking changes unless necessitated due to changes in the
+GBIF API.
+
+One area of focus in the future is to attempt to solve many use
+cases that have been brought up with respect to GBIF data. For
+example, some specimens are included in GBIF that are located
+in botanical gardens. For many research questions, researchers are
+interested in "wild" type occurrences, not those in human curated
+scenarios. Making removal of these occurrences easy would be
+very useful, but is actually quite a hard problem.
 
 # Acknowledgements
 
