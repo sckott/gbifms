@@ -281,7 +281,7 @@ searching for datasets.
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2490).
+lot of them (2580).
 
 Here, we seaerch for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -547,6 +547,9 @@ following functions:
 \item
   Search for occurrences - \texttt{occ\_search()}
 \item
+  A simplified and optimized version of \texttt{occ\_search()} -
+  \texttt{occ\_data()}
+\item
   Get occurrences by occurrence identifier - \texttt{occ\_get()}
 \item
   Get occurrence metadata - \texttt{occ\_metadata()}
@@ -658,7 +661,7 @@ Get only those occurrences with spatial issues
 \end{Highlighting}
 \end{Shaded}
 
-\paragraph{Cleaning data}\label{cleaning-data}
+\paragraph{Data cleaning}\label{data-cleaning}
 
 GBIF provides optional data issues with each occurrence record. These
 issues fall into many different pre-defined classes, covering issues
@@ -681,7 +684,59 @@ via \texttt{occ\_search()} based on GBIF issues.
 \end{Highlighting}
 \end{Shaded}
 
+\subsection{Mapping}\label{mapping}
+
+An obvious downstream use case for species occurrence data is to map the
+data. \texttt{rgbif} per se is largely not concerned with making this
+easier, although we do have a simple wrappar around \texttt{ggplot2} to
+make it easy to get a quick plot of occurrence data. For example, here
+we plot 100 occurrences for \emph{Puma concolor}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{key <-}\StringTok{ }\KeywordTok{name_backbone}\NormalTok{(}\DataTypeTok{name=}\StringTok{'Puma concolor'}\NormalTok{)$speciesKey}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{key, }\DataTypeTok{limit =} \DecValTok{100}\NormalTok{, }\DataTypeTok{hasCoordinate =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{gbifmap}\NormalTok{(dat$data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{components/figure/manuscript-unnamed-chunk-20-1.pdf}
+\caption{}
+\end{figure}
+
+Another package, \href{https://github.com/ropensci/spocc}{spoccutils}
+
+\subsection{GBIF data in other R
+packages}\label{gbif-data-in-other-r-packages}
+
+We discuss usage of GBIF data in other R packages throughout the
+manuscript, but provide a synopsis here for clarity.
+
+\subsubsection{taxize}\label{taxize}
+
+Some of the GBIF taxonomic services are also avialable in
+\href{https://github.com/ropensci/taxize}{taxize}, an R package that
+focuses on getting data from taxonomic data sources on the web. For
+example, with \texttt{get\_gbifid()} one can get GBIF IDs used for a set
+of taxonomic names - then use those IDs in other functions in
+\texttt{taxize} to get additional information, like taxonomically
+downstream children.
+
+\subsubsection{spocc}\label{spocc}
+
+GBIF occurrence data is available in the R package
+\href{https://github.com/ropensci/spocc}{spocc} via \texttt{rgbif}.
+\texttt{spocc} is a unified interface for fetching species occurrence
+data from many sources on the web. For example, a user can collect
+occurrence data from GBIF, iDigBio, and iNaturalist, and easily combine
+them, then use other pacakages to clean and vizualize the data.
+
 \section{Use cases}\label{use-cases}
+
+The following are three use cases for \texttt{rgbif}: niche modelling,
+spatial change in biodiversity, and distribution mapping.
 
 \subsubsection{Ecological niche
 modelling}\label{ecological-niche-modelling}
@@ -759,7 +814,7 @@ create a rasterStack from these
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-25-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-26-1.pdf}
 \caption{}
 \end{figure}
 
@@ -844,7 +899,7 @@ Bounding lat/long data is from
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-30-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-31-1.pdf}
 \caption{}
 \end{figure}
 
@@ -932,7 +987,7 @@ And save shapefile in same directory
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{components/figure/manuscript-unnamed-chunk-37-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-38-1.pdf}
 \caption{}
 \end{figure}
 
@@ -945,7 +1000,7 @@ research using species occurrence data reproducible. In fact, the
 \texttt{rgbif} package has already been used in 22 scholarly
 publications (as of 2015-11-14).
 
-The \texttt{rgbif} package is relatively stable now, and should not have
+The \texttt{rgbif} package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the GBIF
 API.
 
@@ -960,7 +1015,7 @@ hard problem.
 \section{Acknowledgements}\label{acknowledgements}
 
 This project was supported in part by the Alfred P Sloan Foundation
-(Grant 2013-6-22).
+(Grant 2013-6-22), and the Helmsley Foundation (Grant XXXXXX).
 
 \section{Data Accessibility}\label{data-accessibility}
 
@@ -969,8 +1024,8 @@ data archive Zenodo under the digital object identifier (DOI). This DOI
 corresponds to a snapshot of the GitHub repository at
 \href{https://github.com/sckott/msrgbif}{github.com/sckott/msrgbif}.
 Software can be found at
-\href{https://github.com/ropensci/rgbif}{github.com/ropensci/rgbif},
-under the open and permissive MIT license.
+\href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
+under an MIT license.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}

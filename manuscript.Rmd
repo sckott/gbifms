@@ -365,6 +365,7 @@ The search API follows the GBIF API and is broken down into the following functi
 
 * Get a single numeric count of occurrenes - `occ_count()`
 * Search for occurrences - `occ_search()`
+* A simplified and optimized version of `occ_search()` - `occ_data()`
 * Get occurrences by occurrence identifier - `occ_get()`
 * Get occurrence metadata - `occ_metadata()`
 
@@ -428,7 +429,7 @@ Get only those occurrences with spatial issues
 occ_search(hasGeospatialIssue = TRUE, limit = 5)
 ```
 
-#### Cleaning data
+#### Data cleaning
 
 GBIF provides optional data issues with each occurrence record. These issues fall
 into many different pre-defined classes, covering issues with taxonomic names,
@@ -444,7 +445,47 @@ NROW(out)
 out %>% occ_issues(-cudc) %>% .$data %>% NROW
 ```
 
+## Mapping
+
+An obvious downstream use case for species occurrence data is to map the
+data. `rgbif` per se is largely not concerned with making this easier,
+although we do have a simple wrappar around `ggplot2` to make it easy to
+get a quick plot of occurrence data. For example, here we plot 100
+occurrences for _Puma concolor_.
+
+```{r fig.width=8, fig.height=4}
+key <- name_backbone(name='Puma concolor')$speciesKey
+dat <- occ_search(taxonKey = key, limit = 100, hasCoordinate = TRUE)
+gbifmap(dat$data)
+```
+
+Another package, [spoccutils][spoccutils]
+
+## GBIF data in other R packages
+
+We discuss usage of GBIF data in other R packages throughout the
+manuscript, but provide a synopsis here for clarity.
+
+### taxize
+
+Some of the GBIF taxonomic services are also avialable in [taxize][taxize],
+an R package that focuses on getting data from taxonomic data sources on
+the web. For example, with `get_gbifid()` one can get GBIF IDs used for
+a set of taxonomic names - then use those IDs in other functions in `taxize`
+to get additional information, like taxonomically downstream children.
+
+### spocc
+
+GBIF occurrence data is available in the R package [spocc][spocc] via `rgbif`.
+`spocc` is a unified interface for fetching species occurrence data from
+many sources on the web. For example, a user can collect occurrence data
+from GBIF, iDigBio, and iNaturalist, and easily combine them, then use other
+pacakages to clean and vizualize the data.
+
 # Use cases
+
+The following are three use cases for `rgbif`: niche modelling,
+spatial change in biodiversity, and distribution mapping.
 
 ### Ecological niche modelling
 
@@ -469,7 +510,7 @@ research using species occurrence data reproducible. In fact,
 the `rgbif` package has already been used in 22 scholarly publications
 (as of 2015-11-14).
 
-The `rgbif` package is relatively stable now, and should not have
+The `rgbif` package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the
 GBIF API.
 
@@ -484,7 +525,8 @@ very useful, but is actually quite a hard problem.
 # Acknowledgements
 
 This project was supported in part by the Alfred P Sloan
-Foundation (Grant 2013-6-22).
+Foundation (Grant 2013-6-22), and the Helmsley Foundation
+(Grant XXXXXX).
 
 # Data Accessibility
 
@@ -492,8 +534,8 @@ All scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI
 corresponds to a snapshot of the GitHub repository at
 [github.com/sckott/msrgbif](https://github.com/sckott/msrgbif). Software
-can be found at [github.com/ropensci/rgbif](https://github.com/ropensci/rgbif),
-under the open and permissive MIT license.
+can be found at [https://github.com/ropensci/rgbif](https://github.com/ropensci/rgbif),
+under an MIT license.
 
 # References
 
@@ -502,3 +544,6 @@ under the open and permissive MIT license.
 [cranrgbif]: https://cran.rstudio.com/web/packages/rgbif/
 [gbifdocs]: http://www.gbif.org/developer/summary
 [gbifissues]: http://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html
+[taxize]: https://github.com/ropensci/taxize
+[spocc]: https://github.com/ropensci/spocc
+[spoccutils]: https://github.com/ropensci/spocc
