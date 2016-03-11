@@ -110,7 +110,11 @@
     \author[cstar]{Scott Chamberlain\corref{c1}}
    \ead{scott(at)ropensci.org} 
    \cortext[c1]{Corresponding author}
+    \author[boettig]{Carl Boettiger}
+   \ead{carl(at)ropensci.org} 
+  
       \address[cstar]{University of California, Berkeley, CA, USA}    
+    \address[boettig]{University of California, Berkeley, CA, USA}    
   
   \begin{abstract}
   \begin{enumerate}
@@ -171,16 +175,17 @@ al.) for working with GBIF data in the R programming environment (R Core
 Team, 2014). R is a widely used language in academia, and in non-profit
 and private sectors. Importantly, R makes it easy to do all of the steps
 of the research process, including data management, data manipulation
-and cleaning, statistics, and vizualization. Thus, an R client for
+and cleaning, statistics, and visualization. Thus, an R client for
 getting GBIF data is a powerful tool to facilitate reproducible
 research.
 
 \section{The rgbif package}\label{the-rgbif-package}
 
 The \texttt{rgbif} package is nearly completely written in R (a small
-Javascript library is included for reading well known text), uses an
-\href{http://choosealicense.com/licenses/mit/}{MIT license} to maximize
-use everywhere. \texttt{rgbif} is developed publicly on GitHub at
+Javascript library is included for reading well known text (Herring,
+2011)), uses an \href{http://choosealicense.com/licenses/mit/}{MIT
+license} to maximize use everywhere. \texttt{rgbif} is developed
+publicly on GitHub at
 \href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
 where development versions of the package can be installed, and bugs and
 feature requests reported. Stable versions of \texttt{rgbif} can be
@@ -214,7 +219,7 @@ helpful for them in thinking about how people are using GBIF data.
 
 \subsection{Registry}\label{registry}
 
-The GBIF reqistry API services are spread across five sets of functions
+The GBIF registry API services are spread across five sets of functions
 via the main API:
 
 \begin{itemize}
@@ -281,9 +286,9 @@ searching for datasets.
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2580).
+lot of them (2637).
 
-Here, we seaerch for dataset metrics for a single dataset, with uuid
+Here, we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
 (Hymenoptera: Formicidae) of the World.
 
@@ -357,7 +362,7 @@ The GBIF taxonomic names API services are spread across five functions:
 
 The goal of these name functions is often to settle on a taxonomic name
 known to GBIF's database. This serves two purposes: 1) when referring to
-a taxonomic name, you can point to a URI on the internet, and 2) you can
+a taxonomic name, you can point to a URI on the Internet, and 2) you can
 search for metadata on a taxon, and occurrences of that taxon in GBIF.
 
 Taxonomic names are particularly tricky. Many different organizations
@@ -401,8 +406,8 @@ We can search the backbone taxonomy with the function
 
 One of the quickest ways to search for names is using
 \texttt{name\_suggest()}, which does a very quick search and returns
-minimal data. Here, we're searching for the query tem \emph{Pum}, and we
-get back many names:
+minimal data. Here, we're searching for the query term \emph{Pum}, and
+we get back many names:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -433,7 +438,7 @@ functions to get the exact taxon of interest.
 GBIF provides two ways to get occurrence data: through the
 \texttt{/occurrence/search} route (see \texttt{occ\_search}), or via the
 \texttt{/occurrence/download} route (many functions, see below).
-\texttt{occ\_search()} is the main funtion for the search route, and is
+\texttt{occ\_search()} is the main function for the search route, and is
 more appropriate for smaller data, while \texttt{occ\_download*()}
 functions are more appropriate for larger data requests.
 
@@ -461,8 +466,8 @@ The download API syntax is similar to the occurrence search API in that
 the same parameters are used, but the way in which the query is defined
 is different. For example, in the download API you can do greater than
 searches (i.e., \texttt{latitude \textgreater{} 50}), whereas you can
-not do that in the occurrence search API. Thus, unfortnately, we
-couldn't make the query interace exactly the same for both search and
+not do that in the occurrence search API. Thus, unfortunately, we
+couldn't make the query interface exactly the same for both search and
 download functions.
 
 Using the download service can consist of as few as three steps: 1)
@@ -543,7 +548,7 @@ following functions:
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Get a single numeric count of occurrenes - \texttt{occ\_count()}
+  Get a single numeric count of occurrences - \texttt{occ\_count()}
 \item
   Search for occurrences - \texttt{occ\_search()}
 \item
@@ -633,8 +638,8 @@ Search for many species
 \end{Highlighting}
 \end{Shaded}
 
-Spatial search, based on well known text format, or a bounding box set
-of four coordinates
+Spatial search, based on well known text format (Herring, 2011), or a
+bounding box set of four coordinates
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -688,7 +693,7 @@ via \texttt{occ\_search()} based on GBIF issues.
 
 An obvious downstream use case for species occurrence data is to map the
 data. \texttt{rgbif} per se is largely not concerned with making this
-easier, although we do have a simple wrappar around \texttt{ggplot2} to
+easier, although we do have a simple wrapper around \texttt{ggplot2} to
 make it easy to get a quick plot of occurrence data. For example, here
 we plot 100 occurrences for \emph{Puma concolor}.
 
@@ -700,13 +705,14 @@ we plot 100 occurrences for \emph{Puma concolor}.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}[htbp]
-\centering
 \includegraphics{components/figure/manuscript-unnamed-chunk-20-1.pdf}
-\caption{}
-\end{figure}
 
-Another package, \href{https://github.com/ropensci/spocc}{spoccutils}
+Another package, \href{https://github.com/ropensci/mapr}{mapr}, is the
+perfect mapping companion to \texttt{rgbif}. It has convenient functions
+for handling input data from \texttt{rgbif}, \texttt{spocc}, or
+arbitrary data.frame's, and output plots for base plots,
+\texttt{ggplot2}, \texttt{ggmap} (\texttt{ggplot2} with map layers
+underneath), and interactive maps on GitHub gists or with Leaflet.js.
 
 \subsection{GBIF data in other R
 packages}\label{gbif-data-in-other-r-packages}
@@ -716,7 +722,7 @@ manuscript, but provide a synopsis here for clarity.
 
 \subsubsection{taxize}\label{taxize}
 
-Some of the GBIF taxonomic services are also avialable in
+Some of the GBIF taxonomic services are also available in
 \href{https://github.com/ropensci/taxize}{taxize}, an R package that
 focuses on getting data from taxonomic data sources on the web. For
 example, with \texttt{get\_gbifid()} one can get GBIF IDs used for a set
@@ -731,15 +737,15 @@ GBIF occurrence data is available in the R package
 \texttt{spocc} is a unified interface for fetching species occurrence
 data from many sources on the web. For example, a user can collect
 occurrence data from GBIF, iDigBio, and iNaturalist, and easily combine
-them, then use other pacakages to clean and vizualize the data.
+them, then use other packages to clean and visualize the data.
 
 \section{Use cases}\label{use-cases}
 
-The following are three use cases for \texttt{rgbif}: niche modelling,
+The following are three use cases for \texttt{rgbif}: niche modeling,
 spatial change in biodiversity, and distribution mapping.
 
 \subsubsection{Ecological niche
-modelling}\label{ecological-niche-modelling}
+modeling}\label{ecological-niche-modeling}
 
 In this example, we plot actual occurrence data for \emph{Bradypus}
 species against a single predictor variable, BIO1 (annual mean
@@ -812,11 +818,7 @@ create a rasterStack from these
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}[htbp]
-\centering
 \includegraphics{components/figure/manuscript-unnamed-chunk-26-1.pdf}
-\caption{}
-\end{figure}
 
 \subsubsection{Biodiversity in big
 cities}\label{biodiversity-in-big-cities}
@@ -897,11 +899,7 @@ Bounding lat/long data is from
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}[htbp]
-\centering
 \includegraphics{components/figure/manuscript-unnamed-chunk-31-1.pdf}
-\caption{}
-\end{figure}
 
 \subsubsection{Valley oak occurrence data
 comparison}\label{valley-oak-occurrence-data-comparison}
@@ -985,11 +983,7 @@ And save shapefile in same directory
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}[htbp]
-\centering
 \includegraphics{components/figure/manuscript-unnamed-chunk-38-1.pdf}
-\caption{}
-\end{figure}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
@@ -1012,7 +1006,7 @@ occurrences, not those in human curated scenarios. Making removal of
 these occurrences easy would be very useful, but is actually quite a
 hard problem.
 
-\section{Acknowledgements}\label{acknowledgements}
+\section{Acknowledgments}\label{acknowledgments}
 
 This project was supported in part by the Alfred P Sloan Foundation
 (Grant 2013-6-22), and the Helmsley Foundation (Grant XXXXXX).
@@ -1065,6 +1059,10 @@ through the cracks: The fading history of a large iconic predator.
 Ficetola GF., Rondinini C., Bonardi A., Baisero D., Padoa-Schioppa E.
 2014. Habitat availability for amphibians and extinction threat: A
 global analysis. \emph{Diversity and Distributions} 21:302--311.
+
+Herring J. 2011. OpenGIS implementation standard for geographic
+information-simple feature access-part 1: Common architecture. \emph{OGC
+Document} 4:122--127.
 
 Mar{í}a Mendoza., Ospina OE., C{á}rdenas-Henao H., Garc{í}a-R JC. 2015.
 A likelihood inference of historical biogeography in the world's most
