@@ -13,18 +13,38 @@ author:
 address:
   - code: cstar
     address: |
-      University of California, Berkeley, CA, USA
+      rOpenSci, Museum of Paleontology, University of California, Berkeley, CA, USA
   - code: boettig
     address: |
-      University of California, Berkeley, CA, USA
+      rOpenSci, Department of Enivornmental Science, Policy and Management, University of California, Berkeley, CA, USA
 abstract: |
-      1. xxx
+      Corresponding Author:
 
-      2. xxx
+      Scott Chamberlain
 
-      3. xxx
+      rOpenSci, Museum of Paleontology, University of California, Berkeley, CA, USA
 
-      4. xxxx
+      Email address: [scott@ropensci.org](mailto:scott@ropensci.org)
+
+      \newpage
+
+      Background. The number of individuals of each species in
+        a given location forms the basis for many sub-fields of ecology and
+        evolution. Data on individuals, including which species, and
+        where they're found, can be used for a large number of research
+        questions. Global Biodiversity Information Facility (hereafter, GBIF)
+        is the largest of these. Programmatic clients for GBIF would
+        make research dealing with GBIF data much easier.
+
+      Methods. We have developed a client to access GBIF data for each
+        of the R and Python programming languages: `rgbif` and `pygbif`.
+
+      Results. For both clients, we describe their design and utility,
+        and demonstrate many use cases.
+
+      Discussion. Programmatic acccess to GBIF will facilitate more open
+        and reproducible science. We hope that all scientists using GBIF
+        data will do so with one of these two clients.
 
 bibliography: components/references.bib
 csl: components/peerj.csl
@@ -50,10 +70,16 @@ opts_chunk$set(
   collapse = TRUE,
   verbose = TRUE
 )
+
 basename <- gsub(".Rmd", "", knitr:::knit_concord$get('infile'))
 opts_chunk$set(fig.path = paste("components/figure/", basename, "-", sep=""),
                cache.path = paste("components/cache/", basename, "/", sep=""))
+
+# tibble options
+options(tibble.max_extra_cols = 10)
 ```
+
+\newpage
 
 # Introduction
 
@@ -105,12 +131,12 @@ organization), and a network is a group of datasets (managed by GBIF).
 Each record has some taxonomic name associated with it, which itself is linked to
 a lot of other taxonomic data. GBIF maintains their own taxonomic data.
 
-All this organization matters because you can navigate through GBIF data through all
-these organizational levels.
+This organization matters because you can navigate through GBIF data through
+these various organizational levels.
 
 # The clients
 
-## The rgbif package
+## rgbif
 
 Herein, we describe the `rgbif` software package [@rgbif] for working with
 GBIF data in the R programming environment [@R]. R is a widely used
@@ -139,17 +165,17 @@ distribution network for R packages. `rgbif` is part of the rOpenSci project
 (http://ropensci.org), a developer network making R software to facilitate
 reproducible research.
 
-## The pygbif library
+## pygbif
 
 `pygbif` [@pygbif] is a Python library for working with GBIF data in
-the Python programming environment [@python]. Python is a general
+the Python programming environment. Python is a general
 purpose programming language used widely in all sectors, and for
 all parts of software development including server and client
 side use cases. Python is used exclusively in some scientific
 disciplines (e.g., astronomy), and has partial usage in other
 disciplines. A Python client for GBIF data is an important tool
 given the even wider usage of Python than R, though maybe slightly
-less than R for ecology/biology.
+less than R for ecology/biology disciplines.
 
 ```{python eval=FALSE}
 pip install pygbif
@@ -161,7 +187,7 @@ import pygbif
 
 The `pygbif` library is less mature and complete than the R package. It also
 uses an [MIT license][mit] to maximize use everywhere. `pygbif` is developed
-publicly on GitHub at [https://github.com/sckott/pygbif][ghpygbif], where
+publicly on GitHub at <https://github.com/sckott/pygbif>, where
 development versions of the package can be installed, and bugs and feature
 requests reported. Stable versions of `pygbif` can be installed from
 [pypi][pypipygbif], the distribution network for Python libraries.
@@ -501,7 +527,7 @@ name only), and metadata is shown on top of the `data.frame` to indicate data
 found and returned, media records found, unique taxonomic hierarchies returned,
 and the query executed.
 
-The output of these examples, except one, aren't shown, but all run correctly.
+The output of these examples, except one, aren't shown.
 
 Search by species name, using `name_backbone()` first to get key
 
@@ -525,16 +551,21 @@ occ_search(taxonKey = keys, limit = 5, return = 'data')
 ```
 
 Spatial search, based on well known text format [@wkt], or a bounding box set of
-four coordinates
+four coordinates. The well known text string and the bounding box in the below
+example specify the same rectangular area in California, centering
+approximately on Sacramento. Whereas the bounding box format requires
+`longitude SW corner, latitude SW corner, longitude NE corner, latitude NE corner`,
+the well known text string requires an extra long/lat pair to close the polygon.
 
 ```{r eval=FALSE}
 # well known text
-occ_search(geometry = 'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))', limit = 20)
+wkt <- 'POLYGON((-122.6 39.9,-120.0 39.9,-120.0 37.9,-122.6 37.9,-122.6 39.9))'
+occ_search(geometry = wkt, limit = 20)
 # bounding box
-occ_search(geometry = c(-125.0,38.4,-121.8,40.9), limit = 20)
+occ_search(geometry = c(-122.6,37.9,-120.0,39.9), limit = 20)
 ```
 
-Get only occurrences with lat/long data
+Get only occurrences with lat/long data using the `hasCoordinate` parameter
 
 ```{r eval=FALSE}
 occ_search(hasCoordinate = TRUE, limit = 5)
@@ -627,7 +658,7 @@ NROW(out)
 out %>% occ_issues(-cudc) %>% .$data %>% NROW
 ```
 
-There's no equivalent interface in `pygbif`.
+There's no equivalent interface in `pygbif` yet.
 
 ## Mapping
 
@@ -672,6 +703,20 @@ many sources on the web. For example, a user can collect occurrence data
 from GBIF, iDigBio, and iNaturalist, and easily combine them, then use other
 packages to clean and visualize the data.
 
+# R vs. Python
+
+Both R and Python are commonly used in science, and can be used for similar
+tasks. Python, however, is a more general programming lanugae, and can be
+used in more contexts than R can be used in.
+
+The `rgbif` and `pygbif` clients can do a lot of the same tasks. We
+envision `rgbif` as being more common in workflows of academics asking
+research questions, whereas `pygbif` can do that as well, but may be more
+easily used in a website.
+
+The R client `rgbif` has much more development time than `pygbif`,
+but through time `pygbif` will become equally mature.
+
 # Use cases
 
 The following are three use cases for `rgbif`: niche modeling,
@@ -695,8 +740,8 @@ spatial change in biodiversity, and distribution mapping.
 # Conclusions and future directions
 
 The `rgbif` and `pygbif` libraries provide programmatic interfaces to GBIF's
-application programming interface (API) - a powerful tool for making
-research using species occurrence data reproducible. In fact,
+application programming interface (API) - a powerful tool for working with
+species occurrence data, and facilitating reproducible research. In fact,
 the `rgbif` package has already been used in 22 scholarly publications
 (as of 2015-11-14).
 
@@ -704,7 +749,7 @@ The `rgbif` package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the
 GBIF API.
 
-The `pygbif` library is still in early development, and will
+The `pygbif` library is in early development, and will
 greatly benefit from any feedback and use cases.
 
 One area of focus in the future is to attempt to solve many use
@@ -713,7 +758,8 @@ example, some specimens are included in GBIF that are located
 in botanical gardens. For many research questions, researchers are
 interested in "wild" type occurrences, not those in human curated
 scenarios. Making removal of these occurrences easy would be
-very useful, but is actually quite a hard problem.
+very useful, but is actually quite a hard problem. There are many
+other problems like this.
 
 # Acknowledgments
 
@@ -726,9 +772,13 @@ This project was supported in part by the Alfred P Sloan Foundation
 All scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI
 corresponds to a snapshot of the GitHub repository at
-[github.com/sckott/msrgbif](https://github.com/sckott/msrgbif). Software
-can be found at [https://github.com/ropensci/rgbif](https://github.com/ropensci/rgbif),
-under an MIT license.
+<https://github.com/sckott/msrgbif>. Software can be found at
+<https://github.com/ropensci/rgbif> and <https://github.com/sckott/pygbif>,
+both under MIT licenses. We thank all the users that have used `rgbif`
+and `pygbif` and have given feedback and reported bugs. In addition, we
+greatly appreciate the all contributions to the two packages, found
+at <https://github.com/ropensci/rgbif/graphs/contributors> and
+<https://github.com/sckott/pygbif/graphs/contributors>.
 
 # References
 

@@ -18,7 +18,7 @@ _Load libraries_
 library("rgbif")
 library("dismo")
 library("maptools")
-library("plyr")
+library("dplyr")
 ```
 
 _Raster files_
@@ -43,9 +43,9 @@ _Get GBIF data using the rOpenSci package rgbif_
 nn <- name_lookup("bradypus*", rank = "species")
 nn <- na.omit(unique(nn$data$nubKey))
 df <- occ_search(taxonKey = nn, hasCoordinate = TRUE, limit = 500)
-df <- df[ sapply(df, function(x) class(x$data)) %in% "data.frame" ]
-df <- ldply(lapply(df, "[[", "data"))
-df2 <- df[,c('decimalLongitude','decimalLatitude')]
+df_data <- df[ sapply(df, function(x) any(class(x$data) %in% "tbl_df")) ]
+df_data <- dplyr::bind_rows(lapply(df_data, "[[", "data"))
+df2 <- df_data %>% dplyr::select(decimalLongitude, decimalLatitude)
 ```
 
 _Plot_

@@ -18,25 +18,44 @@ _Load libraries_
 library("rgbif")
 library("ggplot2")
 library("plyr")
-library("RCurl")
+library("httr")
 library("RColorBrewer")
 ```
 
 _Get bounding boxes for some cites_
 
-Bounding lat/long data is from [here](https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt).
+Bounding lat/long data is from <https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt>.
 
 ```{r box}
-rawdat <- getURL('https://raw.githubusercontent.com/amyxzhang/boundingbox-cities/master/boundbox.txt')
-dat <- read.table(text = rawdat, header = FALSE, sep="\t", col.names=c("city","minlat","maxlon","maxlat","minlon"))
-dat <- data.frame(city=dat$city, minlon=dat$minlon, minlat=dat$minlat, maxlon=dat$maxlon, maxlat=dat$maxlat)
+url <- 'https://raw.githubusercontent.com/amyxzhang/
+boundingbox-cities/master/boundbox.txt'
+rawdat <- content(GET(sub("\n", "", url)), as = "text")
+dat <- read.table(
+  text = rawdat, header = FALSE, 
+  sep = "\t", col.names = c("city","minlat","maxlon","maxlat","minlon"),
+  stringsAsFactors = FALSE)
+dat <- data.frame(
+  city = dat$city, minlon = dat$minlon, 
+  minlat = dat$minlat, maxlon = dat$maxlon, 
+  maxlat = dat$maxlat,
+  stringsAsFactors = FALSE
+)
 ```
+
+A helper function to get count data. GBIF has a count API, but we can't use
+that with a geometry search as that API doesn't support geospatial search.
+We can however use the search API via `occ_search()` and set `limit = 1` so 
+that we 
 
 ```{r newsearch}
 getdata <- function(x){
   coords <- as.numeric(x[c('minlon','minlat','maxlon','maxlat')])
-  num <- occ_search(geometry = coords)$meta$count
-  data.frame(city=x['city'], richness=num, stringsAsFactors = FALSE)
+  num <- occ_search(geometry = coords, limit = 1)$meta$count
+  data.frame(
+    city = x['city'], 
+    richness = num, 
+    stringsAsFactors = FALSE
+  )
 }
 ```
 
@@ -47,13 +66,13 @@ out <- apply(dat, 1, getdata)
 _Merge to original table_
 
 ```{r}
-out <- merge(dat, ldply(out), by="city")
+out <- merge(dat, ldply(out), by = "city")
 ```
 
 _Add centroids from bounding boxes_
 
 ```{r}
-out <- transform(out, lat = (minlat+maxlat)/2, lon = (minlon+maxlon)/2)
+out <- transform(out, lat = (minlat + maxlat)/2, lon = (minlon + maxlon)/2)
 ```
 
 _Plot data_

@@ -1,8 +1,8 @@
 \documentclass[author-year, review, 11pt]{components/elsarticle} %review=doublespace preprint=single 5p=2 column
 %%% Begin My package additions %%%%%%%%%%%%%%%%%%%
 \usepackage[hyphens]{url}
-\usepackage{lineno} % add 
-  \linenumbers % turns line numbering on 
+\usepackage{lineno} % add
+  \linenumbers % turns line numbering on
 \bibliographystyle{elsarticle-harv}
 \biboptions{sort&compress} % For natbib
 \usepackage{graphicx}
@@ -113,25 +113,47 @@
     \author[boettig]{Carl Boettiger}
    \ead{carl(at)ropensci.org} 
   
-      \address[cstar]{University of California, Berkeley, CA, USA}    
-    \address[boettig]{University of California, Berkeley, CA, USA}    
+      \address[cstar]{rOpenSci, Museum of Paleontology, University of California, Berkeley,
+CA, USA}
+    \address[boettig]{rOpenSci, Department of Enivornmental Science, Policy and Management,
+University of California, Berkeley, CA, USA}
   
   \begin{abstract}
-  \begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-  \item
-    xxx
-  \item
-    xxx
-  \item
-    xxx
-  \item
-    xxxx
-  \end{enumerate}
+  Corresponding Author:
+  
+  Scott Chamberlain
+  
+  rOpenSci, Museum of Paleontology, University of California, Berkeley,
+  CA, USA
+  
+  Email address:
+  \href{mailto:scott@ropensci.org}{\href{mailto:scott@ropensci.org}{\nolinkurl{scott@ropensci.org}}}
+  
+  \newpage
+  
+  Background. The number of individuals of each species in a given
+  location forms the basis for many sub-fields of ecology and evolution.
+  Data on individuals, including which species, and where they're found,
+  can be used for a large number of research questions. Global
+  Biodiversity Information Facility (hereafter, GBIF) is the largest of
+  these. Programmatic clients for GBIF would make research dealing with
+  GBIF data much easier.
+  
+  Methods. We have developed a client to access GBIF data for each of the
+  R and Python programming languages: \texttt{rgbif} and \texttt{pygbif}.
+  
+  Results. For both clients, we describe their design and utility, and
+  demonstrate many use cases.
+  
+  Discussion. Programmatic acccess to GBIF will facilitate more open and
+  reproducible science. We hope that all scientists using GBIF data will
+  do so with one of these two clients.
   \end{abstract}
   
  \end{frontmatter}
 
+
+\newpage
 
 \section{Introduction}\label{introduction}
 
@@ -189,12 +211,12 @@ Each record has some taxonomic name associated with it, which itself is
 linked to a lot of other taxonomic data. GBIF maintains their own
 taxonomic data.
 
-All this organization matters because you can navigate through GBIF data
-through all these organizational levels.
+This organization matters because you can navigate through GBIF data
+through these various organizational levels.
 
 \section{The clients}\label{the-clients}
 
-\subsection{The rgbif package}\label{the-rgbif-package}
+\subsection{rgbif}\label{rgbif}
 
 Herein, we describe the \texttt{rgbif} software package (Chamberlain et
 al.) for working with GBIF data in the R programming environment (R Core
@@ -219,16 +241,16 @@ distribution network for R packages. \texttt{rgbif} is part of the
 rOpenSci project (\url{http://ropensci.org}), a developer network making
 R software to facilitate reproducible research.
 
-\subsection{The pygbif library}\label{the-pygbif-library}
+\subsection{pygbif}\label{pygbif}
 
 \texttt{pygbif} (Chamberlain) is a Python library for working with GBIF
-data in the Python programming environment ({\textbf{???}}). Python is a
-general purpose programming language used widely in all sectors, and for
-all parts of software development including server and client side use
-cases. Python is used exclusively in some scientific disciplines (e.g.,
-astronomy), and has partial usage in other disciplines. A Python client
-for GBIF data is an important tool given the even wider usage of Python
-than R, though maybe slightly less than R for ecology/biology.
+data in the Python programming environment. Python is a general purpose
+programming language used widely in all sectors, and for all parts of
+software development including server and client side use cases. Python
+is used exclusively in some scientific disciplines (e.g., astronomy),
+and has partial usage in other disciplines. A Python client for GBIF
+data is an important tool given the even wider usage of Python than R,
+though maybe slightly less than R for ecology/biology disciplines.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -246,11 +268,11 @@ The \texttt{pygbif} library is less mature and complete than the R
 package. It also uses an
 \href{http://choosealicense.com/licenses/mit/}{MIT license} to maximize
 use everywhere. \texttt{pygbif} is developed publicly on GitHub at
-\href{https://github.com/sckott/pygbif}{\url{https://github.com/sckott/pygbif}},
-where development versions of the package can be installed, and bugs and
-feature requests reported. Stable versions of \texttt{pygbif} can be
-installed from \href{https://pypi.python.org/pypi/pygbif}{pypi}, the
-distribution network for Python libraries.
+\url{https://github.com/sckott/pygbif}, where development versions of
+the package can be installed, and bugs and feature requests reported.
+Stable versions of \texttt{pygbif} can be installed from
+\href{https://pypi.python.org/pypi/pygbif}{pypi}, the distribution
+network for Python libraries.
 
 \subsubsection{Library interfaces}\label{library-interfaces}
 
@@ -354,7 +376,7 @@ datasets of type \texttt{OCCURRENCE}:
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2737).
+lot of them (16057).
 
 Here, we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -472,7 +494,7 @@ parameter in the GBIF occurrences API expects a GBIF backbone taxon key.
 
 The GBIF backbone taxonomy is used in GBIF to have a consistent way to
 refer to taxonomic names throughout their services. The backbone has
-4410899 unique names and 2497114 species names. The backbone taxonomy is
+5194833 unique names and 2420842 species names. The backbone taxonomy is
 also a dataset with key \texttt{d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}
 (\url{http://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}).
 
@@ -711,8 +733,7 @@ only), and metadata is shown on top of the \texttt{data.frame} to
 indicate data found and returned, media records found, unique taxonomic
 hierarchies returned, and the query executed.
 
-The output of these examples, except one, aren't shown, but all run
-correctly.
+The output of these examples, except one, aren't shown.
 
 Search by species name, using \texttt{name\_backbone()} first to get key
 
@@ -772,18 +793,26 @@ Search for many species
 \end{Shaded}
 
 Spatial search, based on well known text format (Herring, 2011), or a
-bounding box set of four coordinates
+bounding box set of four coordinates. The well known text string and the
+bounding box in the below example specify the same rectangular area in
+California, centering approximately on Sacramento. Whereas the bounding
+box format requires
+\texttt{longitude SW corner, latitude SW corner, longitude NE corner, latitude NE corner},
+the well known text string requires an extra long/lat pair to close the
+polygon.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# well known text}
-\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \StringTok{'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\NormalTok{wkt <-}\StringTok{ 'POLYGON((-122.6 39.9,-120.0 39.9,-120.0 37.9,-122.6 37.9,-122.6 39.9))'}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{wkt, }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
 \CommentTok{# bounding box}
-\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \KeywordTok{c}\NormalTok{(-}\FloatTok{125.0}\NormalTok{,}\FloatTok{38.4}\NormalTok{,-}\FloatTok{121.8}\NormalTok{,}\FloatTok{40.9}\NormalTok{), }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \KeywordTok{c}\NormalTok{(-}\FloatTok{122.6}\NormalTok{,}\FloatTok{37.9}\NormalTok{,-}\FloatTok{120.0}\NormalTok{,}\FloatTok{39.9}\NormalTok{), }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Get only occurrences with lat/long data
+Get only occurrences with lat/long data using the \texttt{hasCoordinate}
+parameter
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -901,7 +930,7 @@ via \texttt{occ\_search()} based on GBIF issues.
 \end{Highlighting}
 \end{Shaded}
 
-There's no equivalent interface in \texttt{pygbif}.
+There's no equivalent interface in \texttt{pygbif} yet.
 
 \subsection{Mapping}\label{mapping}
 
@@ -955,6 +984,21 @@ data from many sources on the web. For example, a user can collect
 occurrence data from GBIF, iDigBio, and iNaturalist, and easily combine
 them, then use other packages to clean and visualize the data.
 
+\section{R vs.~Python}\label{r-vs.python}
+
+Both R and Python are commonly used in science, and can be used for
+similar tasks. Python, however, is a more general programming lanugae,
+and can be used in more contexts than R can be used in.
+
+The \texttt{rgbif} and \texttt{pygbif} clients can do a lot of the same
+tasks. We envision \texttt{rgbif} as being more common in workflows of
+academics asking research questions, whereas \texttt{pygbif} can do that
+as well, but may be more easily used in a website.
+
+The R client \texttt{rgbif} has much more development time than
+\texttt{pygbif}, but through time \texttt{pygbif} will become equally
+mature.
+
 \section{Use cases}\label{use-cases}
 
 The following are three use cases for \texttt{rgbif}: niche modeling,
@@ -978,7 +1022,7 @@ package.
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"dismo"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"maptools"}\NormalTok{)}
-\KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1010,9 +1054,9 @@ create a rasterStack from these
 \NormalTok{nn <-}\StringTok{ }\KeywordTok{name_lookup}\NormalTok{(}\StringTok{"bradypus*"}\NormalTok{, }\DataTypeTok{rank =} \StringTok{"species"}\NormalTok{)}
 \NormalTok{nn <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{unique}\NormalTok{(nn$data$nubKey))}
 \NormalTok{df <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{nn, }\DataTypeTok{hasCoordinate =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
-\NormalTok{df <-}\StringTok{ }\NormalTok{df[ }\KeywordTok{sapply}\NormalTok{(df, function(x) }\KeywordTok{class}\NormalTok{(x$data)) %in%}\StringTok{ "data.frame"} \NormalTok{]}
-\NormalTok{df <-}\StringTok{ }\KeywordTok{ldply}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(df, }\StringTok{"[["}\NormalTok{, }\StringTok{"data"}\NormalTok{))}
-\NormalTok{df2 <-}\StringTok{ }\NormalTok{df[,}\KeywordTok{c}\NormalTok{(}\StringTok{'decimalLongitude'}\NormalTok{,}\StringTok{'decimalLatitude'}\NormalTok{)]}
+\NormalTok{df_data <-}\StringTok{ }\NormalTok{df[ }\KeywordTok{sapply}\NormalTok{(df, function(x) }\KeywordTok{any}\NormalTok{(}\KeywordTok{class}\NormalTok{(x$data) %in%}\StringTok{ "tbl_df"}\NormalTok{)) ]}
+\NormalTok{df_data <-}\StringTok{ }\NormalTok{dplyr::}\KeywordTok{bind_rows}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(df_data, }\StringTok{"[["}\NormalTok{, }\StringTok{"data"}\NormalTok{))}
+\NormalTok{df2 <-}\StringTok{ }\NormalTok{df_data %>%}\StringTok{ }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(decimalLongitude, decimalLatitude)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1049,7 +1093,7 @@ using GBIF data from the \texttt{rgbif} package.
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
-\KeywordTok{library}\NormalTok{(}\StringTok{"RCurl"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"httr"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"RColorBrewer"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -1057,22 +1101,41 @@ using GBIF data from the \texttt{rgbif} package.
 \emph{Get bounding boxes for some cites}
 
 Bounding lat/long data is from
-\href{https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt}{here}.
+\url{https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{rawdat <-}\StringTok{ }\KeywordTok{getURL}\NormalTok{(}\StringTok{'https://raw.githubusercontent.com/amyxzhang/boundingbox-cities/master/boundbox.txt'}\NormalTok{)}
-\NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\DataTypeTok{text =} \NormalTok{rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names=}\KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{))}
-\NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{dat$city, }\DataTypeTok{minlon=}\NormalTok{dat$minlon, }\DataTypeTok{minlat=}\NormalTok{dat$minlat, }\DataTypeTok{maxlon=}\NormalTok{dat$maxlon, }\DataTypeTok{maxlat=}\NormalTok{dat$maxlat)}
+\NormalTok{url <-}\StringTok{ 'https://raw.githubusercontent.com/amyxzhang/}
+\StringTok{boundingbox-cities/master/boundbox.txt'}
+\NormalTok{rawdat <-}\StringTok{ }\KeywordTok{content}\NormalTok{(}\KeywordTok{GET}\NormalTok{(}\KeywordTok{sub}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{""}\NormalTok{, url)), }\DataTypeTok{as =} \StringTok{"text"}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}
+  \DataTypeTok{text =} \NormalTok{rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }
+  \DataTypeTok{sep =} \StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{),}
+  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{city =} \NormalTok{dat$city, }\DataTypeTok{minlon =} \NormalTok{dat$minlon, }
+  \DataTypeTok{minlat =} \NormalTok{dat$minlat, }\DataTypeTok{maxlon =} \NormalTok{dat$maxlon, }
+  \DataTypeTok{maxlat =} \NormalTok{dat$maxlat,}
+  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
+\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+A helper function to get count data. GBIF has a count API, but we can't
+use that with a geometry search as that API doesn't support geospatial
+search. We can however use the search API via \texttt{occ\_search()} and
+set \texttt{limit = 1} so that we
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{getdata <-}\StringTok{ }\NormalTok{function(x)\{}
   \NormalTok{coords <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(x[}\KeywordTok{c}\NormalTok{(}\StringTok{'minlon'}\NormalTok{,}\StringTok{'minlat'}\NormalTok{,}\StringTok{'maxlon'}\NormalTok{,}\StringTok{'maxlat'}\NormalTok{)])}
-  \NormalTok{num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{coords)$meta$count}
-  \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{x[}\StringTok{'city'}\NormalTok{], }\DataTypeTok{richness=}\NormalTok{num, }\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+  \NormalTok{num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{coords, }\DataTypeTok{limit =} \DecValTok{1}\NormalTok{)$meta$count}
+  \KeywordTok{data.frame}\NormalTok{(}
+    \DataTypeTok{city =} \NormalTok{x[}\StringTok{'city'}\NormalTok{], }
+    \DataTypeTok{richness =} \NormalTok{num, }
+    \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
+  \NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -1087,7 +1150,7 @@ Bounding lat/long data is from
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{out <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(dat, }\KeywordTok{ldply}\NormalTok{(out), }\DataTypeTok{by=}\StringTok{"city"}\NormalTok{)}
+\NormalTok{out <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(dat, }\KeywordTok{ldply}\NormalTok{(out), }\DataTypeTok{by =} \StringTok{"city"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1095,7 +1158,7 @@ Bounding lat/long data is from
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{out <-}\StringTok{ }\KeywordTok{transform}\NormalTok{(out, }\DataTypeTok{lat =} \NormalTok{(minlat+maxlat)/}\DecValTok{2}\NormalTok{, }\DataTypeTok{lon =} \NormalTok{(minlon+maxlon)/}\DecValTok{2}\NormalTok{)}
+\NormalTok{out <-}\StringTok{ }\KeywordTok{transform}\NormalTok{(out, }\DataTypeTok{lat =} \NormalTok{(minlat +}\StringTok{ }\NormalTok{maxlat)/}\DecValTok{2}\NormalTok{, }\DataTypeTok{lon =} \NormalTok{(minlon +}\StringTok{ }\NormalTok{maxlon)/}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1152,9 +1215,8 @@ distribution of the same species from the
 
 \emph{Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)}
 
-From
-\href{http://esp.cr.usgs.gov/data/little/}{\url{http://esp.cr.usgs.gov/data/little/}}.
-And save shapefile in same directory
+From \url{http://esp.cr.usgs.gov/data/little}. And save shapefile in
+same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1189,13 +1251,21 @@ And save shapefile in same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{100}\NormalTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\DecValTok{125}\NormalTok{, -}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{), }\DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{100}\NormalTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{,}
+     \DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\DecValTok{125}\NormalTok{, -}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{,}
+     \DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
 \CommentTok{# add shape from Atlas of US Trees}
-\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{), }\DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{),}
+     \DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
 \CommentTok{# add Gbif presence points}
-\KeywordTok{points}\NormalTok{(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{)}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{, }\StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{, }\DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
+\KeywordTok{points}\NormalTok{(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude,}
+       \DataTypeTok{cex =} \NormalTok{.}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,}
+       \DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{,}
+       \DataTypeTok{legend =} \StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{,}
+       \DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1206,16 +1276,16 @@ directions}\label{conclusions-and-future-directions}
 
 The \texttt{rgbif} and \texttt{pygbif} libraries provide programmatic
 interfaces to GBIF's application programming interface (API) - a
-powerful tool for making research using species occurrence data
-reproducible. In fact, the \texttt{rgbif} package has already been used
-in 22 scholarly publications (as of 2015-11-14).
+powerful tool for working with species occurrence data, and facilitating
+reproducible research. In fact, the \texttt{rgbif} package has already
+been used in 22 scholarly publications (as of 2015-11-14).
 
 The \texttt{rgbif} package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the GBIF
 API.
 
-The \texttt{pygbif} library is still in early development, and will
-greatly benefit from any feedback and use cases.
+The \texttt{pygbif} library is in early development, and will greatly
+benefit from any feedback and use cases.
 
 One area of focus in the future is to attempt to solve many use cases
 that have been brought up with respect to GBIF data. For example, some
@@ -1223,7 +1293,7 @@ specimens are included in GBIF that are located in botanical gardens.
 For many research questions, researchers are interested in ``wild'' type
 occurrences, not those in human curated scenarios. Making removal of
 these occurrences easy would be very useful, but is actually quite a
-hard problem.
+hard problem. There are many other problems like this.
 
 \section{Acknowledgments}\label{acknowledgments}
 
@@ -1236,10 +1306,14 @@ No. 2016PG-BRI004).
 All scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI
 corresponds to a snapshot of the GitHub repository at
-\href{https://github.com/sckott/msrgbif}{github.com/sckott/msrgbif}.
-Software can be found at
-\href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
-under an MIT license.
+\url{https://github.com/sckott/msrgbif}. Software can be found at
+\url{https://github.com/ropensci/rgbif} and
+\url{https://github.com/sckott/pygbif}, both under MIT licenses. We
+thank all the users that have used \texttt{rgbif} and \texttt{pygbif}
+and have given feedback and reported bugs. In addition, we greatly
+appreciate the all contributions to the two packages, found at
+\url{https://github.com/ropensci/rgbif/graphs/contributors} and
+\url{https://github.com/sckott/pygbif/graphs/contributors}.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -1260,10 +1334,11 @@ Ceballos G., Ehrlich PR., Barnosky AD., Garcia A., Pringle RM., Palmer
 TM. 2015. Accelerated modern human-induced species losses: Entering the
 sixth mass extinction. \emph{Science Advances} 1:e1400253--e1400253.
 
-Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{Pygbif: Interface to
-the global 'biodiversity' information facility 'aPI'}.
+Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{rgbif: An r interface
+to the global 'biodiversity' information facility API}.
 
-Chamberlain S. \emph{Rgbif: Python client for gBIF}.
+Chamberlain S. \emph{pygbif: A python interface to the global
+biodiversity information facility API}.
 
 Faulkner KT., Robertson MP., Rouget M., Wilson JR. 2014. A simple, rapid
 methodology for developing invasive species watch lists.
