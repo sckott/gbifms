@@ -197,10 +197,10 @@ requests reported. Stable versions of `pygbif` can be installed from
 `rgbif` and `pygbif` are designed following the [GBIF Application Programming Interface][gbifdocs],
 or API. The GBIF API has four major components: registry, taxonomic names,
 occurrences, and maps. We also include functions to interface with the OAI-PMH
-GBIF service; only dataset information is available vis this service, however. We
-ignore maps in both libraries as it is concerned with generating maps primarily for web
-applications. Both libraries have a suite of functions dealing with each of registry, taxonomic
-names, and occurrences - we'll go through each in turn describing design and example usage.
+GBIF service; only dataset information is available vis this service, however. We now include
+an interface to the GBIF map API, but we for now ignore maps in `pygbif`. Both libraries have a
+suite of functions dealing with each of registry, taxonomic, names, and occurrences - we'll go
+through each in turn describing design of the user interface and example usage.
 
 ## GBIF headers
 
@@ -319,7 +319,8 @@ The GBIF taxonomic names API services are spread across five functions in `rgbif
 * Name usage of a name according to a checklist - `name_usage()`
 * GBIF name parser - `parsenames()`
 
-`pygbif` only has `name_backbone()` and `name_suggest()` at this time.
+`pygbif` has all the same method except `rgbif::parsenames()` is `name_parser()`
+in `pygbif`.
 
 The goal of these name functions is often to settle on a taxonomic name
 known to GBIF's database. This serves two purposes: 1) when referring to
@@ -682,6 +683,10 @@ GitHub gists or with Leaflet.js.
 
 There's no equivalent interface in `pygbif`.
 
+## GBIF Mapping API
+
+<!-- FILL ME IN -->
+
 ## GBIF data in other R packages
 
 We discuss usage of GBIF data in other R packages throughout the
@@ -742,8 +747,8 @@ spatial change in biodiversity, and distribution mapping.
 The `rgbif` and `pygbif` libraries provide programmatic interfaces to GBIF's
 application programming interface (API) - a powerful tool for working with
 species occurrence data, and facilitating reproducible research. In fact,
-the `rgbif` package has already been used in 22 scholarly publications
-(as of 2015-11-14).
+the `rgbif` package has already been used in 20 scholarly publications
+(as of 2016-08-10) [@Amano_2016, @Bartomeus_2013, @Barve_2014, @Bone_2015, @Collins_2015, @Drozd_2013, @Kong_2015, @Richardson_2015, @Turner_2015, @Verheijen_2015, @Zizka_2015, @Butterfield_2016, @Dellinger_2015, @Feitosa_2015, @Malhado_2015, @Werner_2015, @Robertson_2016, @Davison_2015, @Janssens_2016].
 
 The `rgbif` package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the

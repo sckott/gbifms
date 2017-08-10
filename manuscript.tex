@@ -376,7 +376,7 @@ datasets of type \texttt{OCCURRENCE}:
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (16057).
+lot of them (16084).
 
 Here, we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -494,7 +494,7 @@ parameter in the GBIF occurrences API expects a GBIF backbone taxon key.
 
 The GBIF backbone taxonomy is used in GBIF to have a consistent way to
 refer to taxonomic names throughout their services. The backbone has
-5194833 unique names and 2420842 species names. The backbone taxonomy is
+5296599 unique names and 2525274 species names. The backbone taxonomy is
 also a dataset with key \texttt{d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}
 (\url{http://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}).
 
@@ -1278,7 +1278,15 @@ The \texttt{rgbif} and \texttt{pygbif} libraries provide programmatic
 interfaces to GBIF's application programming interface (API) - a
 powerful tool for working with species occurrence data, and facilitating
 reproducible research. In fact, the \texttt{rgbif} package has already
-been used in 22 scholarly publications (as of 2015-11-14).
+been used in 22 scholarly publications (as of 2016-08-10) (Amano,
+Lamming \& Sutherland, 2016, Bartomeus et al. (2013), Barve (2014), Bone
+et al. (2015), Collins et al. (2015), Drozd \& {Š}ipo{š} (2013), Kong,
+Huang \& Duan (2015), Richardson, Roux \& Wilson (2015), Turner,
+Fr{é}ville \& Rieseberg (2015), Verheijen et al. (2015), Zizka \&
+Antonelli (2015), Butterfield et al. (2016), Dellinger et al. (2015),
+Feitosa et al. (2015), Malhado et al. (2015), Werner et al. (2015),
+Robertson, Visser \& Hui (2016), Davison et al. (2015), Janssens et al.
+(2016)).
 
 The \texttt{rgbif} package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the GBIF
@@ -1318,10 +1326,27 @@ appreciate the all contributions to the two packages, found at
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
+Amano T., Lamming JDL., Sutherland WJ. 2016. Spatial gaps in global
+biodiversity information and the role of citizen science.
+\emph{BioScience} 66:393--400.
+
+Bartomeus I., Park MG., Gibbs J., Danforth BN., Lakso AN., Winfree R.
+2013. Biodiversity ensures plant-pollinator phenological synchrony
+against climate change. \emph{Ecology Letters} 16:1331--1338.
+
+Barve V. 2014. Discovering and developing primary biodiversity data from
+social networking sites: A novel approach. \emph{Ecological Informatics}
+24:194--199.
+
 Beck J., Ballesteros-Mejia L., Buchmann CM., Dengler J., Fritz SA.,
 Gruber B., Hof C., Jansen F., Knapp S., Kreft H., Schneider A-K., Winter
 M., Dormann CF. 2012. Whats on the horizon for macroecology?
 \emph{Ecography} 35:673--683.
+
+Bone RE., Smith JAC., Arrigo N., Buerki S. 2015. A macro-ecological
+perspective on crassulacean acid metabolism (CAM) photosynthesis
+evolution in afro-madagascan drylands: Eulophiinae orchids as a case
+study. \emph{New Phytologist} 208:469--481.
 
 Brown JH. 1995. \emph{Macroecology}. University of Chicago Press.
 
@@ -1329,6 +1354,10 @@ Brown KA., Parks KE., Bethell CA., Johnson SE., Mulligan M. 2015.
 Predicting plant diversity patterns in madagascar: Understanding the
 effects of climate and land cover change in a biodiversity hotspot.
 \emph{PLOS ONE} 10:e0122721.
+
+Butterfield BJ., Copeland SM., Munson SM., Roybal CM., Wood TE. 2016.
+Prestoration: Using species in restoration that will persist now and
+into the future. \emph{Restor Ecol}.
 
 Ceballos G., Ehrlich PR., Barnosky AD., Garcia A., Pringle RM., Palmer
 TM. 2015. Accelerated modern human-induced species losses: Entering the
@@ -1340,6 +1369,25 @@ to the global 'biodiversity' information facility API}.
 Chamberlain S. \emph{pygbif: A python interface to the global
 biodiversity information facility API}.
 
+Collins R., Ribeiro ED., Machado VN., Hrbek T., Farias I. 2015. A
+preliminary inventory of the catfishes of the lower rio nhamundá, brazil
+(ostariophysi, siluriformes). \emph{BDJ} 3:e4162.
+
+Davison J., Moora M., Opik M., Adholeya A., Ainsaar L., Ba A., Burla S.,
+Diedhiou AG., Hiiesalu I., Jairus T., Johnson NC., Kane A., Koorem K.,
+Kochar M., Ndiaye C., Partel M., Reier U., Saks U., Singh R., Vasar M.,
+Zobel M. 2015. Global assessment of arbuscular mycorrhizal fungus
+diversity reveals very low endemism. \emph{Science} 349:970--973.
+
+Dellinger AS., Essl F., Hojsgaard D., Kirchheimer B., Klatt S., Dawson
+W., Pergl J., Py{š}ek P., Kleunen M van., Weber E., Winter M., Hörandl
+E., Dullinger S. 2015. Niche dynamics of alien species do not differ
+among sexual and apomictic flowering plants. \emph{New Phytologist}
+209:1313--1323.
+
+Drozd P., {Š}ipo{š} J. 2013. R for all (i): Introduction to the new age
+of biological analyses. \emph{Casopis slezskeho zemskeho muzea (A)} 62.
+
 Faulkner KT., Robertson MP., Rouget M., Wilson JR. 2014. A simple, rapid
 methodology for developing invasive species watch lists.
 \emph{Biological Conservation} 179:25--32.
@@ -1348,6 +1396,10 @@ Febbraro MD., Lurz PWW., Genovesi P., Maiorano L., Girardello M.,
 Bertolino S. 2013. The use of climatic niches in screening procedures
 for introduced species to evaluate risk of spread: A case with the
 american eastern grey squirrel. \emph{PLoS ONE} 8:e66559.
+
+Feitosa YO., Absy ML., Latrubesse EM., Stevaux JC. 2015. Late quaternary
+vegetation dynamics from central parts of the madeira river in brazil.
+\emph{Acta Bot. Bras.} 29:120--128.
 
 Ferretti F., Verd GM., Seret B., {Š}prem JS., Micheli F. 2015. Falling
 through the cracks: The fading history of a large iconic predator.
@@ -1360,6 +1412,19 @@ global analysis. \emph{Diversity and Distributions} 21:302--311.
 Herring J. 2011. OpenGIS implementation standard for geographic
 information-simple feature access-part 1: Common architecture. \emph{OGC
 Document} 4:122--127.
+
+Janssens SB., Vandelook F., Langhe ED., Verstraete B., Smets E.,
+Vandenhouwe I., Swennen R. 2016. Evolutionary dynamics and biogeography
+of musaceae reveal a correlation between the diversification of the
+banana family and the geological and climatic history of southeast asia.
+\emph{New Phytologist} 210:1453--1465.
+
+Kong X., Huang M., Duan R. 2015. SDMdata: A web-based software tool for
+collecting species occurrence records. \emph{PLOS ONE} 10:e0128295.
+
+Malhado AC., Oliveira-Neto JA., Stropp J., Strona G., Dias LC., Pinto
+LB., Ladle RJ. 2015. Climatological correlates of seed size in amazonian
+forest trees. \emph{J Veg Sci} 26:956--963.
 
 Mar{í}a Mendoza., Ospina OE., C{á}rdenas-Henao H., Garc{í}a-R JC. 2015.
 A likelihood inference of historical biogeography in the world's most
@@ -1374,6 +1439,33 @@ their rates of extinction, distribution, and protection. \emph{Science}
 
 R Core Team. 2014. \emph{R: A language and environment for statistical
 computing}. Vienna, Austria: R Foundation for Statistical Computing.
+
+Richardson DM., Roux JJL., Wilson JR. 2015. Australian acacias as
+invasive species: Lessons to be learnt from regions with long planting
+histories. \emph{Southern Forests: a Journal of Forest Science}
+77:31--39.
+
+Robertson MP., Visser V., Hui C. 2016. Biogeo: An r package for
+assessing and improving data quality of occurrence record datasets.
+\emph{Ecography} 39:394--401.
+
+Turner KG., Fr{é}ville H., Rieseberg LH. 2015. Adaptive plasticity and
+niche expansion in an invasive thistle. \emph{Ecol Evol} 5:3183--3197.
+
+Verheijen LM., Aerts R., Bönisch G., Kattge J., Bodegom PMV. 2015.
+Variation in trait trade-offs allows differentiation among predefined
+plant functional types: Implications for predictive ecology. \emph{New
+Phytologist} 209:563--575.
+
+Werner GDA., Cornwell WK., Cornelissen JHC., Kiers ET. 2015.
+Evolutionary signals of symbiotic persistence in the legumerhizobia
+mutualism. \emph{Proceedings of the National Academy of Sciences}
+112:10262--10269.
+
+Zizka A., Antonelli A. 2015. \emph{speciesgeocodeR: An r package for
+linking species occurrences, user-defined regions and phylogenetic trees
+for biogeography, ecology and evolution}. Cold Spring Harbor Laboratory
+Press.
 
 \end{document}
 
