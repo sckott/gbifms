@@ -1,9 +1,9 @@
 \documentclass[author-year, $layout$]{$documentclass$} %review=doublespace preprint=single 5p=2 column
 %%% Begin My package additions %%%%%%%%%%%%%%%%%%%
 \usepackage[hyphens]{url}
-\usepackage{lineno} % add 
+\usepackage{lineno} % add
 $if(linenumbers)$
-  \linenumbers % turns line numbering on 
+  \linenumbers % turns line numbering on
 $endif$
 \bibliographystyle{elsarticle-harv}
 \biboptions{sort&compress} % For natbib
@@ -169,7 +169,7 @@ $endfor$
   $if(author.footnote)$ \cortext[c1]{$author.footnote$}$endif$
   $endfor$
   $for(address)$
-  \address[$address.code$]{$address.address$}    
+  \address[$address.code$]{$address.address$}
   $endfor$
 
   \begin{abstract}

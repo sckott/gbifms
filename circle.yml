@@ -1,6 +1,9 @@
 machine:
   services:
     - docker
+dependencies:
+  pre:
+    - pip install pygbif
 test:
   override:
     - docker run -ti -v $(pwd):/data -w /data rocker/ropensci r -e "rmarkdown::render('manuscript.Rmd')"

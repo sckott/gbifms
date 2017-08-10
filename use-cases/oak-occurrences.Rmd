@@ -30,9 +30,9 @@ dat.Ql <- occ_search(taxonKey=keyQl, return='data', limit=50000)
 
 _Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)_
 
-From [http://esp.cr.usgs.gov/data/little/](http://esp.cr.usgs.gov/data/little/). And save shapefile in same directory
+From <http://esp.cr.usgs.gov/data/little>. And save shapefile in same directory
 
-```{r}
+```{r cache = TRUE}
 url <- 'http://esp.cr.usgs.gov/data/little/querloba.zip'
 tmp <- tempdir()
 download.file(url, destfile = "~/querloba.zip")
@@ -42,13 +42,13 @@ ql <- readShapePoly(file.path(tmp, "querloba.shp"))
 
 _Get Elevation data of US_
 
-```{r}
+```{r cache = TRUE}
 alt.USA <- getData('alt', country = 'USA')
 ```
 
 _Create Hillshade of US_
 
-```{r}
+```{r cache = TRUE}
 alt.USA <- alt.USA[[1]]
 slope.USA <- terrain(alt.USA, opt = 'slope')
 aspect.USA <- terrain(alt.USA, opt = 'aspect')
@@ -58,13 +58,21 @@ hill.USA <- hillShade(slope.USA, aspect.USA, angle = 45, direction = 315)
 _Plot map_
 
 ```{r fig.keep='last'}
-plot(hill.USA, col = grey(0:100/100), legend = FALSE, xlim = c(-125, -116), ylim = c(32, 42), main = 'Distribution of Quercus lobata', xlab = "Long", ylab = 'Lat')
+plot(hill.USA, col = grey(0:100/100), legend = FALSE,
+     xlim = c(-125, -116), ylim = c(32, 42),
+     main = 'Distribution of Quercus lobata',
+     xlab = "Long", ylab = 'Lat')
 # add shape from Atlas of US Trees
-plot(ql, add = TRUE, col = alpha("white", 0.6), border = FALSE)
+plot(ql, add = TRUE, col = alpha("white", 0.6),
+     border = FALSE)
 # add Gbif presence points
-points(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude, cex = .7, pch = 19, col = alpha("darkgreen", 0.8))
-legend(x = -121, y = 40.5, "GBIF Data", pch = 19, col = 'darkgreen', bty = 'n', pt.cex = 1, cex = .8)
-legend(x = -121, y = 41.5, "Atlas of United States Trees \n (Little, E. 1971)", pt.cex = 1.5, cex = .8, pch = 19, col = 'white', bty = 'n')
+points(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude,
+       cex = .7, pch = 19, col = alpha("darkgreen", 0.8))
+legend(x = -121, y = 40.5, "GBIF Data", pch = 19,
+       col = 'darkgreen', bty = 'n', pt.cex = 1, cex = .8)
+legend(x = -121, y = 41.5,
+       legend = "Atlas of United States Trees \n (Little, E. 1971)",
+       pt.cex = 1.5, cex = .8, pch = 19, col = 'white', bty = 'n')
 ```
 
 [tweet]: https://twitter.com/ajpelu/status/473951167567757312

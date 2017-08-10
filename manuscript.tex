@@ -1,8 +1,8 @@
 \documentclass[author-year, review, 11pt]{components/elsarticle} %review=doublespace preprint=single 5p=2 column
 %%% Begin My package additions %%%%%%%%%%%%%%%%%%%
 \usepackage[hyphens]{url}
-\usepackage{lineno} % add 
-  \linenumbers % turns line numbering on 
+\usepackage{lineno} % add
+  \linenumbers % turns line numbering on
 \bibliographystyle{elsarticle-harv}
 \biboptions{sort&compress} % For natbib
 \usepackage{graphicx}
@@ -87,7 +87,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={rgbif: R client for working with GBIF species occurrence data},
+            pdftitle={R and Python clients for GBIF species occurrence data},
             colorlinks=true,
             urlcolor=blue,
             linkcolor=magenta,
@@ -106,42 +106,64 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{rgbif: R client for working with GBIF species occurrence data}
+  \title{R and Python clients for GBIF species occurrence data}
     \author[cstar]{Scott Chamberlain\corref{c1}}
    \ead{scott(at)ropensci.org} 
    \cortext[c1]{Corresponding author}
     \author[boettig]{Carl Boettiger}
    \ead{carl(at)ropensci.org} 
   
-      \address[cstar]{University of California, Berkeley, CA, USA}    
-    \address[boettig]{University of California, Berkeley, CA, USA}    
+      \address[cstar]{rOpenSci, Museum of Paleontology, University of California, Berkeley,
+CA, USA}
+    \address[boettig]{rOpenSci, Department of Enivornmental Science, Policy and Management,
+University of California, Berkeley, CA, USA}
   
   \begin{abstract}
-  \begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-  \item
-    xxx
-  \item
-    xxx
-  \item
-    xxx
-  \item
-    xxxx
-  \end{enumerate}
+  Corresponding Author:
+  
+  Scott Chamberlain
+  
+  rOpenSci, Museum of Paleontology, University of California, Berkeley,
+  CA, USA
+  
+  Email address:
+  \href{mailto:scott@ropensci.org}{\href{mailto:scott@ropensci.org}{\nolinkurl{scott@ropensci.org}}}
+  
+  \newpage
+  
+  Background. The number of individuals of each species in a given
+  location forms the basis for many sub-fields of ecology and evolution.
+  Data on individuals, including which species, and where they're found,
+  can be used for a large number of research questions. Global
+  Biodiversity Information Facility (hereafter, GBIF) is the largest of
+  these. Programmatic clients for GBIF would make research dealing with
+  GBIF data much easier.
+  
+  Methods. We have developed a client to access GBIF data for each of the
+  R and Python programming languages: \texttt{rgbif} and \texttt{pygbif}.
+  
+  Results. For both clients, we describe their design and utility, and
+  demonstrate many use cases.
+  
+  Discussion. Programmatic acccess to GBIF will facilitate more open and
+  reproducible science. We hope that all scientists using GBIF data will
+  do so with one of these two clients.
   \end{abstract}
   
  \end{frontmatter}
 
 
+\newpage
+
 \section{Introduction}\label{introduction}
 
 Perhaps the most fundamental element in many fields of ecology is the
-individual. The number of individuals of each species in a given
-location forms the basis for many sub-fields of ecology and evolution.
-Some research questions necessitate collecting new data, while others
-can easily take advantage of existing data. In fact, some ecology fields
-are built largely on existing data, e.g., macro-ecology (Brown, 1995;
-Beck et al., 2012).
+individual organism. The number of individuals of each species in a
+given location forms the basis for many sub-fields of ecology and
+evolution. Some research questions necessitate collecting new data,
+while others can easily take advantage of existing data. In fact, some
+ecology fields are built largely on existing data, e.g., macro-ecology
+(Brown, 1995; Beck et al., 2012).
 
 Data on individuals, including which species, and where they're found,
 can be used for a large number of research questions. Biodiversity
@@ -160,26 +182,50 @@ al., 2014), and some have called this the sixth great mass extinction
 data on specimen records, whether collected from live sightings in the
 field or specimens in museums.
 
+\section{Global Biodiversity Information
+Facility}\label{global-biodiversity-information-facility}
+
 There are many online services that collect and maintain specimen
 records. However, Global Biodiversity Information Facility (hereafter,
-GBIF, \url{http://www.gbif.org}) is the largest collection of
-biodiversity records globally, currently with 640 million records, 1.6
-million taxa, 15,000 datasets from 780 publishers (current as of
-2015-11-25). Many large biodiversity warehouses such as iNaturalist
-(\url{http://www.inaturalist.org}), VertNet (\url{http://vertnet.org}),
-and USGS's Biodiversity Information Serving Our Nation (BISON;
-\url{http://bison.usgs.ornl.gov}) all feed into GBIF.
+GBIF, \href{http://www.gbif.org}{\url{http://www.gbif.org}}) is the
+largest collection of biodiversity records globally, currently with 643
+million records, 1.6 million taxa, 15,450 datasets from 780 publishers
+(as of 2016-02-09). Many large biodiversity warehouses such as
+iNaturalist
+(\href{http://www.inaturalist.org}{\url{http://www.inaturalist.org}}),
+VertNet (\href{http://vertnet.org}{\url{http://vertnet.org}}), and
+USGS's Biodiversity Information Serving Our Nation (BISON;
+\href{http://bison.usgs.ornl.gov}{\url{http://bison.usgs.ornl.gov}}) all
+feed into GBIF.
 
-Herein, we describe the \texttt{rgbif} software library (Chamberlain et
+The most important data organizational level in GBIF is the individual
+record. In R using \texttt{rgbif} you'll recognize this as a row in the
+data.frame that is returned from \texttt{occ\_search()} or
+\texttt{occ\_data()}. Going upstream, each record is part of a dataset,
+where each dataset is submitted by an organization, organizations are
+organized into nodes, datasets are published through institutions (which
+may be hosted at another organization), and a network is a group of
+datasets (managed by GBIF).
+
+Each record has some taxonomic name associated with it, which itself is
+linked to a lot of other taxonomic data. GBIF maintains their own
+taxonomic data.
+
+This organization matters because you can navigate through GBIF data
+through these various organizational levels.
+
+\section{The clients}\label{the-clients}
+
+\subsection{rgbif}\label{rgbif}
+
+Herein, we describe the \texttt{rgbif} software package (Chamberlain et
 al.) for working with GBIF data in the R programming environment (R Core
-Team, 2014). R is a widely used language in academia, and in non-profit
-and private sectors. Importantly, R makes it easy to do all of the steps
-of the research process, including data management, data manipulation
-and cleaning, statistics, and visualization. Thus, an R client for
-getting GBIF data is a powerful tool to facilitate reproducible
-research.
-
-\section{The rgbif package}\label{the-rgbif-package}
+Team, 2014). R is a widely used language in academia, as well as
+non-profit and private sectors. Importantly, R makes it easy to execute
+all steps of the research process, including data management, data
+manipulation and cleaning, statistics, and visualization. Thus, an R
+client for getting GBIF data is a powerful tool to facilitate
+reproducible research.
 
 The \texttt{rgbif} package is nearly completely written in R (a small
 Javascript library is included for reading well known text (Herring,
@@ -195,32 +241,65 @@ distribution network for R packages. \texttt{rgbif} is part of the
 rOpenSci project (\url{http://ropensci.org}), a developer network making
 R software to facilitate reproducible research.
 
-\subsection{Package interface}\label{package-interface}
+\subsection{pygbif}\label{pygbif}
 
-\texttt{rgbif} is designed following the
+\texttt{pygbif} (Chamberlain) is a Python library for working with GBIF
+data in the Python programming environment. Python is a general purpose
+programming language used widely in all sectors, and for all parts of
+software development including server and client side use cases. Python
+is used exclusively in some scientific disciplines (e.g., astronomy),
+and has partial usage in other disciplines. A Python client for GBIF
+data is an important tool given the even wider usage of Python than R,
+though maybe slightly less than R for ecology/biology disciplines.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pip install pygbif}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{import} \NormalTok{pygbif}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{pygbif} library is less mature and complete than the R
+package. It also uses an
+\href{http://choosealicense.com/licenses/mit/}{MIT license} to maximize
+use everywhere. \texttt{pygbif} is developed publicly on GitHub at
+\url{https://github.com/sckott/pygbif}, where development versions of
+the package can be installed, and bugs and feature requests reported.
+Stable versions of \texttt{pygbif} can be installed from
+\href{https://pypi.python.org/pypi/pygbif}{pypi}, the distribution
+network for Python libraries.
+
+\subsubsection{Library interfaces}\label{library-interfaces}
+
+\texttt{rgbif} and \texttt{pygbif} are designed following the
 \href{http://www.gbif.org/developer/summary}{GBIF Application
 Programming Interface}, or API. The GBIF API has four major components:
 registry, taxonomic names, occurrences, and maps. We also include
 functions to interface with the OAI-PMH GBIF service; only dataset
 information is available vis this service, however. We ignore maps in
-\texttt{rgbif} as it is concerned with generating maps primarily for web
-applications. \texttt{rgbif} has a suite of functions dealing with each
+both libraries as it is concerned with generating maps primarily for web
+applications. Both libraries have a suite of functions dealing with each
 of registry, taxonomic names, and occurrences - we'll go through each in
 turn describing design and example usage.
 
-\subsection{GBIF feedback loop}\label{gbif-feedback-loop}
+\subsection{GBIF headers}\label{gbif-headers}
 
-With each request \texttt{rgbif} makes to GBIF's API, we send request
-headers that tell GBIF that the request is coming from \texttt{rgbif},
-including what version of the package. This helps GBIF know what
-proportion of requests are coming from this package, and therefore R, as
-most requests likely will come from \texttt{rgbif}; this information is
-helpful for them in thinking about how people are using GBIF data.
+With each request \texttt{rgbif} and \texttt{pygbif} make to GBIF's API,
+we send request headers that tell GBIF what client the request is coming
+from, including what version of the library. This helps GBIF know what
+proportion of requests are coming from which client, and therefore from
+R vs.~Python; this information is helpful for GBIF in thinking about how
+people are using GBIF data.
 
 \subsection{Registry}\label{registry}
 
 The GBIF registry API services are spread across five sets of functions
-via the main API:
+via the main GBIF API:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -236,8 +315,9 @@ via the main API:
   Organizations
 \end{itemize}
 
-And dataset information in general is available via the OAI-PMH service,
-functions in \texttt{rgbif} prefixed with \texttt{gbif\_oai\_}.
+Dataset information in general is available via the OAI-PMH service,
+functions in \texttt{rgbif} prefixed with \texttt{gbif\_oai\_}, but not
+available in \texttt{pygbif} yet.
 
 Datasets are owned by organizations. Organizations are endorsed by nodes
 to share datasets with GBIF. Datasets are published through
@@ -265,28 +345,38 @@ datasets that have terms matching that term.
 \begin{Highlighting}[]
 \NormalTok{res <-}\StringTok{ }\KeywordTok{dataset_search}\NormalTok{(}\DataTypeTok{query =} \StringTok{"oregon"}\NormalTok{)}
 \NormalTok{res$data$datasetTitle[}\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{]}
-\CommentTok{#>  [1] "SDNHM Birds Collection"                                                }
-\CommentTok{#>  [2] "CM Birds Collection"                                                   }
-\CommentTok{#>  [3] "condoncollection"                                                      }
-\CommentTok{#>  [4] "Taxonomy in Flux Checklist"                                            }
-\CommentTok{#>  [5] "Wool carder bees of the genus Anthidium in the Western Hemisphere"     }
-\CommentTok{#>  [6] "Bryophyte Collection - University of Washington Herbarium (WTU)"       }
-\CommentTok{#>  [7] "University of British Columbia Herbarium (UBC) - Bryophytes Collection"}
-\CommentTok{#>  [8] "UWFC Ichthyology Collection"                                           }
-\CommentTok{#>  [9] "Lichen Collection - University of Washington Herbarium (WTU)"          }
-\CommentTok{#> [10] "UWBM Mammalogy Collection"}
+\CommentTok{#>  [1] "UCDavis - Western USA - Monarch Butterflies - 1892-2005"                                                                         }
+\CommentTok{#>  [2] "A geographic distribution database of Mononychellus mites (Acari: Tetranychidae) on cassava (Manihot esculenta)"                 }
+\CommentTok{#>  [3] "Plantas Acuáticas de la Orinoquía Colombiana"                                                                                    }
+\CommentTok{#>  [4] "USBombus, contemporary survey data of North American bumble bees (Hymenoptera,  Apidae, Bombus) distributed in the United States"}
+\CommentTok{#>  [5] "Wool carder bees of the genus Anthidium in the Western Hemisphere"                                                               }
+\CommentTok{#>  [6] "CM Birds Collection"                                                                                                             }
+\CommentTok{#>  [7] "SDNHM Birds Collection"                                                                                                          }
+\CommentTok{#>  [8] "University of British Columbia Herbarium (UBC) - Bryophytes Collection"                                                          }
+\CommentTok{#>  [9] "University of British Columbia Herbarium (UBC) - Vascular Plant Collection"                                                      }
+\CommentTok{#> [10] "Bryophyte Collection - University of Washington Herbarium (WTU)"}
 \end{Highlighting}
 \end{Shaded}
 
-See also \texttt{datasets()} and \texttt{dataset\_suggest()} for
-searching for datasets.
+See also \texttt{datasets()} and \texttt{dataset\_suggest()} in
+\texttt{rgbif} for searching for datasets.
+
+In Python, we can similary search for datasets. Here, search for
+datasets of type \texttt{OCCURRENCE}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{registry}
+\NormalTok{registry.datasets(}\DataTypeTok{type}\NormalTok{=}\StringTok{"OCCURRENCE"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \paragraph{Dataset metrics}\label{dataset-metrics}
 
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (2637).
+lot of them (16084).
 
 Here, we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -318,17 +408,26 @@ ORDER & 1\tabularnewline
 \bottomrule
 \end{longtable}
 
+And in Python, get metrics for the same dataset as above:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{registry}
+\NormalTok{registry.dataset_metrics(uuid=}\StringTok{'ec93a739-1681-4b04-b62f-3a687127a17f'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \subsubsection{Networks, nodes, and
 installations}\label{networks-nodes-and-installations}
 
 Networks, nodes and installations are at a higher level of organization
 above datasets, but can be useful if you want to explore data from given
-organizations. Here, we search for the first 10 GBIF networks, returning
-just the title field.
+organizations. Here, in R we search for the first 10 GBIF networks,
+returning just the title field.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{networks}\NormalTok{(}\DataTypeTok{limit=}\DecValTok{10}\NormalTok{)$data$title}
+\KeywordTok{networks}\NormalTok{(}\DataTypeTok{limit =} \DecValTok{10}\NormalTok{)$data$title}
 \CommentTok{#>  [1] "GBIF Backbone Sources"                                      }
 \CommentTok{#>  [2] "Canadensys"                                                 }
 \CommentTok{#>  [3] "Southwest Collections of Arthropods Network (SCAN)"         }
@@ -342,9 +441,19 @@ just the title field.
 \end{Highlighting}
 \end{Shaded}
 
+And in Python:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{registry}
+\NormalTok{registry.networks(limit = }\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \subsection{Taxonomic names}\label{taxonomic-names}
 
-The GBIF taxonomic names API services are spread across five functions:
+The GBIF taxonomic names API services are spread across five functions
+in \texttt{rgbif}:
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -359,6 +468,9 @@ The GBIF taxonomic names API services are spread across five functions:
 \item
   GBIF name parser - \texttt{parsenames()}
 \end{itemize}
+
+\texttt{pygbif} only has \texttt{name\_backbone()} and
+\texttt{name\_suggest()} at this time.
 
 The goal of these name functions is often to settle on a taxonomic name
 known to GBIF's database. This serves two purposes: 1) when referring to
@@ -382,13 +494,14 @@ parameter in the GBIF occurrences API expects a GBIF backbone taxon key.
 
 The GBIF backbone taxonomy is used in GBIF to have a consistent way to
 refer to taxonomic names throughout their services. The backbone has
-4410899 unique names and 2497114 species names. The backbone taxonomy is
+5296599 unique names and 2525274 species names. The backbone taxonomy is
 also a dataset with key \texttt{d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}
 (\url{http://www.gbif.org/dataset/d7dddbf4-2cf0-4f39-9b2a-bb099caae36c}).
 
 We can search the backbone taxonomy with the function
-\texttt{name\_backbone()}. Here, we're searching for the name
-\emph{Poa}, restricting to genera, and the family \emph{Poaceae}.
+\texttt{name\_backbone()} in both R and Python clients. Here, we're
+searching for the name \emph{Poa}, restricting to genera, and the family
+\emph{Poaceae}, in R
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -399,6 +512,16 @@ We can search the backbone taxonomy with the function
 \CommentTok{#> }
 \CommentTok{#> $kingdom}
 \CommentTok{#> [1] "Plantae"}
+\end{Highlighting}
+\end{Shaded}
+
+and in Python
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{species}
+\NormalTok{res = species.name_backbone(name=}\StringTok{'Poa'}\NormalTok{, rank=}\StringTok{'genus'}\NormalTok{, family=}\StringTok{'Poaceae'}\NormalTok{)}
+\NormalTok{[ res[x] }\KeywordTok{for} \NormalTok{x in [}\StringTok{'usageKey'}\NormalTok{, }\StringTok{'kingdom'}\NormalTok{] ]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -420,14 +543,23 @@ we get back many names:
 key & canonicalName & rank\tabularnewline
 \midrule
 \endhead
-3269133 & Pumilus & GENUS\tabularnewline
-4407849 & Pumilinura & GENUS\tabularnewline
-4323990 & Pumiliopsis & GENUS\tabularnewline
-4324083 & Pumiliopes & GENUS\tabularnewline
-4161281 & Pumilea & GENUS\tabularnewline
-4312370 & Pumilopagurus & GENUS\tabularnewline
+4848380 & Pumiliornis & GENUS\tabularnewline
+2235094 & Pumilibranchipus & GENUS\tabularnewline
+1795637 & Pumora & GENUS\tabularnewline
+4581745 & Pumicia & GENUS\tabularnewline
+4598790 & Pumilicopta & GENUS\tabularnewline
+1593095 & Pumilomyia & GENUS\tabularnewline
 \bottomrule
 \end{longtable}
+
+The same in Python
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{species}
+\NormalTok{species.name_suggest(q=}\StringTok{'Pum'}\NormalTok{, limit = }\DecValTok{6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 With these results, you can then proceed to search for occurrences with
 the taxon key(s), or drill down further with other name searching
@@ -436,23 +568,23 @@ functions to get the exact taxon of interest.
 \subsection{Occurrences}\label{occurrences}
 
 GBIF provides two ways to get occurrence data: through the
-\texttt{/occurrence/search} route (see \texttt{occ\_search}), or via the
-\texttt{/occurrence/download} route (many functions, see below).
-\texttt{occ\_search()} is the main function for the search route, and is
-more appropriate for smaller data, while \texttt{occ\_download*()}
-functions are more appropriate for larger data requests.
+\texttt{/occurrence/search} route (see \texttt{occ\_search} in
+\texttt{rgbif}, or \texttt{occurrences.search} in \texttt{pygbif}), or
+via the \texttt{/occurrence/download} route (many functions, see below).
+\texttt{occ\_search()}/\texttt{occurrences.search} is the main function
+for the search route, and is more appropriate for smaller data, while
+the download functions are more appropriate for larger data requests.
 
-Large is of course a subjective term. When you hit a ``large dataset''
-will depend primarily on the size of the your data request. GBIF imposes
-for any given search a limit of 200,000 records in the search service,
-after which point you can't download any more records for that search.
-However, you can download more records for different searches.
+GBIF imposes for any given search a limit of 200,000 records in the
+search service, after which point you can't download any more records
+for that search. However, you can download more records for different
+searches.
 
 We think the search service is still quite useful for many people even
 given the 200,000 limit. For those that need more data, we have created
-a similar interface in the \texttt{download\_*()} functions, that should
-be easy to use. Users should take note that using the download service
-has a few extra steps to get data into R, but is straight-forward.
+a similar interface in the download functions, that should be easy to
+use. Users should take note that using the download service has a few
+extra steps to get data into R, but is straight-forward.
 
 The download service, like the occurrence search service, is
 rate-limited. That is, you can only have one to three downloads running
@@ -465,10 +597,10 @@ download request.
 The download API syntax is similar to the occurrence search API in that
 the same parameters are used, but the way in which the query is defined
 is different. For example, in the download API you can do greater than
-searches (i.e., \texttt{latitude \textgreater{} 50}), whereas you can
-not do that in the occurrence search API. Thus, unfortunately, we
-couldn't make the query interface exactly the same for both search and
-download functions.
+searches (i.e., \texttt{latitude \textgreater{} 50}), whereas you cannot
+do that in the occurrence search API. Thus, unfortunately, we couldn't
+make the query interface exactly the same for both search and download
+functions.
 
 Using the download service can consist of as few as three steps: 1)
 Request data via a search; 2) Download data; 3) Import data into R.
@@ -513,30 +645,48 @@ Next, read the data in to R using the function
 \NormalTok{dat <-}\StringTok{ }\KeywordTok{occ_download_import}\NormalTok{(res)}
 \NormalTok{dat %>%}
 \StringTok{  }\KeywordTok{select}\NormalTok{(gbifID, decimalLatitude, decimalLongitude)}
-\CommentTok{#>       gbifID decimalLatitude decimalLongitude}
-\CommentTok{#> 1  725767384        61.01005         24.41740}
-\CommentTok{#> 2  725767447        59.82923         23.13550}
-\CommentTok{#> 3  725767450        60.38505         25.17449}
-\CommentTok{#> 4  725767513        68.37648         23.51963}
-\CommentTok{#> 5  725767546        67.19203         24.85820}
-\CommentTok{#> 6  725767579        60.21607         24.67412}
-\CommentTok{#> 7  725767609        66.49260         25.70471}
-\CommentTok{#> 8  725767645        61.36634         24.76218}
-\CommentTok{#> 9  725767678        62.29174         27.96500}
-\CommentTok{#> 10 725767681        60.28615         22.38489}
-\CommentTok{#> ..       ...             ...              ...}
+\CommentTok{#>       gbifID abstract accessRights accrualMethod accrualPeriodicity accrualPolicy alternative audience}
+\CommentTok{#> 1  725767384       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 2  725767447       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 3  725767450       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 4  725767513       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 5  725767546       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 6  725767579       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 7  725767609       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 8  725767645       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 9  725767678       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> 10 725767681       NA                         NA                 NA            NA          NA       NA}
+\CommentTok{#> ..       ...      ...          ...           ...                ...           ...         ...      ...}
+\CommentTok{#> Variables not shown: available (lgl), bibliographicCitation (chr), conformsTo (lgl), contributor (lgl),}
+\CommentTok{#>      coverage (lgl), created (chr), creator (lgl), date (lgl), dateAccepted (lgl), dateCopyrighted}
+\CommentTok{#>      (lgl), dateSubmitted (lgl), description (lgl), educationLevel (lgl), extent (lgl), format (lgl),}
+\CommentTok{#>      hasFormat (lgl), hasPart (lgl), hasVersion (lgl), identifier (chr), instructionalMethod (lgl),}
 \end{Highlighting}
 \end{Shaded}
 
+In Python
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\NormalTok{occ.download(}\StringTok{'taxonKey = 3119195'}\NormalTok{)}
+\NormalTok{(res = occ.download_get(}\StringTok{"0000840-150615163101818"}\NormalTok{, overwrite = }\OtherTok{True}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+We don't have \texttt{pygbif} functionality at the moment for importing
+data, but it's coming soon.
+
 \paragraph{Downloaded data format}\label{downloaded-data-format}
 
-The downloaded dataset from GBIF is actually a Darwin Core Archive
-(DwC-A), an internationally recognized biodiversity informatics standard
-(\url{http://rs.tdwg.org/dwc/}). The DwC-A downloaded is a compressed
-folder with a number of files, including metadata, citations for each of
-the datasets included in the download, and the data itself, in separate
-files for each dataset as well as one single \texttt{.txt} file. In
-\texttt{occ\_download\_import()}, we simply fetch data from the
+The downloaded dataset from GBIF is a Darwin Core Archive (DwC-A), an
+internationally recognized biodiversity informatics standard
+(\href{http://rs.tdwg.org/dwc/}{\url{http://rs.tdwg.org/dwc/}}). The
+DwC-A downloaded is a compressed folder with a number of files,
+including metadata, citations for each of the datasets included in the
+download, and the data itself, in separate files for each dataset as
+well as one single \texttt{.txt} file. In
+\texttt{rgbif::occ\_download\_import()}, we simply fetch data from the
 \texttt{.txt} file. If you want to dig into the metadata, citations,
 etc., it is easily accessible from the folder on your computer.
 
@@ -548,19 +698,26 @@ following functions:
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  Get a single numeric count of occurrences - \texttt{occ\_count()}
+  Get a single numeric count of occurrences - \texttt{rgbif}:
+  \texttt{occ\_count()} / \texttt{pygbif}: \texttt{occurrences.count}
 \item
-  Search for occurrences - \texttt{occ\_search()}
+  Search for occurrences - \texttt{rgbif}: \texttt{occ\_search()} /
+  \texttt{pygbif}: \texttt{occurrences.count}
 \item
-  A simplified and optimized version of \texttt{occ\_search()} -
-  \texttt{occ\_data()}
+  A simplified and optimized version of \texttt{rgbif}:
+  \texttt{occ\_search()} or \texttt{occ\_data()} / \texttt{pygbif}:
+  \texttt{occurrences.count}
 \item
-  Get occurrences by occurrence identifier - \texttt{occ\_get()}
+  Get occurrences by occurrence identifier - \texttt{rgbif}:
+  \texttt{occ\_get()} / \texttt{pygbif}: \texttt{occurrences.count}
 \item
-  Get occurrence metadata - \texttt{occ\_metadata()}
+  Get occurrence metadata - \texttt{rgbif}: \texttt{occ\_metadata()} /
+  \texttt{pygbif}: \texttt{occurrences.count}
 \end{itemize}
 
 \paragraph{Search for occurrences}\label{search-for-occurrences}
+
+\textbf{R}
 
 The main search work-horse is \texttt{occ\_search()}. This function
 allows very flexible search definitions. In addition, this function does
@@ -568,17 +725,15 @@ paging internally, making it such that the user does not have worry
 about the 300 records per request limit - but of course we can't go over
 the 200,000 maximum limit.
 
-The output of \texttt{occ\_search()} borrows the tidy
-\texttt{data.frame} idea from the \texttt{dplyr} R package, so that no
-matter how large the \texttt{data.frame}, the output is easily assessed
-because only a few of the records (rows) are shown, only a few columns
-are shown (with others shown in name only), and metadata is shown on top
-of the \texttt{data.frame} to indicate data found and returned, media
-records found, unique taxonomic hierarchies returned, and the query
-executed.
+The output of \texttt{occ\_search()} presents a compact
+\texttt{data.frame} so that no matter how large the \texttt{data.frame},
+the output is easily assessed because only a few of the records (rows)
+are shown, only a few columns are shown (with others shown in name
+only), and metadata is shown on top of the \texttt{data.frame} to
+indicate data found and returned, media records found, unique taxonomic
+hierarchies returned, and the query executed.
 
-The output of these examples, except one, aren't shown, but all run
-correctly.
+The output of these examples, except one, aren't shown.
 
 Search by species name, using \texttt{name\_backbone()} first to get key
 
@@ -587,7 +742,7 @@ Search by species name, using \texttt{name\_backbone()} first to get key
 \NormalTok{(key <-}\StringTok{ }\KeywordTok{name_suggest}\NormalTok{(}\DataTypeTok{q =} \StringTok{'Helianthus annuus'}\NormalTok{, }\DataTypeTok{rank =} \StringTok{'species'}\NormalTok{)$key[}\DecValTok{1}\NormalTok{])}
 \CommentTok{#> [1] 3119195}
 \KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{key, }\DataTypeTok{limit =} \DecValTok{2}\NormalTok{)}
-\CommentTok{#> Records found [21577] }
+\CommentTok{#> Records found [21538] }
 \CommentTok{#> Records returned [2] }
 \CommentTok{#> No. unique hierarchies [1] }
 \CommentTok{#> No. media records [2] }
@@ -595,8 +750,8 @@ Search by species name, using \texttt{name\_backbone()} first to get key
 \CommentTok{#> First 10 rows of data}
 \CommentTok{#> }
 \CommentTok{#>                name        key decimalLatitude decimalLongitude}
-\CommentTok{#> 1 Helianthus annuus 1143516596        35.42767        -105.0688}
-\CommentTok{#> 2 Helianthus annuus 1095851641         0.00000           0.0000}
+\CommentTok{#> 1 Helianthus annuus 1249279611        34.04810       -117.79884}
+\CommentTok{#> 2 Helianthus annuus 1249286909        32.58747        -97.10081}
 \CommentTok{#> Variables not shown: issues (chr), datasetKey (chr), publishingOrgKey}
 \CommentTok{#>      (chr), publishingCountry (chr), protocol (chr), lastCrawled (chr),}
 \CommentTok{#>      lastParsed (chr), extensions (chr), basisOfRecord (chr), taxonKey}
@@ -611,12 +766,11 @@ Search by species name, using \texttt{name\_backbone()} first to get key
 \CommentTok{#>      (chr), country (chr), rightsHolder (chr), identifier (chr),}
 \CommentTok{#>      verbatimEventDate (chr), datasetName (chr), gbifID (chr),}
 \CommentTok{#>      verbatimLocality (chr), collectionCode (chr), occurrenceID (chr),}
-\CommentTok{#>      taxonID (chr), recordedBy (chr), catalogNumber (chr),}
+\CommentTok{#>      taxonID (chr), license (chr), recordedBy (chr), catalogNumber (chr),}
 \CommentTok{#>      http...unknown.org.occurrenceDetails (chr), institutionCode (chr),}
-\CommentTok{#>      rights (chr), occurrenceRemarks (chr), identificationID (chr),}
-\CommentTok{#>      elevation (dbl), elevationAccuracy (dbl), stateProvince (chr),}
-\CommentTok{#>      recordNumber (chr), locality (chr), municipality (chr), language}
-\CommentTok{#>      (chr), type (chr), ownerInstitutionCode (chr), identifiedBy (chr)}
+\CommentTok{#>      rights (chr), eventTime (chr), identificationID (chr),}
+\CommentTok{#>      coordinateAccuracy (dbl), coordinateAccuracyInMeters (dbl),}
+\CommentTok{#>      occurrenceRemarks (chr)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -639,18 +793,26 @@ Search for many species
 \end{Shaded}
 
 Spatial search, based on well known text format (Herring, 2011), or a
-bounding box set of four coordinates
+bounding box set of four coordinates. The well known text string and the
+bounding box in the below example specify the same rectangular area in
+California, centering approximately on Sacramento. Whereas the bounding
+box format requires
+\texttt{longitude SW corner, latitude SW corner, longitude NE corner, latitude NE corner},
+the well known text string requires an extra long/lat pair to close the
+polygon.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# well known text}
-\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \StringTok{'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))'}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\NormalTok{wkt <-}\StringTok{ 'POLYGON((-122.6 39.9,-120.0 39.9,-120.0 37.9,-122.6 37.9,-122.6 39.9))'}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{wkt, }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
 \CommentTok{# bounding box}
-\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \KeywordTok{c}\NormalTok{(-}\FloatTok{125.0}\NormalTok{,}\FloatTok{38.4}\NormalTok{,-}\FloatTok{121.8}\NormalTok{,}\FloatTok{40.9}\NormalTok{), }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
+\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \KeywordTok{c}\NormalTok{(-}\FloatTok{122.6}\NormalTok{,}\FloatTok{37.9}\NormalTok{,-}\FloatTok{120.0}\NormalTok{,}\FloatTok{39.9}\NormalTok{), }\DataTypeTok{limit =} \DecValTok{20}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Get only occurrences with lat/long data
+Get only occurrences with lat/long data using the \texttt{hasCoordinate}
+parameter
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -658,11 +820,90 @@ Get only occurrences with lat/long data
 \end{Highlighting}
 \end{Shaded}
 
-Get only those occurrences with spatial issues
+Get only those occurrences with spatial issues. Spatial issues are a set
+of issues that are returned in the \texttt{issues} field. They each
+indicate something different about that record. For example, the issue
+\texttt{COUNTRY\_COORDINATE\_MISMATCH} indicates that the interpreted
+occurrence coordinates fall outside of the indicated country. You can
+see how that might be useful when it comes to cleaning your data prior
+to analysis/visualization.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{hasGeospatialIssue =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Python}
+
+The equivalent occurrence search workhorse in \texttt{pygibf} is
+\texttt{occurrences.search}.
+
+Search by species name, using \texttt{name\_backbone()} first to get key
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{species}
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\NormalTok{key = species.name_suggest(q = }\StringTok{'Helianthus annuus'}\NormalTok{, rank = }\StringTok{'species'}\NormalTok{)[}\StringTok{'data'}\NormalTok{][}\DecValTok{0}\NormalTok{][}\StringTok{'key'}\NormalTok{]}
+\NormalTok{occ.search(taxonKey = key, limit = }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Instead of getting a taxon key first, you can search for a name directly
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{occ.search(scientificName = }\StringTok{'Ursus americanus'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Search for many species
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{species}
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\NormalTok{splist = [}\StringTok{'Cyanocitta stelleri'}\NormalTok{, }\StringTok{'Junco hyemalis'}\NormalTok{, }\StringTok{'Aix sponsa'}\NormalTok{]}
+\NormalTok{keys = [ species.name_suggest(x)[}\StringTok{'data'}\NormalTok{][}\DecValTok{0}\NormalTok{][}\StringTok{'key'}\NormalTok{] }\KeywordTok{for} \NormalTok{x in splist ]}
+\NormalTok{occ.search(taxonKey = keys, limit = }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Spatial search, based on well known text format (Herring, 2011), or a
+bounding box set of four coordinates
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\CommentTok{# well known text}
+\NormalTok{occ.search(geometry = }\StringTok{'POLYGON((30.1 10.1, 10 20, 20 40, 40 40, 30.1 10.1))'}\NormalTok{, limit = }\DecValTok{20}\NormalTok{)}
+\CommentTok{# bounding box}
+\NormalTok{occ.search(geometry = }\StringTok{'-125.0,38.4,-121.8,40.9'}\NormalTok{, limit = }\DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Get only occurrences with lat/long data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\NormalTok{occ.search(hasCoordinate = }\OtherTok{True}\NormalTok{, limit = }\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Get only those occurrences with spatial issues. Spatial issues are a set
+of issues that are returned in the \texttt{issues} field. They each
+indicate something different about that record. For example, the issue
+\texttt{COUNTRY\_COORDINATE\_MISMATCH} indicates that the interpreted
+occurrence coordinates fall outside of the indicated country. You can
+see how that might be useful when it comes to cleaning your data prior
+to analysis/visualization.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CharTok{from} \NormalTok{pygbif }\CharTok{import} \NormalTok{occurrences }\CharTok{as} \NormalTok{occ}
+\NormalTok{occ.search(hasGeospatialIssue = }\OtherTok{True}\NormalTok{, limit = }\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -685,9 +926,11 @@ via \texttt{occ\_search()} based on GBIF issues.
 \KeywordTok{NROW}\NormalTok{(out)}
 \CommentTok{#> [1] 4}
 \NormalTok{out %>%}\StringTok{ }\KeywordTok{occ_issues}\NormalTok{(-cudc) %>%}\StringTok{ }\NormalTok{.$data %>%}\StringTok{ }\NormalTok{NROW}
-\CommentTok{#> [1] 2}
+\CommentTok{#> [1] 4}
 \end{Highlighting}
 \end{Shaded}
+
+There's no equivalent interface in \texttt{pygbif} yet.
 
 \subsection{Mapping}\label{mapping}
 
@@ -705,7 +948,7 @@ we plot 100 occurrences for \emph{Puma concolor}.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{components/figure/manuscript-unnamed-chunk-20-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-34-1.pdf}
 
 Another package, \href{https://github.com/ropensci/mapr}{mapr}, is the
 perfect mapping companion to \texttt{rgbif}. It has convenient functions
@@ -713,6 +956,8 @@ for handling input data from \texttt{rgbif}, \texttt{spocc}, or
 arbitrary data.frame's, and output plots for base plots,
 \texttt{ggplot2}, \texttt{ggmap} (\texttt{ggplot2} with map layers
 underneath), and interactive maps on GitHub gists or with Leaflet.js.
+
+There's no equivalent interface in \texttt{pygbif}.
 
 \subsection{GBIF data in other R
 packages}\label{gbif-data-in-other-r-packages}
@@ -739,6 +984,21 @@ data from many sources on the web. For example, a user can collect
 occurrence data from GBIF, iDigBio, and iNaturalist, and easily combine
 them, then use other packages to clean and visualize the data.
 
+\section{R vs.~Python}\label{r-vs.python}
+
+Both R and Python are commonly used in science, and can be used for
+similar tasks. Python, however, is a more general programming lanugae,
+and can be used in more contexts than R can be used in.
+
+The \texttt{rgbif} and \texttt{pygbif} clients can do a lot of the same
+tasks. We envision \texttt{rgbif} as being more common in workflows of
+academics asking research questions, whereas \texttt{pygbif} can do that
+as well, but may be more easily used in a website.
+
+The R client \texttt{rgbif} has much more development time than
+\texttt{pygbif}, but through time \texttt{pygbif} will become equally
+mature.
+
 \section{Use cases}\label{use-cases}
 
 The following are three use cases for \texttt{rgbif}: niche modeling,
@@ -762,7 +1022,7 @@ package.
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"dismo"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"maptools"}\NormalTok{)}
-\KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -794,9 +1054,9 @@ create a rasterStack from these
 \NormalTok{nn <-}\StringTok{ }\KeywordTok{name_lookup}\NormalTok{(}\StringTok{"bradypus*"}\NormalTok{, }\DataTypeTok{rank =} \StringTok{"species"}\NormalTok{)}
 \NormalTok{nn <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(}\KeywordTok{unique}\NormalTok{(nn$data$nubKey))}
 \NormalTok{df <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =} \NormalTok{nn, }\DataTypeTok{hasCoordinate =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{limit =} \DecValTok{500}\NormalTok{)}
-\NormalTok{df <-}\StringTok{ }\NormalTok{df[ }\KeywordTok{sapply}\NormalTok{(df, function(x) }\KeywordTok{class}\NormalTok{(x$data)) %in%}\StringTok{ "data.frame"} \NormalTok{]}
-\NormalTok{df <-}\StringTok{ }\KeywordTok{ldply}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(df, }\StringTok{"[["}\NormalTok{, }\StringTok{"data"}\NormalTok{))}
-\NormalTok{df2 <-}\StringTok{ }\NormalTok{df[,}\KeywordTok{c}\NormalTok{(}\StringTok{'decimalLongitude'}\NormalTok{,}\StringTok{'decimalLatitude'}\NormalTok{)]}
+\NormalTok{df_data <-}\StringTok{ }\NormalTok{df[ }\KeywordTok{sapply}\NormalTok{(df, function(x) }\KeywordTok{any}\NormalTok{(}\KeywordTok{class}\NormalTok{(x$data) %in%}\StringTok{ "tbl_df"}\NormalTok{)) ]}
+\NormalTok{df_data <-}\StringTok{ }\NormalTok{dplyr::}\KeywordTok{bind_rows}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(df_data, }\StringTok{"[["}\NormalTok{, }\StringTok{"data"}\NormalTok{))}
+\NormalTok{df2 <-}\StringTok{ }\NormalTok{df_data %>%}\StringTok{ }\NormalTok{dplyr::}\KeywordTok{select}\NormalTok{(decimalLongitude, decimalLatitude)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -818,7 +1078,7 @@ create a rasterStack from these
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{components/figure/manuscript-unnamed-chunk-26-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-40-1.pdf}
 
 \subsubsection{Biodiversity in big
 cities}\label{biodiversity-in-big-cities}
@@ -833,7 +1093,7 @@ using GBIF data from the \texttt{rgbif} package.
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
-\KeywordTok{library}\NormalTok{(}\StringTok{"RCurl"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"httr"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"RColorBrewer"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -841,22 +1101,41 @@ using GBIF data from the \texttt{rgbif} package.
 \emph{Get bounding boxes for some cites}
 
 Bounding lat/long data is from
-\href{https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt}{here}.
+\url{https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{rawdat <-}\StringTok{ }\KeywordTok{getURL}\NormalTok{(}\StringTok{'https://raw.githubusercontent.com/amyxzhang/boundingbox-cities/master/boundbox.txt'}\NormalTok{)}
-\NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\DataTypeTok{text =} \NormalTok{rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names=}\KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{))}
-\NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{dat$city, }\DataTypeTok{minlon=}\NormalTok{dat$minlon, }\DataTypeTok{minlat=}\NormalTok{dat$minlat, }\DataTypeTok{maxlon=}\NormalTok{dat$maxlon, }\DataTypeTok{maxlat=}\NormalTok{dat$maxlat)}
+\NormalTok{url <-}\StringTok{ 'https://raw.githubusercontent.com/amyxzhang/}
+\StringTok{boundingbox-cities/master/boundbox.txt'}
+\NormalTok{rawdat <-}\StringTok{ }\KeywordTok{content}\NormalTok{(}\KeywordTok{GET}\NormalTok{(}\KeywordTok{sub}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{""}\NormalTok{, url)), }\DataTypeTok{as =} \StringTok{"text"}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}
+  \DataTypeTok{text =} \NormalTok{rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }
+  \DataTypeTok{sep =} \StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{),}
+  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{city =} \NormalTok{dat$city, }\DataTypeTok{minlon =} \NormalTok{dat$minlon, }
+  \DataTypeTok{minlat =} \NormalTok{dat$minlat, }\DataTypeTok{maxlon =} \NormalTok{dat$maxlon, }
+  \DataTypeTok{maxlat =} \NormalTok{dat$maxlat,}
+  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
+\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+A helper function to get count data. GBIF has a count API, but we can't
+use that with a geometry search as that API doesn't support geospatial
+search. We can however use the search API via \texttt{occ\_search()} and
+set \texttt{limit = 1} so that we
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{getdata <-}\StringTok{ }\NormalTok{function(x)\{}
   \NormalTok{coords <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(x[}\KeywordTok{c}\NormalTok{(}\StringTok{'minlon'}\NormalTok{,}\StringTok{'minlat'}\NormalTok{,}\StringTok{'maxlon'}\NormalTok{,}\StringTok{'maxlat'}\NormalTok{)])}
-  \NormalTok{num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{coords)$meta$count}
-  \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{city=}\NormalTok{x[}\StringTok{'city'}\NormalTok{], }\DataTypeTok{richness=}\NormalTok{num, }\DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+  \NormalTok{num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =} \NormalTok{coords, }\DataTypeTok{limit =} \DecValTok{1}\NormalTok{)$meta$count}
+  \KeywordTok{data.frame}\NormalTok{(}
+    \DataTypeTok{city =} \NormalTok{x[}\StringTok{'city'}\NormalTok{], }
+    \DataTypeTok{richness =} \NormalTok{num, }
+    \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
+  \NormalTok{)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -871,7 +1150,7 @@ Bounding lat/long data is from
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{out <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(dat, }\KeywordTok{ldply}\NormalTok{(out), }\DataTypeTok{by=}\StringTok{"city"}\NormalTok{)}
+\NormalTok{out <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(dat, }\KeywordTok{ldply}\NormalTok{(out), }\DataTypeTok{by =} \StringTok{"city"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -879,7 +1158,7 @@ Bounding lat/long data is from
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{out <-}\StringTok{ }\KeywordTok{transform}\NormalTok{(out, }\DataTypeTok{lat =} \NormalTok{(minlat+maxlat)/}\DecValTok{2}\NormalTok{, }\DataTypeTok{lon =} \NormalTok{(minlon+maxlon)/}\DecValTok{2}\NormalTok{)}
+\NormalTok{out <-}\StringTok{ }\KeywordTok{transform}\NormalTok{(out, }\DataTypeTok{lat =} \NormalTok{(minlat +}\StringTok{ }\NormalTok{maxlat)/}\DecValTok{2}\NormalTok{, }\DataTypeTok{lon =} \NormalTok{(minlon +}\StringTok{ }\NormalTok{maxlon)/}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -899,7 +1178,7 @@ Bounding lat/long data is from
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{components/figure/manuscript-unnamed-chunk-31-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-45-1.pdf}
 
 \subsubsection{Valley oak occurrence data
 comparison}\label{valley-oak-occurrence-data-comparison}
@@ -936,9 +1215,8 @@ distribution of the same species from the
 
 \emph{Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)}
 
-From
-\href{http://esp.cr.usgs.gov/data/little/}{\url{http://esp.cr.usgs.gov/data/little/}}.
-And save shapefile in same directory
+From \url{http://esp.cr.usgs.gov/data/little}. And save shapefile in
+same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -973,30 +1251,49 @@ And save shapefile in same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{100}\NormalTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\DecValTok{125}\NormalTok{, -}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{), }\DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\NormalTok{:}\DecValTok{100}\NormalTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{,}
+     \DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(-}\DecValTok{125}\NormalTok{, -}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{),}
+     \DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{,}
+     \DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
 \CommentTok{# add shape from Atlas of US Trees}
-\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{), }\DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{),}
+     \DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
 \CommentTok{# add Gbif presence points}
-\KeywordTok{points}\NormalTok{(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{)}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{, }\StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{, }\DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
+\KeywordTok{points}\NormalTok{(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude,}
+       \DataTypeTok{cex =} \NormalTok{.}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,}
+       \DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \NormalTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{,}
+       \DataTypeTok{legend =} \StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{,}
+       \DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =} \NormalTok{.}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{components/figure/manuscript-unnamed-chunk-38-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-52-1.pdf}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}
 
-The \texttt{rgbif} R package provides a programmatic interface to GBIF's
-application programming interface (API) - a powerful tool for making
-research using species occurrence data reproducible. In fact, the
-\texttt{rgbif} package has already been used in 22 scholarly
-publications (as of 2015-11-14).
+The \texttt{rgbif} and \texttt{pygbif} libraries provide programmatic
+interfaces to GBIF's application programming interface (API) - a
+powerful tool for working with species occurrence data, and facilitating
+reproducible research. In fact, the \texttt{rgbif} package has already
+been used in 22 scholarly publications (as of 2016-08-10) (Amano,
+Lamming \& Sutherland, 2016, Bartomeus et al. (2013), Barve (2014), Bone
+et al. (2015), Collins et al. (2015), Drozd \& {Š}ipo{š} (2013), Kong,
+Huang \& Duan (2015), Richardson, Roux \& Wilson (2015), Turner,
+Fr{é}ville \& Rieseberg (2015), Verheijen et al. (2015), Zizka \&
+Antonelli (2015), Butterfield et al. (2016), Dellinger et al. (2015),
+Feitosa et al. (2015), Malhado et al. (2015), Werner et al. (2015),
+Robertson, Visser \& Hui (2016), Davison et al. (2015), Janssens et al.
+(2016)).
 
 The \texttt{rgbif} package is relatively stable, and should not have
 many breaking changes unless necessitated due to changes in the GBIF
 API.
+
+The \texttt{pygbif} library is in early development, and will greatly
+benefit from any feedback and use cases.
 
 One area of focus in the future is to attempt to solve many use cases
 that have been brought up with respect to GBIF data. For example, some
@@ -1004,30 +1301,52 @@ specimens are included in GBIF that are located in botanical gardens.
 For many research questions, researchers are interested in ``wild'' type
 occurrences, not those in human curated scenarios. Making removal of
 these occurrences easy would be very useful, but is actually quite a
-hard problem.
+hard problem. There are many other problems like this.
 
 \section{Acknowledgments}\label{acknowledgments}
 
 This project was supported in part by the Alfred P Sloan Foundation
-(Grant 2013-6-22), and the Helmsley Foundation (Grant XXXXXX).
+(Grant No. G-2014-13485), and in part by the Helmsley Foundation (Grant
+No. 2016PG-BRI004).
 
 \section{Data Accessibility}\label{data-accessibility}
 
 All scripts and data used in this paper can be found in the permanent
 data archive Zenodo under the digital object identifier (DOI). This DOI
 corresponds to a snapshot of the GitHub repository at
-\href{https://github.com/sckott/msrgbif}{github.com/sckott/msrgbif}.
-Software can be found at
-\href{https://github.com/ropensci/rgbif}{\url{https://github.com/ropensci/rgbif}},
-under an MIT license.
+\url{https://github.com/sckott/msrgbif}. Software can be found at
+\url{https://github.com/ropensci/rgbif} and
+\url{https://github.com/sckott/pygbif}, both under MIT licenses. We
+thank all the users that have used \texttt{rgbif} and \texttt{pygbif}
+and have given feedback and reported bugs. In addition, we greatly
+appreciate the all contributions to the two packages, found at
+\url{https://github.com/ropensci/rgbif/graphs/contributors} and
+\url{https://github.com/sckott/pygbif/graphs/contributors}.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
+
+Amano T., Lamming JDL., Sutherland WJ. 2016. Spatial gaps in global
+biodiversity information and the role of citizen science.
+\emph{BioScience} 66:393--400.
+
+Bartomeus I., Park MG., Gibbs J., Danforth BN., Lakso AN., Winfree R.
+2013. Biodiversity ensures plant-pollinator phenological synchrony
+against climate change. \emph{Ecology Letters} 16:1331--1338.
+
+Barve V. 2014. Discovering and developing primary biodiversity data from
+social networking sites: A novel approach. \emph{Ecological Informatics}
+24:194--199.
 
 Beck J., Ballesteros-Mejia L., Buchmann CM., Dengler J., Fritz SA.,
 Gruber B., Hof C., Jansen F., Knapp S., Kreft H., Schneider A-K., Winter
 M., Dormann CF. 2012. Whats on the horizon for macroecology?
 \emph{Ecography} 35:673--683.
+
+Bone RE., Smith JAC., Arrigo N., Buerki S. 2015. A macro-ecological
+perspective on crassulacean acid metabolism (CAM) photosynthesis
+evolution in afro-madagascan drylands: Eulophiinae orchids as a case
+study. \emph{New Phytologist} 208:469--481.
 
 Brown JH. 1995. \emph{Macroecology}. University of Chicago Press.
 
@@ -1036,12 +1355,38 @@ Predicting plant diversity patterns in madagascar: Understanding the
 effects of climate and land cover change in a biodiversity hotspot.
 \emph{PLOS ONE} 10:e0122721.
 
+Butterfield BJ., Copeland SM., Munson SM., Roybal CM., Wood TE. 2016.
+Prestoration: Using species in restoration that will persist now and
+into the future. \emph{Restor Ecol}.
+
 Ceballos G., Ehrlich PR., Barnosky AD., Garcia A., Pringle RM., Palmer
 TM. 2015. Accelerated modern human-induced species losses: Entering the
 sixth mass extinction. \emph{Science Advances} 1:e1400253--e1400253.
 
-Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{Rgbif: Interface to
-the global 'biodiversity' information facility 'aPI'}.
+Chamberlain S., Ram K., Barve V., Mcglinn D. \emph{rgbif: An r interface
+to the global 'biodiversity' information facility API}.
+
+Chamberlain S. \emph{pygbif: A python interface to the global
+biodiversity information facility API}.
+
+Collins R., Ribeiro ED., Machado VN., Hrbek T., Farias I. 2015. A
+preliminary inventory of the catfishes of the lower rio nhamundá, brazil
+(ostariophysi, siluriformes). \emph{BDJ} 3:e4162.
+
+Davison J., Moora M., Opik M., Adholeya A., Ainsaar L., Ba A., Burla S.,
+Diedhiou AG., Hiiesalu I., Jairus T., Johnson NC., Kane A., Koorem K.,
+Kochar M., Ndiaye C., Partel M., Reier U., Saks U., Singh R., Vasar M.,
+Zobel M. 2015. Global assessment of arbuscular mycorrhizal fungus
+diversity reveals very low endemism. \emph{Science} 349:970--973.
+
+Dellinger AS., Essl F., Hojsgaard D., Kirchheimer B., Klatt S., Dawson
+W., Pergl J., Py{š}ek P., Kleunen M van., Weber E., Winter M., Hörandl
+E., Dullinger S. 2015. Niche dynamics of alien species do not differ
+among sexual and apomictic flowering plants. \emph{New Phytologist}
+209:1313--1323.
+
+Drozd P., {Š}ipo{š} J. 2013. R for all (i): Introduction to the new age
+of biological analyses. \emph{Casopis slezskeho zemskeho muzea (A)} 62.
 
 Faulkner KT., Robertson MP., Rouget M., Wilson JR. 2014. A simple, rapid
 methodology for developing invasive species watch lists.
@@ -1051,6 +1396,10 @@ Febbraro MD., Lurz PWW., Genovesi P., Maiorano L., Girardello M.,
 Bertolino S. 2013. The use of climatic niches in screening procedures
 for introduced species to evaluate risk of spread: A case with the
 american eastern grey squirrel. \emph{PLoS ONE} 8:e66559.
+
+Feitosa YO., Absy ML., Latrubesse EM., Stevaux JC. 2015. Late quaternary
+vegetation dynamics from central parts of the madeira river in brazil.
+\emph{Acta Bot. Bras.} 29:120--128.
 
 Ferretti F., Verd GM., Seret B., {Š}prem JS., Micheli F. 2015. Falling
 through the cracks: The fading history of a large iconic predator.
@@ -1063,6 +1412,19 @@ global analysis. \emph{Diversity and Distributions} 21:302--311.
 Herring J. 2011. OpenGIS implementation standard for geographic
 information-simple feature access-part 1: Common architecture. \emph{OGC
 Document} 4:122--127.
+
+Janssens SB., Vandelook F., Langhe ED., Verstraete B., Smets E.,
+Vandenhouwe I., Swennen R. 2016. Evolutionary dynamics and biogeography
+of musaceae reveal a correlation between the diversification of the
+banana family and the geological and climatic history of southeast asia.
+\emph{New Phytologist} 210:1453--1465.
+
+Kong X., Huang M., Duan R. 2015. SDMdata: A web-based software tool for
+collecting species occurrence records. \emph{PLOS ONE} 10:e0128295.
+
+Malhado AC., Oliveira-Neto JA., Stropp J., Strona G., Dias LC., Pinto
+LB., Ladle RJ. 2015. Climatological correlates of seed size in amazonian
+forest trees. \emph{J Veg Sci} 26:956--963.
 
 Mar{í}a Mendoza., Ospina OE., C{á}rdenas-Henao H., Garc{í}a-R JC. 2015.
 A likelihood inference of historical biogeography in the world's most
@@ -1077,6 +1439,33 @@ their rates of extinction, distribution, and protection. \emph{Science}
 
 R Core Team. 2014. \emph{R: A language and environment for statistical
 computing}. Vienna, Austria: R Foundation for Statistical Computing.
+
+Richardson DM., Roux JJL., Wilson JR. 2015. Australian acacias as
+invasive species: Lessons to be learnt from regions with long planting
+histories. \emph{Southern Forests: a Journal of Forest Science}
+77:31--39.
+
+Robertson MP., Visser V., Hui C. 2016. Biogeo: An r package for
+assessing and improving data quality of occurrence record datasets.
+\emph{Ecography} 39:394--401.
+
+Turner KG., Fr{é}ville H., Rieseberg LH. 2015. Adaptive plasticity and
+niche expansion in an invasive thistle. \emph{Ecol Evol} 5:3183--3197.
+
+Verheijen LM., Aerts R., Bönisch G., Kattge J., Bodegom PMV. 2015.
+Variation in trait trade-offs allows differentiation among predefined
+plant functional types: Implications for predictive ecology. \emph{New
+Phytologist} 209:563--575.
+
+Werner GDA., Cornwell WK., Cornelissen JHC., Kiers ET. 2015.
+Evolutionary signals of symbiotic persistence in the legumerhizobia
+mutualism. \emph{Proceedings of the National Academy of Sciences}
+112:10262--10269.
+
+Zizka A., Antonelli A. 2015. \emph{speciesgeocodeR: An r package for
+linking species occurrences, user-defined regions and phylogenetic trees
+for biogeography, ecology and evolution}. Cold Spring Harbor Laboratory
+Press.
 
 \end{document}
 
