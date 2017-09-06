@@ -4,8 +4,8 @@ opts_chunk$set(
   message = FALSE,
   comment = '#>',
   collapse = TRUE,
-  fig.width=8,
-  fig.height=6,
+  fig.width = 8,
+  fig.height = 6,
   cache.path = "cache/"
 )
 ```
@@ -20,6 +20,7 @@ library("ggplot2")
 library("plyr")
 library("httr")
 library("RColorBrewer")
+library("wicket")
 ```
 
 _Get bounding boxes for some cites_
@@ -50,7 +51,8 @@ that we
 ```{r newsearch}
 getdata <- function(x){
   coords <- as.numeric(x[c('minlon','minlat','maxlon','maxlat')])
-  num <- occ_search(geometry = coords, limit = 1)$meta$count
+  wkt <- wicket::wkt_correct(wicket::bounding_wkt(values = coords))
+  num <- occ_search(geometry = wkt, limit = 1)$meta$count
   data.frame(
     city = x['city'], 
     richness = num, 

@@ -16,7 +16,7 @@ _Load libraries_
 library('rgbif')
 library('raster')
 library('sp')
-library('maptools')
+library('sf')
 library('rgeos')
 library('scales')
 ```
@@ -33,11 +33,11 @@ _Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)_
 From <http://esp.cr.usgs.gov/data/little>. And save shapefile in same directory
 
 ```{r cache = TRUE}
-url <- 'http://esp.cr.usgs.gov/data/little/querloba.zip'
+url <- 'https://github.com/sckott/gbifms/blob/gh-pages/querloba.zip?raw=true'
 tmp <- tempdir()
-download.file(url, destfile = "~/querloba.zip")
-unzip("~/querloba.zip", exdir = tmp)
-ql <- readShapePoly(file.path(tmp, "querloba.shp"))
+download.file(url, destfile = "querloba.zip")
+unzip("querloba.zip", exdir = tmp)
+ql <- sf::read_sf(file.path(tmp, "querloba/querloba.shp"))
 ```
 
 _Get Elevation data of US_

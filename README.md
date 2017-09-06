@@ -1,7 +1,7 @@
 Instructions for compiling manuscripts
 ======================================
 
-[![Circle CI](https://circleci.com/gh/sckott/msrgbif.svg?style=svg)](https://circleci.com/gh/sckott/msrgbif)
+[![CircleCI](https://circleci.com/gh/sckott/gbifms.svg?style=svg)](https://circleci.com/gh/sckott/gbifms)
 
 
 Install dependencies

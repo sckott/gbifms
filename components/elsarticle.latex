@@ -16,6 +16,7 @@ $endif$
  \let\@evenhead\@empty
  \def\@oddfoot{\it \hfill\today}%
  \let\@evenfoot\@oddfoot}
+ \def\tightlist{}
 \makeatother
 
 % A modified page layout
