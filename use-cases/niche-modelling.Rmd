@@ -15,11 +15,11 @@ This example can be done using BISON data as well with our rbison package.
 _Load libraries_
 
 ```{r}
+library("sp")
 library("rgbif")
 library("dismo")
 library("maptools")
 library("dplyr")
-library("sp")
 ```
 
 _Raster files_
