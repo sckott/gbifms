@@ -328,7 +328,7 @@ knitr::kable(df)
 
 And in Python, get metrics for the same dataset as above:
 
-```{python}
+```{python eval=FALSE}
 from pygbif import registry
 registry.dataset_metrics(uuid='ec93a739-1681-4b04-b62f-3a687127a17f')
 ```
