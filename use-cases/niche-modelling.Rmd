@@ -40,7 +40,7 @@ data(wrld_simpl)
 
 _Get GBIF data using the rOpenSci package rgbif_
 
-```{r cache=TRUE}
+```{r cache=FALSE}
 nn <- name_lookup("bradypus*", rank = "species")
 nn <- na.omit(unique(nn$data$nubKey))
 df <- occ_search(taxonKey = nn, hasCoordinate = TRUE, limit = 500)
