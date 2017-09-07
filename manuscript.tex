@@ -441,7 +441,7 @@ In Ruby, we can do the same. Here, search for datasets of type
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (21502).
+lot of them (21522).
 
 Here, in R we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -1156,16 +1156,19 @@ them, then use other packages to clean and visualize the data.
 
 Both R and Python are commonly used in science, and can be used for
 similar tasks. Python, however, is a more general programming lanugae,
-and can be used in more contexts than R can be used in.
+and can be used in more contexts than R can be used in. Ruby is used
+very little in science; but, like Python, Ruby is very widely used as a
+general purpose programming language, with heavy use in web development
+and web services.
 
-The \texttt{rgbif} and \texttt{pygbif} clients can do a lot of the same
-tasks. We envision \texttt{rgbif} as being more common in workflows of
-academics asking research questions, whereas \texttt{pygbif} can do that
-as well, but may be more easily used in a website.
+The three clients can do a lot of the same tasks. We envision
+\texttt{rgbif} being more common in workflows of academics asking
+research questions, whereas \texttt{pygbif} and \texttt{gbifrb} can do
+that as well, but may be more easily used in a website.
 
-The R client \texttt{rgbif} has much more development time than
-\texttt{pygbif}, but through time \texttt{pygbif} will become equally
-mature.
+The R client \texttt{rgbif} has had much more development time than
+\texttt{pygbif} and \texttt{gbifrb}, but with time \texttt{pygbif} and
+\texttt{gbifrb} will become equally mature.
 
 \section{Use cases}\label{use-cases}
 
@@ -1188,6 +1191,7 @@ package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"sp"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"dismo"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"maptools"}\NormalTok{)}
