@@ -856,15 +856,18 @@ packages to clean and visualize the data.
 
 Both R and Python are commonly used in science, and can be used for similar
 tasks. Python, however, is a more general programming lanugae, and can be
-used in more contexts than R can be used in.
+used in more contexts than R can be used in. Ruby is used very little in
+science; but, like Python, Ruby is very widely used as a general purpose
+programming language, with heavy use in web development and web services.
 
-The `rgbif` and `pygbif` clients can do a lot of the same tasks. We
-envision `rgbif` as being more common in workflows of academics asking
-research questions, whereas `pygbif` can do that as well, but may be more
-easily used in a website.
+The three clients can do a lot of the same tasks. We envision `rgbif`
+being more common in workflows of academics asking research questions,
+whereas `pygbif` and `gbifrb` can do that as well, but may be more easily
+used in a website.
 
-The R client `rgbif` has much more development time than `pygbif`,
-but through time `pygbif` will become equally mature.
+The R client `rgbif` has had much more development time than `pygbif`
+and `gbifrb`, but with time `pygbif` and `gbifrb` will become equally
+mature.
 
 
 
