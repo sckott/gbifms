@@ -22,6 +22,12 @@ Install the `pygbif` Python library, using the following in your shell:
 pip install pygbif
 ```
 
+Install the `gbifrb` Ruby library, using the following in your shell:
+
+```shell
+gem install gbifrb
+```
+
 
 Build the manuscript
 --------------------
@@ -30,4 +36,10 @@ In the directory
 
 ```
 make
+```
+
+Open the pdf file
+
+```
+open manuscript.pdf
 ```
