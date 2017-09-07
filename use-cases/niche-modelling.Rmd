@@ -19,6 +19,7 @@ library("rgbif")
 library("dismo")
 library("maptools")
 library("dplyr")
+library("sp")
 ```
 
 _Raster files_
