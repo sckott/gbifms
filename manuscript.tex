@@ -151,22 +151,22 @@ University of California, Berkeley, CA, USA}
   
   Background. The number of individuals of each species in a given
   location forms the basis for many sub-fields of ecology and evolution.
-  Data on individuals, including which species, and where they're found,
+  Data on individuals, including which species, and where they're found
   can be used for a large number of research questions. Global
   Biodiversity Information Facility (hereafter, GBIF) is the largest of
   these. Programmatic clients for GBIF would make research dealing with
-  GBIF data much easier.
+  GBIF data much easier and more reproducible.
   
   Methods. We have developed clients to access GBIF data for each of the
   R, Python, and Ruby programming languages: \texttt{rgbif},
   \texttt{pygbif}, \texttt{gbifrb}.
   
   Results. For all clients we describe their design and utility, and
-  demonstrate many use cases.
+  demonstrate some use cases.
   
   Discussion. Programmatic acccess to GBIF will facilitate more open and
-  reproducible science. We hope that all scientists using GBIF data will
-  do so with one of these two clients.
+  reproducible science - the three GBIF clients described herein are a
+  significant contribution towards this goal.
   \end{abstract}
   
  \end{frontmatter}
@@ -441,7 +441,7 @@ In Ruby, we can do the same. Here, search for datasets of type
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (21522).
+lot of them (21534).
 
 Here, in R we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -803,10 +803,6 @@ files for each dataset as well as one single \texttt{.txt} file. In
 \texttt{rgbif::occ\_download\_import()}, we simply fetch data from the
 \texttt{.txt} file. If you want to dig into the metadata, citations,
 etc., it is easily accessible from the folder on your computer.
-
-\paragraph{Queueing Download Requests}\label{queueing-download-requests}
-
-FILL IN TEXT HERE \ldots{}
 
 \subsubsection{Search API}\label{search-api}
 

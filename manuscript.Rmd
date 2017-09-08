@@ -31,21 +31,21 @@ abstract: |
       Background. The number of individuals of each species in
         a given location forms the basis for many sub-fields of ecology and
         evolution. Data on individuals, including which species, and
-        where they're found, can be used for a large number of research
+        where they're found can be used for a large number of research
         questions. Global Biodiversity Information Facility (hereafter, GBIF)
         is the largest of these. Programmatic clients for GBIF would
-        make research dealing with GBIF data much easier.
+        make research dealing with GBIF data much easier and more reproducible.
 
       Methods. We have developed clients to access GBIF data for each
         of the R, Python, and Ruby programming languages: `rgbif`, `pygbif`,
         `gbifrb`.
 
       Results. For all clients we describe their design and utility,
-        and demonstrate many use cases.
+        and demonstrate some use cases.
 
       Discussion. Programmatic acccess to GBIF will facilitate more open
-        and reproducible science. We hope that all scientists using GBIF
-        data will do so with one of these two clients.
+        and reproducible science - the three GBIF clients described herein
+        are a significant contribution towards this goal.
 
 bibliography: components/references.bib
 csl: components/peerj.csl
@@ -582,11 +582,6 @@ of the datasets included in the download, and the data itself, in separate files
 each dataset as well as one single `.txt` file. In `rgbif::occ_download_import()`, we
 simply fetch data from the `.txt` file. If you want to dig into the metadata,
 citations, etc., it is easily accessible from the folder on your computer.
-
-
-#### Queueing Download Requests
-
-FILL IN TEXT HERE ...
 
 
 ### Search API
