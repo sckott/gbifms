@@ -8,7 +8,7 @@ opts_chunk$set(
 )
 ```
 
-In this example, we plot actual occurrence data for _Bradypus_ species against a single predictor variable, BIO1 (annual mean temperature). This is only ont step in a species distribution modelling nworkflow.
+In this example, we plot actual occurrence data for _Bradypus_ species against a single predictor variable, BIO1 (annual mean temperature). This is only one step in a species distribution modelling workflow.
 
 This example can be done using BISON data as well with our rbison package.
 
