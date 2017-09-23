@@ -43,7 +43,7 @@ abstract: |
       Results. For all clients we describe their design and utility,
         and demonstrate some use cases.
 
-      Discussion. Programmatic acccess to GBIF will facilitate more open
+      Discussion. Programmatic access to GBIF will facilitate more open
         and reproducible science - the three GBIF clients described herein
         are a significant contribution towards this goal.
 
@@ -286,7 +286,7 @@ res$data$datasetTitle[1:10]
 
 See also `datasets()` and `dataset_suggest()` in `rgbif` for searching for datasets.
 
-In Python, we can similary search for datasets. Here, search for datasets of type
+In Python, we can similarly search for datasets. Here, search for datasets of type
 `OCCURRENCE`:
 
 ```{python eval=FALSE}
@@ -494,7 +494,7 @@ straight-forward.
 The download service, like the occurrence search service, is rate-limited.
 That is, you can only have one to three downloads running simultaneously for
 your user credentials. However, simply check when a download job is complete,
-then you can start a new download request. See "Queueing Download Requests"
+then you can start a new download request. See "Queuing Download Requests"
 below for help automating many download requests in R.
 
 ### Download API
@@ -569,7 +569,7 @@ occ.download('taxonKey = 3119195')
 We don't have `pygbif` functionality at the moment for importing data, but
 it's coming soon.
 
-The Ruby library `gbifrb` does not yet have occurrene download functionality.
+The Ruby library `gbifrb` does not yet have occurrence download functionality.
 
 
 #### Downloaded data format
@@ -850,7 +850,7 @@ packages to clean and visualize the data.
 # R vs. Python vs. Ruby
 
 Both R and Python are commonly used in science, and can be used for similar
-tasks. Python, however, is a more general programming lanugae, and can be
+tasks. Python, however, is a more general programming language, and can be
 used in more contexts than R can be used in. Ruby is used very little in
 science; but, like Python, Ruby is very widely used as a general purpose
 programming language, with heavy use in web development and web services.
