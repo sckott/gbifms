@@ -1,0 +1,4 @@
+Package: compendium
+Version: 0.1.0
+Depends: rmarkdown, tidyverse, rgbif, dismo
+Remotes: ropensci/wicket@0ec0e79

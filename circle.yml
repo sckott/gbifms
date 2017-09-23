@@ -8,7 +8,7 @@ machine:
 #     - sudo pip install pygbif
 test:
   override:
-    - docker run -ti -v $(pwd):/data -w /data rocker/ropensci r -e "rmarkdown::render('manuscript.Rmd')"
+    - docker run -ti -v $(pwd):/data -w /data rocker/geospatial:3.4.1 R -e "devtools::install(); rmarkdown::render('manuscript.Rmd')"
   post:
     - cp manuscript.pdf $CIRCLE_ARTIFACTS/
 
