@@ -921,10 +921,11 @@ This project was supported in part by the Alfred P Sloan Foundation
 # Data Accessibility
 
 All scripts and data used in this paper can be found in the permanent
-data archive Zenodo under the digital object identifier (DOI). This DOI
+data archive Zenodo under the digital object identifier
+(<https://doi.org/10.5281/zenodo.997547>). This DOI
 corresponds to a snapshot of the GitHub repository at
-<https://github.com/sckott/gbifms>. Software can be found at
-<https://github.com/ropensci/rgbif>, <https://github.com/sckott/pygbif>,
+<https://github.com/sckott/gbifms> that matches this preprint. Software
+can be found at <https://github.com/ropensci/rgbif>, <https://github.com/sckott/pygbif>,
 and <https://github.com/sckott/gibfrb>, all under MIT licenses. We thank
 all the users that have used `rgbif`, `pygbif`, and `gbifrb` and have
 given feedback and reported bugs. In addition, we greatly appreciate

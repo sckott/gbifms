@@ -441,7 +441,7 @@ In Ruby, we can do the same. Here, search for datasets of type
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (21687).
+lot of them (21697).
 
 Here, in R we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -1259,12 +1259,6 @@ using GBIF data from the \texttt{rgbif} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"ropensci/wicket"}\NormalTok{, }\DataTypeTok{force =} \OtherTok{TRUE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
@@ -1360,13 +1354,16 @@ set \texttt{limit\ =\ 1} so that we
 \subsubsection{Valley oak occurrence data
 comparison}\label{valley-oak-occurrence-data-comparison}
 
-This example comes from \href{https://twitter.com/ajpelu}{Antonio J.
-Perez-Luque} who
+This example is inspired by a tweet from
+\href{https://twitter.com/ajpelu}{Antonio J. Perez-Luque} who
 \href{https://twitter.com/ajpelu/status/473951167567757312}{shared his
 plot on Twitter}. Antonio compared the occurrences of Valley Oak
 (\emph{Quercus lobata}) from \href{http://www.gbif.org/}{GBIF} to the
 distribution of the same species from the
 \href{http://esp.cr.usgs.gov/data/little/}{Atlas of US Trees}.
+
+The data in question from the example above is no longer available, so
+below we use a different species.
 
 \emph{Load libraries}
 
@@ -1477,10 +1474,11 @@ No. 2016PG-BRI004).
 \section{Data Accessibility}\label{data-accessibility}
 
 All scripts and data used in this paper can be found in the permanent
-data archive Zenodo under the digital object identifier (DOI). This DOI
-corresponds to a snapshot of the GitHub repository at
-\url{https://github.com/sckott/gbifms}. Software can be found at
-\url{https://github.com/ropensci/rgbif},
+data archive Zenodo under the digital object identifier
+(\url{https://doi.org/10.5281/zenodo.997547}). This DOI corresponds to a
+snapshot of the GitHub repository at
+\url{https://github.com/sckott/gbifms} that matches this preprint.
+Software can be found at \url{https://github.com/ropensci/rgbif},
 \url{https://github.com/sckott/pygbif}, and
 \url{https://github.com/sckott/gibfrb}, all under MIT licenses. We thank
 all the users that have used \texttt{rgbif}, \texttt{pygbif}, and

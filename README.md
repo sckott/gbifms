@@ -2,6 +2,7 @@ Instructions for compiling manuscripts
 ======================================
 
 [![CircleCI](https://circleci.com/gh/sckott/gbifms.svg?style=svg)](https://circleci.com/gh/sckott/gbifms)
+[![DOI](https://zenodo.org/badge/43604916.svg)](https://zenodo.org/badge/latestdoi/43604916)
 
 
 Install dependencies
