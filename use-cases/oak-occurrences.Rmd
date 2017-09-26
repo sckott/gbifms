@@ -8,7 +8,10 @@ opts_chunk$set(
 )
 ```
 
-This example comes from [Antonio J. Perez-Luque](https://twitter.com/ajpelu) who [shared his plot on Twitter][tweet]. Antonio compared the occurrences of Valley Oak (_Quercus lobata_) from [GBIF][gbif] to the distribution of the same species from the [Atlas of US Trees][atlas].
+This example is inspired by a tweet from [Antonio J. Perez-Luque](https://twitter.com/ajpelu) who [shared his plot on Twitter][tweet]. Antonio compared the occurrences of Valley Oak (_Quercus lobata_) from [GBIF][gbif] to the distribution of the same species from the [Atlas of US Trees][atlas].
+
+The data in question from the example above is no longer available, so below
+we use a different species.
 
 _Load libraries_
 
