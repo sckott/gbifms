@@ -14,8 +14,8 @@ In this example, we collect specimen records across different cities using GBIF 
 
 _Load libraries_
 
-```{r install-wicket}
-devtools::install_github("ropensci/wicket", force = TRUE)
+```{r install-wicket, echo=FALSE}
+devtools::install_github("ropensci/wicket")
 ```
 
 ```{r load}

@@ -15,6 +15,10 @@ we use a different species.
 
 _Load libraries_
 
+```{r install, echo=FALSE}
+devtools::install_github("ropenscilabs/rnaturalearth")
+```
+
 ```{r}
 library('rgbif')
 library('raster')
