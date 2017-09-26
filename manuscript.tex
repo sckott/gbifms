@@ -164,7 +164,7 @@ University of California, Berkeley, CA, USA}
   Results. For all clients we describe their design and utility, and
   demonstrate some use cases.
   
-  Discussion. Programmatic acccess to GBIF will facilitate more open and
+  Discussion. Programmatic access to GBIF will facilitate more open and
   reproducible science - the three GBIF clients described herein are a
   significant contribution towards this goal.
   \end{abstract}
@@ -415,7 +415,7 @@ finds any datasets that have words matching that term.
 See also \texttt{datasets()} and \texttt{dataset\_suggest()} in
 \texttt{rgbif} for searching for datasets.
 
-In Python, we can similary search for datasets. Here, search for
+In Python, we can similarly search for datasets. Here, search for
 datasets of type \texttt{OCCURRENCE}:
 
 \begin{Shaded}
@@ -441,7 +441,7 @@ In Ruby, we can do the same. Here, search for datasets of type
 Dataset metrics are another useful way of figuring out what datasets you
 may want to use. One drawback is that these metrics data are only
 available for datasets of type \emph{checklist}, but there are quite a
-lot of them (21534).
+lot of them (21687).
 
 Here, in R we search for dataset metrics for a single dataset, with uuid
 \texttt{ec93a739-1681-4b04-b62f-3a687127a17f}, a checklist of the ants
@@ -701,7 +701,7 @@ The download service, like the occurrence search service, is
 rate-limited. That is, you can only have one to three downloads running
 simultaneously for your user credentials. However, simply check when a
 download job is complete, then you can start a new download request. See
-``Queueing Download Requests'' below for help automating many download
+``Queuing Download Requests'' below for help automating many download
 requests in R.
 
 \subsubsection{Download API}\label{download-api}
@@ -789,7 +789,7 @@ In Python
 We don't have \texttt{pygbif} functionality at the moment for importing
 data, but it's coming soon.
 
-The Ruby library \texttt{gbifrb} does not yet have occurrene download
+The Ruby library \texttt{gbifrb} does not yet have occurrence download
 functionality.
 
 \paragraph{Downloaded data format}\label{downloaded-data-format}
@@ -1151,7 +1151,7 @@ them, then use other packages to clean and visualize the data.
 \section{R vs.~Python vs.~Ruby}\label{r-vs.python-vs.ruby}
 
 Both R and Python are commonly used in science, and can be used for
-similar tasks. Python, however, is a more general programming lanugae,
+similar tasks. Python, however, is a more general programming language,
 and can be used in more contexts than R can be used in. Ruby is used
 very little in science; but, like Python, Ruby is very widely used as a
 general purpose programming language, with heavy use in web development
@@ -1177,8 +1177,8 @@ modeling}\label{ecological-niche-modeling}
 
 In this example, we plot actual occurrence data for \emph{Bradypus}
 species against a single predictor variable, BIO1 (annual mean
-temperature). This is only ont step in a species distribution modelling
-nworkflow.
+temperature). This is only one step in a species distribution modelling
+workflow.
 
 This example can be done using BISON data as well with our rbison
 package.
@@ -1259,6 +1259,12 @@ using GBIF data from the \texttt{rgbif} package.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"ropensci/wicket"}\NormalTok{, }\DataTypeTok{force =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(}\StringTok{"rgbif"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{"plyr"}\NormalTok{)}
@@ -1279,12 +1285,12 @@ Bounding lat/long data is from
 \StringTok{boundingbox-cities/master/boundbox.txt'}
 \NormalTok{rawdat <-}\StringTok{ }\KeywordTok{content}\NormalTok{(}\KeywordTok{GET}\NormalTok{(}\KeywordTok{sub}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\StringTok{""}\NormalTok{, url)), }\DataTypeTok{as =} \StringTok{"text"}\NormalTok{)}
 \NormalTok{dat <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}
-  \DataTypeTok{text =}\NormalTok{ rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{, }
+  \DataTypeTok{text =}\NormalTok{ rawdat, }\DataTypeTok{header =} \OtherTok{FALSE}\NormalTok{,}
   \DataTypeTok{sep =} \StringTok{"}\CharTok{\textbackslash{}t}\StringTok{"}\NormalTok{, }\DataTypeTok{col.names =} \KeywordTok{c}\NormalTok{(}\StringTok{"city"}\NormalTok{,}\StringTok{"minlat"}\NormalTok{,}\StringTok{"maxlon"}\NormalTok{,}\StringTok{"maxlat"}\NormalTok{,}\StringTok{"minlon"}\NormalTok{),}
   \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
 \NormalTok{dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
-  \DataTypeTok{city =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{city, }\DataTypeTok{minlon =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{minlon, }
-  \DataTypeTok{minlat =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{minlat, }\DataTypeTok{maxlon =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{maxlon, }
+  \DataTypeTok{city =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{city, }\DataTypeTok{minlon =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{minlon,}
+  \DataTypeTok{minlat =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{minlat, }\DataTypeTok{maxlon =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{maxlon,}
   \DataTypeTok{maxlat =}\NormalTok{ dat}\OperatorTok{$}\NormalTok{maxlat,}
   \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
 \NormalTok{)}
@@ -1303,8 +1309,8 @@ set \texttt{limit\ =\ 1} so that we
 \NormalTok{  wkt <-}\StringTok{ }\NormalTok{wicket}\OperatorTok{::}\KeywordTok{wkt_correct}\NormalTok{(wicket}\OperatorTok{::}\KeywordTok{bounding_wkt}\NormalTok{(}\DataTypeTok{values =}\NormalTok{ coords))}
 \NormalTok{  num <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{geometry =}\NormalTok{ wkt, }\DataTypeTok{limit =} \DecValTok{1}\NormalTok{)}\OperatorTok{$}\NormalTok{meta}\OperatorTok{$}\NormalTok{count}
   \KeywordTok{data.frame}\NormalTok{(}
-    \DataTypeTok{city =}\NormalTok{ x[}\StringTok{'city'}\NormalTok{], }
-    \DataTypeTok{richness =}\NormalTok{ num, }
+    \DataTypeTok{city =}\NormalTok{ x[}\StringTok{'city'}\NormalTok{],}
+    \DataTypeTok{richness =}\NormalTok{ num,}
     \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}
 \NormalTok{  )}
 \NormalTok{\}}
@@ -1372,30 +1378,32 @@ distribution of the same species from the
 \KeywordTok{library}\NormalTok{(}\StringTok{'sf'}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{'rgeos'}\NormalTok{)}
 \KeywordTok{library}\NormalTok{(}\StringTok{'scales'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'rnaturalearth'}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\emph{Get GBIF Data for Quercus lobata}
+\emph{Get GBIF Data for Fraxinus excelsior}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{keyQl <-}\StringTok{ }\KeywordTok{name_backbone}\NormalTok{(}\DataTypeTok{name=}\StringTok{'Quercus lobata'}\NormalTok{, }\DataTypeTok{kingdom=}\StringTok{'plants'}\NormalTok{)}\OperatorTok{$}\NormalTok{speciesKey}
-\NormalTok{dat.Ql <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey=}\NormalTok{keyQl, }\DataTypeTok{return=}\StringTok{'data'}\NormalTok{, }\DataTypeTok{limit=}\DecValTok{50000}\NormalTok{)}
+\NormalTok{keyFe <-}\StringTok{ }\KeywordTok{name_backbone}\NormalTok{(}\DataTypeTok{name =} \StringTok{'Fraxinus excelsior'}\NormalTok{, }\DataTypeTok{kingdom =} \StringTok{'plants'}\NormalTok{)}\OperatorTok{$}\NormalTok{speciesKey}
+\NormalTok{dat.Fe <-}\StringTok{ }\KeywordTok{occ_search}\NormalTok{(}\DataTypeTok{taxonKey =}\NormalTok{ keyFe, }\DataTypeTok{return =} \StringTok{'data'}\NormalTok{, }\DataTypeTok{limit =}\NormalTok{ 10000L)}
 \end{Highlighting}
 \end{Shaded}
 
-\emph{Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)}
+\emph{Get Distribution map of F. excelsior European Forest Genetic
+Resources Programme}
 
-From \url{http://esp.cr.usgs.gov/data/little}. And save shapefile in
-same directory
+From \url{http://www.euforgen.org/species/fraxinus-excelsior/}. And save
+shapefile in same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{url <-}\StringTok{ 'https://github.com/sckott/gbifms/blob/gh-pages/querloba.zip?raw=true'}
+\NormalTok{url <-}\StringTok{ 'http://www.euforgen.org/fileadmin/templates/euforgen.org/upload/Documents/Maps/Shapefile/Fraxinus_excelsior.zip'}
 \NormalTok{tmp <-}\StringTok{ }\KeywordTok{tempdir}\NormalTok{()}
-\KeywordTok{download.file}\NormalTok{(url, }\DataTypeTok{destfile =} \StringTok{"querloba.zip"}\NormalTok{)}
-\KeywordTok{unzip}\NormalTok{(}\StringTok{"querloba.zip"}\NormalTok{, }\DataTypeTok{exdir =}\NormalTok{ tmp)}
-\NormalTok{ql <-}\StringTok{ }\NormalTok{sf}\OperatorTok{::}\KeywordTok{read_sf}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(tmp, }\StringTok{"querloba/querloba.shp"}\NormalTok{))}
+\KeywordTok{download.file}\NormalTok{(url, }\DataTypeTok{destfile =} \StringTok{"fraxinus_excelsior.zip"}\NormalTok{)}
+\KeywordTok{unzip}\NormalTok{(}\StringTok{"fraxinus_excelsior.zip"}\NormalTok{, }\DataTypeTok{exdir =}\NormalTok{ tmp)}
+\NormalTok{fe <-}\StringTok{ }\NormalTok{sf}\OperatorTok{::}\KeywordTok{read_sf}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(tmp, }\StringTok{"Fraxinus_excelsior_EUFORGEN.shp"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1403,18 +1411,8 @@ same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{alt.USA <-}\StringTok{ }\KeywordTok{getData}\NormalTok{(}\StringTok{'alt'}\NormalTok{, }\DataTypeTok{country =} \StringTok{'USA'}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\emph{Create Hillshade of US}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{alt.USA <-}\StringTok{ }\NormalTok{alt.USA[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{slope.USA <-}\StringTok{ }\KeywordTok{terrain}\NormalTok{(alt.USA, }\DataTypeTok{opt =} \StringTok{'slope'}\NormalTok{)}
-\NormalTok{aspect.USA <-}\StringTok{ }\KeywordTok{terrain}\NormalTok{(alt.USA, }\DataTypeTok{opt =} \StringTok{'aspect'}\NormalTok{)}
-\NormalTok{hill.USA <-}\StringTok{ }\KeywordTok{hillShade}\NormalTok{(slope.USA, aspect.USA, }\DataTypeTok{angle =} \DecValTok{45}\NormalTok{, }\DataTypeTok{direction =} \DecValTok{315}\NormalTok{)}
+\NormalTok{eur <-}\StringTok{ }\NormalTok{rnaturalearth}\OperatorTok{::}\KeywordTok{ne_countries}\NormalTok{(}\DataTypeTok{continent =} \StringTok{"europe"}\NormalTok{, }\DataTypeTok{type =} \StringTok{"map_units"}\NormalTok{)}
+\NormalTok{eur1 <-}\StringTok{ }\NormalTok{eur[eur}\OperatorTok{$}\NormalTok{sovereignt }\OperatorTok{!=}\StringTok{ "Russia"}\NormalTok{, ]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1422,25 +1420,19 @@ same directory
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{plot}\NormalTok{(hill.USA, }\DataTypeTok{col =} \KeywordTok{grey}\NormalTok{(}\DecValTok{0}\OperatorTok{:}\DecValTok{100}\OperatorTok{/}\DecValTok{100}\NormalTok{), }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{,}
-     \DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{125}\NormalTok{, }\OperatorTok{-}\DecValTok{116}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{32}\NormalTok{, }\DecValTok{42}\NormalTok{),}
-     \DataTypeTok{main =} \StringTok{'Distribution of Quercus lobata'}\NormalTok{,}
-     \DataTypeTok{xlab =} \StringTok{"Long"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{'Lat'}\NormalTok{)}
-\CommentTok{# add shape from Atlas of US Trees}
-\KeywordTok{plot}\NormalTok{(ql, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.6}\NormalTok{),}
-     \DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(eur1, }\DataTypeTok{col =} \StringTok{"darkgrey"}\NormalTok{, }\DataTypeTok{legend =} \OtherTok{FALSE}\NormalTok{,}
+     \DataTypeTok{main =} \StringTok{'Distribution of Fraxinus excelsior'}\NormalTok{)}
+\CommentTok{# add distribution range layer}
+\KeywordTok{plot}\NormalTok{(fe, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.5}\NormalTok{), }\DataTypeTok{border =} \OtherTok{FALSE}\NormalTok{)}
 \CommentTok{# add Gbif presence points}
-\KeywordTok{points}\NormalTok{(dat.Ql}\OperatorTok{$}\NormalTok{decimalLongitude, dat.Ql}\OperatorTok{$}\NormalTok{decimalLatitude,}
+\KeywordTok{points}\NormalTok{(dat.Fe}\OperatorTok{$}\NormalTok{decimalLongitude, dat.Fe}\OperatorTok{$}\NormalTok{decimalLatitude,}
        \DataTypeTok{cex =}\NormalTok{ .}\DecValTok{7}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{alpha}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\FloatTok{0.8}\NormalTok{))}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{40.5}\NormalTok{, }\StringTok{"GBIF Data"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{,}
-       \DataTypeTok{col =} \StringTok{'darkgreen'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{, }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =}\NormalTok{ .}\DecValTok{8}\NormalTok{)}
-\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{-}\DecValTok{121}\NormalTok{, }\DataTypeTok{y =} \FloatTok{41.5}\NormalTok{,}
-       \DataTypeTok{legend =} \StringTok{"Atlas of United States Trees }\CharTok{\textbackslash{}n}\StringTok{ (Little, E. 1971)"}\NormalTok{,}
-       \DataTypeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{cex =}\NormalTok{ .}\DecValTok{8}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{col =} \StringTok{'white'}\NormalTok{, }\DataTypeTok{bty =} \StringTok{'n'}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\DataTypeTok{x =} \DecValTok{38}\NormalTok{, }\DataTypeTok{y =} \DecValTok{81}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"GBIF Data"}\NormalTok{, }\StringTok{"Range Layer"}\NormalTok{), }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{, }\DataTypeTok{bg =} \StringTok{"grey"}\NormalTok{,}
+       \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{'darkgreen'}\NormalTok{, }\KeywordTok{alpha}\NormalTok{(}\StringTok{"white"}\NormalTok{, }\FloatTok{0.5}\NormalTok{)), }\DataTypeTok{pt.cex =} \DecValTok{1}\NormalTok{, }\DataTypeTok{cex =}\NormalTok{ .}\DecValTok{8}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{components/figure/manuscript-unnamed-chunk-65-1.pdf}
+\includegraphics{components/figure/manuscript-unnamed-chunk-64-1.pdf}
 
 \section{Conclusions and future
 directions}\label{conclusions-and-future-directions}

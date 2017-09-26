@@ -19,60 +19,47 @@ library('sp')
 library('sf')
 library('rgeos')
 library('scales')
+library('rnaturalearth')
 ```
 
-_Get GBIF Data for Quercus lobata_
+_Get GBIF Data for Fraxinus excelsior_
 
 ```{r cache=TRUE}
-keyQl <- name_backbone(name='Quercus lobata', kingdom='plants')$speciesKey
-dat.Ql <- occ_search(taxonKey=keyQl, return='data', limit=50000)
+keyFe <- name_backbone(name = 'Fraxinus excelsior', kingdom = 'plants')$speciesKey
+dat.Fe <- occ_search(taxonKey = keyFe, return = 'data', limit = 10000L)
 ```
 
-_Get Distribution map of Q. lobata Atlas of US Trees (Little, E.)_
+_Get Distribution map of F. excelsior European Forest Genetic Resources Programme_
 
-From <http://esp.cr.usgs.gov/data/little>. And save shapefile in same directory
+From <http://www.euforgen.org/species/fraxinus-excelsior/>. And save shapefile in same directory
 
 ```{r cache = TRUE}
-url <- 'https://github.com/sckott/gbifms/blob/gh-pages/querloba.zip?raw=true'
+url <- 'http://www.euforgen.org/fileadmin/templates/euforgen.org/upload/Documents/Maps/Shapefile/Fraxinus_excelsior.zip'
 tmp <- tempdir()
-download.file(url, destfile = "querloba.zip")
-unzip("querloba.zip", exdir = tmp)
-ql <- sf::read_sf(file.path(tmp, "querloba/querloba.shp"))
+download.file(url, destfile = "fraxinus_excelsior.zip")
+unzip("fraxinus_excelsior.zip", exdir = tmp)
+fe <- sf::read_sf(file.path(tmp, "Fraxinus_excelsior_EUFORGEN.shp"))
 ```
 
 _Get Elevation data of US_
 
 ```{r cache = TRUE}
-alt.USA <- getData('alt', country = 'USA')
-```
-
-_Create Hillshade of US_
-
-```{r cache = TRUE}
-alt.USA <- alt.USA[[1]]
-slope.USA <- terrain(alt.USA, opt = 'slope')
-aspect.USA <- terrain(alt.USA, opt = 'aspect')
-hill.USA <- hillShade(slope.USA, aspect.USA, angle = 45, direction = 315)
+eur <- rnaturalearth::ne_countries(continent = "europe", type = "map_units")
+eur1 <- eur[eur$sovereignt != "Russia", ]
 ```
 
 _Plot map_
 
 ```{r fig.keep='last'}
-plot(hill.USA, col = grey(0:100/100), legend = FALSE,
-     xlim = c(-125, -116), ylim = c(32, 42),
-     main = 'Distribution of Quercus lobata',
-     xlab = "Long", ylab = 'Lat')
-# add shape from Atlas of US Trees
-plot(ql, add = TRUE, col = alpha("white", 0.6),
-     border = FALSE)
+plot(eur1, col = "darkgrey", legend = FALSE,
+     main = 'Distribution of Fraxinus excelsior')
+# add distribution range layer
+plot(fe, add = TRUE, col = alpha("white", 0.5), border = FALSE)
 # add Gbif presence points
-points(dat.Ql$decimalLongitude, dat.Ql$decimalLatitude,
+points(dat.Fe$decimalLongitude, dat.Fe$decimalLatitude,
        cex = .7, pch = 19, col = alpha("darkgreen", 0.8))
-legend(x = -121, y = 40.5, "GBIF Data", pch = 19,
-       col = 'darkgreen', bty = 'n', pt.cex = 1, cex = .8)
-legend(x = -121, y = 41.5,
-       legend = "Atlas of United States Trees \n (Little, E. 1971)",
-       pt.cex = 1.5, cex = .8, pch = 19, col = 'white', bty = 'n')
+legend(x = 38, y = 81, c("GBIF Data", "Range Layer"), pch = 19, bg = "grey",
+       col = c('darkgreen', alpha("white", 0.5)), pt.cex = 1, cex = .8)
 ```
 
 [tweet]: https://twitter.com/ajpelu/status/473951167567757312
