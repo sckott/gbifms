@@ -1,7 +1,7 @@
 ---
 layout: review, 11pt
 linenumbers: true
-title: "R Python, and Ruby clients for GBIF species occurrence data"
+title: "R, Python, and Ruby clients for GBIF species occurrence data"
 author:
   - name: Scott Chamberlain
     affiliation: cstar
