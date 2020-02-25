@@ -1,5 +1,5 @@
 ```{r include=FALSE}
-opts_chunk$set(
+knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   comment = '#>',
@@ -14,10 +14,6 @@ The data in question from the example above is no longer available, so below
 we use a different species.
 
 _Load libraries_
-
-```{r install, echo=FALSE}
-devtools::install_github("ropenscilabs/rnaturalearth")
-```
 
 ```{r}
 library('rgbif')

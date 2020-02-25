@@ -1,5 +1,5 @@
 ```{r include=FALSE}
-opts_chunk$set(
+knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   comment = '#>',

@@ -1,5 +1,5 @@
 ```{r include=FALSE}
-opts_chunk$set(
+knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE,
   comment = '#>',
@@ -13,10 +13,6 @@ opts_chunk$set(
 In this example, we collect specimen records across different cities using GBIF data from the `rgbif` package.
 
 _Load libraries_
-
-```{r install-wicket, echo=FALSE}
-devtools::install_github("ropensci/wicket")
-```
 
 ```{r load}
 library("rgbif")
