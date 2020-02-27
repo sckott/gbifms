@@ -1,0 +1,10 @@
+---
+title: "Appendix A: Papers citing rgbif"
+output:
+  pdf_document:
+    latex_engine: xelatex
+bibliography: components/references-rgbif.bib
+nocite: '@*'
+---
+
+# References

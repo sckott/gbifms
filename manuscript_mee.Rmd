@@ -1,15 +1,25 @@
 ---
-layout: review, 11pt
-linenumbers: true
+preamble: |
+  \journal{Methods in Ecology and Evolution}
+  \linenumbers
+  \usepackage{setspace}
+  \doublespacing
+bibliography: components/references.bib
+csl: components/methods-in-ecology-and-evolution.csl
+output:
+  rticles::elsevier_article:
+    keep_tex: true
+    latex_engine: xelatex
+layout:  3p # review = doublespace, 3p = singlespace, 5p = two-column
 title: "R, Python, and Ruby clients for GBIF species occurrence data"
 author:
   - name: Scott Chamberlain
     affiliation: cstar
-    email: scott(at)ropensci.org
+    email: myrmecocystus(at)gmail.com
     footnote: Corresponding author
   - name: Carl Boettiger
     affiliation: boettig
-    email: carl(at)ropensci.org
+    email: cboettig(at)berkeley.edu
 address:
   - code: cstar
     address: |
@@ -24,7 +34,7 @@ abstract: |
 
       rOpenSci, Museum of Paleontology, University of California, Berkeley, CA, USA
 
-      Email address: [scott@ropensci.org](mailto:scott@ropensci.org)
+      Email address: [myrmecocystus@gmail.com](mailto:myrmecocystus@gmail.com)
 
       \newpage
 
@@ -46,16 +56,6 @@ abstract: |
       Discussion. Programmatic access to GBIF will facilitate more open
         and reproducible science - the three GBIF clients described herein
         are a significant contribution towards this goal.
-
-bibliography: components/references.bib
-csl: components/peerj.csl
-documentclass: components/elsarticle
-
-output:
-  pdf_document:
-    template: components/elsarticle.latex
-    keep_tex: true
-    fig_caption: true
 ---
 
 
@@ -170,7 +170,7 @@ at [https://github.com/ropensci/rgbif][ghrgbif], where development versions
 of the package can be installed, and bugs and feature requests reported.
 Stable versions of `rgbif` can be installed from [CRAN][cranrgbif], the
 distribution network for R packages. `rgbif` is part of the rOpenSci project
-(http://ropensci.org), a developer network making R software to facilitate
+(https://ropensci.org), a developer network making R software to facilitate
 reproducible research.
 
 ## pygbif
@@ -225,7 +225,7 @@ development versions of the package can be installed, and bugs and feature
 requests reported. Stable versions of `gbifrb` can be installed from
 [Rubygems][gemgbif], the distribution network for Ruby libraries.
 
-### Library interfaces
+# Library interfaces
 
 `rgbif`, `pygbif`, and `gbifrb` are designed following the [GBIF Application Programming Interface][gbifdocs],
 or API. The GBIF API has four major components: registry, taxonomic names,
@@ -266,7 +266,7 @@ Datasets are the units that matter the most with respect to registry information
 while installations, networks, nodes, and organizations are simply higher level
 organizational structure.
 
-### Datasets
+## Datasets
 
 Dataset functions include search, dataset metadata retrieval, and dataset metrics.
 Searching for datasets is an important part of the discovery process. One can
@@ -302,7 +302,7 @@ registry = Gbif::Registry
 registry.datasets(type: "OCCURRENCE")
 ```
 
-#### Dataset metrics
+## Dataset metrics
 
 Dataset metrics are another useful way of figuring out what
 datasets you may want to use. One drawback is that these metrics data are only
@@ -341,7 +341,7 @@ registry = Gbif::Registry
 registry.dataset_metrics(uuid: 'ec93a739-1681-4b04-b62f-3a687127a17f')
 ```
 
-### Networks, nodes, and installations
+## Networks, nodes, and installations
 
 Networks, nodes and installations are at a higher level of organization
 above datasets, but can be useful if you want to explore data from given
@@ -399,7 +399,7 @@ figuring out the taxonomic key in the GBIF backbone taxonomy, and using
 that to search for occurrences. The `taxonkey` parameter in the GBIF occurrences
 API expects a GBIF backbone taxon key.
 
-### GBIF Backbone
+## GBIF Backbone
 
 The GBIF backbone taxonomy is used in GBIF to have a consistent way to refer
 to taxonomic names throughout their services. The backbone has `r dataset_metrics("d7dddbf4-2cf0-4f39-9b2a-bb099caae36c")$distinctNamesCount` unique
@@ -434,7 +434,7 @@ res = species.name_backbone(name: 'Poa', rank: 'genus', family: 'Poaceae')
 res.select { |k,v| k.match(/usageKey|kingdom/) }
 ```
 
-### Name searching
+## Name searching
 
 One of the quickest ways to search for names is using `name_suggest()`, which
 does a very quick search and returns minimal data. Here, we're searching for
@@ -497,7 +497,7 @@ your user credentials. However, simply check when a download job is complete,
 then you can start a new download request. See "Queuing Download Requests"
 below for help automating many download requests in R.
 
-### Download API
+## Occurrences Download API
 
 The download API syntax is similar to the occurrence search API
 in that the same parameters are used, but the way in which the query
@@ -572,7 +572,7 @@ it's coming soon.
 The Ruby library `gbifrb` does not yet have occurrence download functionality.
 
 
-#### Downloaded data format
+### Downloaded data format
 
 The downloaded dataset from GBIF is a Darwin Core Archive (DwC-A), an
 internationally recognized biodiversity informatics standard
@@ -584,7 +584,7 @@ simply fetch data from the `.txt` file. If you want to dig into the metadata,
 citations, etc., it is easily accessible from the folder on your computer.
 
 
-### Search API
+## Search API
 
 The search API follows the GBIF API and is broken down into the following functions:
 
@@ -595,7 +595,7 @@ The search API follows the GBIF API and is broken down into the following functi
 * Get occurrence metadata - `rgbif`: `occ_metadata()` / `pygbif`: various / `gbifrb`: various
 
 
-#### Search for occurrences
+### Search for occurrences
 
 The main search work-horse is `occ_search()`. This function allows very flexible
 search definitions. In addition, this function does paging internally, making it
@@ -782,7 +782,7 @@ occ.search(hasGeospatialIssue: true, limit: 5)
 
 
 
-#### Data cleaning
+# Data cleaning
 
 GBIF provides optional data issues with each occurrence record. These issues fall
 into many different pre-defined classes, covering issues with taxonomic names,
@@ -800,22 +800,21 @@ out %>% occ_issues(-cudc) %>% .$data %>% NROW
 
 There's no equivalent interface in `pygbif` or `gbifrb` yet.
 
-## Mapping
+# Mapping
 
 An obvious downstream use case for species occurrence data is to map the
-data. `rgbif` per se is largely not concerned with making this easier,
-although we do have a simple wrapper around `ggplot2` to make it easy to
-get a quick plot of occurrence data. For example, here we plot 100
+data. `rgbif` has enough to do without handling mapping. Another package, [mapr][],
+works with `rgbif` to make this easy. For example, here we plot 100
 occurrences for _Puma concolor_.
 
 ```{r fig.width=8, fig.height=4}
+library(mapr)
 key <- name_backbone(name='Puma concolor')$speciesKey
 dat <- occ_search(taxonKey = key, limit = 100, hasCoordinate = TRUE)
-gbifmap(dat$data)
+map_ggplot(dat, name = "species")
 ```
 
-Another package, [mapr][mapr], is the perfect mapping companion to `rgbif`.
-It has convenient functions for handling input data from `rgbif`, `spocc`,
+`mapr` has convenient functions for handling input data from `rgbif`, `spocc`,
 or arbitrary data.frame's, and output plots for base plots, `ggplot2`,
 `ggmap` (`ggplot2` with map layers underneath), and interactive maps on
 GitHub gists or with Leaflet.js.
@@ -823,12 +822,126 @@ GitHub gists or with Leaflet.js.
 There's no equivalent interface in `pygbif` or `gbifrb`.
 
 
-## GBIF data in other R packages
+# Citing GBIF data
+
+All the data within GBIF was painstakingly collected by people and institutions
+across the globe. They all, including GBIF, deserve to be cited appropropriately
+if you use any GBIF data in your research. There are clear forces making this
+difficult however. Publishers often limit, without reason if the publication is
+online only, the number of citations one can include a manuscript. Even when 
+this happens, you can always include additional citations in an appendix.
+
+To make citing data from GBIF easier `rgbif` has a function `gbif_citation()`,
+which accepts the output of many different `rgbif` functions and gives
+citations for each dataset represented in the data therein. For example,
+suppose you searched for occurrences for `taxonKey` 9206251 (_Helianthus annuus_):
+
+
+```{r}
+res <- occ_search(taxonKey = 9206251, limit = 20)
+```
+
+We retrieved `r NROW(res$data)` occurrences from `r length(unique(res$data$datasetKey))`
+different datasets. 
+
+To get citations for each of the four datasets, one can pass the output of `occ_search()`,
+here the object `res`, to the `gbif_citation()` function:
+
+
+```{r}
+cites <- gbif_citation(res)
+cites
+```
+
+And we get four citations, one of each of the datasets behind the `r NROW(res$data)`
+occurrence records retrieved.
+
+We don't yet have the same functionality available in `pygbif`, but it will be
+coming soon.
+
+## Downloads vs. searches
+
+The distinction between "downloads" and "searches" is not especially meaningful with
+respect to the science done with GBIF data. However, downloads and searches
+are different with respect to easily being able to cite GBIF data, which 
+matters for GBIF and for data providers. 
+
+Downloads refers to the `rgbif` functions that start with `occ_download`, and the
+`pygbif` methods that start with `occurrences.download`. These methods use the GBIF
+"downloads API", which you can interact with from `rgbif` and `pygbif` programatically,
+similar to how you would interact with the GBIF website - each interaction creating
+a download request, which processes in the background. The user has to ask if 
+the request is ready to download. Downloads can request a very large amount of data. 
+
+Searches are faster and more dynamic. Search functions in `rgbif` include `occ_search`,
+`occ_data`, and `occ_get`, while `pygbif ` methods include `occurrences.search`, 
+`occurrences.get`. These methods can only request up to 200,000 occurrence records.
+
+The big difference between downloads and searches with respect to citations is that
+each download generates a Digital Object Identifier (or DOI). This DOI can be used
+cite the entire set of data, that can inlude many datasets. There's no good way to
+refer to the entire results of searches, other than the user manually creating a 
+dataset somewhere public and linking to it from Zenodo to get a DOI. However,
+simply using downloads is simpler in terms of getting a single citeable DOI for
+the data used in a research paper/project. 
+
+In `rgbif`, the output of `occ_download_meta()` can be passed to `gbif_citation()`
+to get the citation for the entire download.
+
+
+```{r eval=FALSE}
+key <- "0000122-171020152545675"
+res <- occ_download_meta(key)
+gbif_citation(res)
+#> $download
+#> [1] "GBIF Occurrence Download https://doi.org/10.15468/dl.yghxj7 Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2017-10-20"
+#> 
+#> $datasets
+#> NULL
+```
+
+If you however download the data first, then `gbif_citation()` can get citations 
+for all the datasets contained within the download.
+
+```{r eval=FALSE}
+d1 <- occ_download_get(key, overwrite = TRUE)
+gbif_citation(d1)
+#> $download
+#> [1] "GBIF Occurrence Download https://doi.org/10.15468/dl.yghxj7 Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2017-10-20"
+#> 
+#> $datasets
+#> $datasets[[1]]
+#> <<rgbif citation>>
+#>    Citation: Grant S, Jones J (2017). Field Museum of Natural History (Zoology)
+#>         Invertebrate Collection. Version 18.6. Field Museum. Occurrence Dataset
+#>         https://doi.org/10.15468/6q5vuc accessed via GBIF.org on 2017-10-20..
+#>         Accessed from R via rgbif (https://github.com/ropensci/rgbif) on
+#>         2020-02-24
+#>    Rights: To the extent possible under law, the publisher has waived all
+#>         rights to these data and has dedicated them to the Public Domain (CC0
+#>         1.0). Users may copy, modify, distribute and use the work, including
+#>         for commercial purposes, without restriction.
+#> 
+#> $datasets[[2]]
+#> <<rgbif citation>>
+#>    Citation: Creuwels J (2017). Naturalis Biodiversity Center (NL) - Crustacea.
+#>         Naturalis Biodiversity Center. Occurrence Dataset
+#>         https://doi.org/10.15468/vjoltu accessed via GBIF.org on 2017-10-20..
+#>         Accessed from R via rgbif (https://github.com/ropensci/rgbif) on
+#>         2020-02-24
+#>    Rights: To the extent possible under law, the publisher has waived all
+#>         rights to these data and has dedicated them to the Public Domain (CC0
+#>         1.0). Users may copy, modify, distribute and use the work, including
+#>         for commercial purposes, without restriction.
+```
+
+
+# GBIF data in other R packages
 
 We discuss usage of GBIF data in other R packages throughout the
 manuscript, but provide a synopsis here for clarity.
 
-### taxize
+## taxize
 
 Some of the GBIF taxonomic services are also available in [taxize][taxize],
 an R package that focuses on getting data from taxonomic data sources on
@@ -836,7 +949,7 @@ the web. For example, with `get_gbifid()` one can get GBIF IDs used for
 a set of taxonomic names - then use those IDs in other functions in `taxize`
 to get additional information, like taxonomically downstream children.
 
-### spocc
+## spocc
 
 GBIF occurrence data is available in the R package [spocc][spocc] via `rgbif`.
 `spocc` is a unified interface for fetching species occurrence data from
@@ -870,17 +983,17 @@ mature.
 The following are three use cases for the R library `rgbif`: niche modeling,
 spatial change in biodiversity, and distribution mapping.
 
-### Ecological niche modeling
+## Ecological niche modeling
 
 ```{r niche-modeling, child="use-cases/niche-modelling.Rmd"}
 ```
 
-### Biodiversity in big cities
+## Biodiversity in big cities
 
 ```{r city-diversity, child="use-cases/city-diversity.Rmd"}
 ```
 
-### Valley oak occurrence data comparison
+## Valley oak occurrence data comparison
 
 ```{r oak-occurrences, child="use-cases/oak-occurrences.Rmd"}
 ```
@@ -891,15 +1004,13 @@ The `rgbif`, `pygbif`, and `gbibrb` libraries provide programmatic interfaces
 to GBIF's application programming interface (API) - a powerful tool for
 working with species occurrence data, and facilitating reproducible research.
 In fact, the `rgbif` package has already been used in more than 20 scholarly
-publications (as of 2016-08-10), including [@Amano_2016, @Bartomeus_2013, @Barve_2014, @Bone_2015, @Collins_2015, @Drozd_2013, @Kong_2015, @Richardson_2015, @Turner_2015, @Verheijen_2015, @Zizka_2015, @Butterfield_2016, @Dellinger_2015, @Feitosa_2015, @Malhado_2015, @Werner_2015, @Robertson_2016, @Davison_2015, @Janssens_2016].
+publications (as of 2020-02-25), for example @Amano_2016, @Bartomeus_2013,
+and @Werner_2015 (see Appendix A for all citations).
 
-The `rgbif` package is relatively stable, and should not have
+The `rgbif` package is stable, and should not have
 many breaking changes unless necessitated due to changes in the
-GBIF API. However, it will gain function(s) to work with the maps
-API in the near future.
-
-The `pygbif` and `gbifrb` libraries are in early development, and will
-greatly benefit from any feedback and use cases.
+GBIF API. The `pygbif` and `gbifrb` libraries are in early development,
+and will greatly benefit from any feedback and use cases.
 
 One area of focus in the future is to attempt to solve many use
 cases that have been brought up with respect to GBIF data. For
@@ -935,13 +1046,14 @@ all the contributors to the three libraries, found at
 
 # References
 
-[mit]: http://choosealicense.com/licenses/mit/
+[mit]: https://choosealicense.com/licenses/mit/
 [ghrgbif]: https://github.com/ropensci/rgbif
 [cranrgbif]: https://cran.rstudio.com/web/packages/rgbif/
-[gbifdocs]: http://www.gbif.org/developer/summary
-[gbifissues]: http://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html
+[gbifdocs]: https://www.gbif.org/developer/summary
+[gbifissues]: https://gbif.github.io/gbif-api/apidocs/org/gbif/api/vocabulary/OccurrenceIssue.html
 [taxize]: https://github.com/ropensci/taxize
 [spocc]: https://github.com/ropensci/spocc
 [mapr]: https://github.com/ropensci/mapr
 [ghpygbif]: https://github.com/sckott/pygbif
 [pypipygbif]: https://pypi.python.org/pypi/pygbif
+[gemgbif]: https://rubygems.org/gems/gbifrb

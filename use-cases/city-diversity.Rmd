@@ -27,7 +27,7 @@ _Get bounding boxes for some cites_
 
 Bounding lat/long data is from <https://raw.github.com/amyxzhang/boundingbox-cities/master/boundbox.txt>.
 
-```{r box}
+```{r box, cache=TRUE}
 url <- 'https://raw.githubusercontent.com/amyxzhang/
 boundingbox-cities/master/boundbox.txt'
 rawdat <- content(GET(sub("\n", "", url)), as = "text")
